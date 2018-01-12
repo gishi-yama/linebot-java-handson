@@ -140,6 +140,33 @@ line.bot.channel-secret=Channel Secretの値を改行なしで貼り付ける
 handler.path=/callback
 ```
 
+pom.xmlの `<dependencies>〜</dependencies>` の中に、下の内容を追加する。
+
+```xml
+<dependency>
+	<groupId>com.linecorp.bot</groupId>
+	<artifactId>line-bot-api-client</artifactId>
+	<version>1.14.0</version>
+</dependency>
+
+<dependency>
+	<groupId>com.linecorp.bot</groupId>
+	<artifactId>line-bot-model</artifactId>
+	<version>1.14.0</version>
+</dependency>
+
+<dependency>
+	<groupId>com.linecorp.bot</groupId>
+	<artifactId>line-bot-servlet</artifactId>
+	<version>1.14.0</version>
+</dependency>
+
+<dependency>
+	<groupId>com.linecorp.bot</groupId>
+	<artifactId>line-bot-spring-boot</artifactId>
+	<version>1.14.0</version>
+</dependency>
+```
 
 ## Botの中身を作成する
 
