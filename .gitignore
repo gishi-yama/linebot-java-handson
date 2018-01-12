@@ -1,3 +1,7 @@
+### original
+
+.idea
+
 ### https://raw.github.com/github/gitignore/9139ad597b05354da689b19ce805c389252a6b8b/Java.gitignore
 
 # Compiled class file
@@ -259,11 +263,6 @@ nbdist/
 .nb-gradle/
 
 
-### https://raw.github.com/github/gitignore/9139ad597b05354da689b19ce805c389252a6b8b/Global/SVN.gitignore
-
-.svn/
-
-
 ### https://raw.github.com/github/gitignore/9139ad597b05354da689b19ce805c389252a6b8b/Global/Windows.gitignore
 
 # Windows thumbnail cache files
@@ -288,5 +287,13 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+### https://raw.github.com/github/gitignore/9139ad597b05354da689b19ce805c389252a6b8b/Global/Dropbox.gitignore
+
+# Dropbox settings and caches
+.dropbox
+.dropbox.attr
+.dropbox.cache
 
 
