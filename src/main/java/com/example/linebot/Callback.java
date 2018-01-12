@@ -55,9 +55,9 @@ public class Callback {
     return new TextMessage("こんばんは、Dukeです");
   }
 
-  // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(xxxxの所は、別途指示します）
+  // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
   private TextMessage makeRoomInfo() {
-    String key = "xxxx";
+    String key = "******";
     String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
     URI uri = URI.create(url + key);
     RestTemplate restTemplate = new RestTemplateBuilder().build();

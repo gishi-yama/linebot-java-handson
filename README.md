@@ -1,6 +1,6 @@
 # 今日の内容
 
-Java アプリケーションでLINE BOTを作ってみる
+Java アプリケーション（Spring Bootフレームワーク）でLINE BOTを作ってみる
 
 ## 前準備
 
@@ -10,11 +10,15 @@ Java アプリケーションでLINE BOTを作ってみる
 
 https://ngrok.com/download
 
+からダウンロードして、zipを展開する。
+
 Macの人は、端末（ターミナル）を起動して
 
 ```
 brew cask install ngrok
 ```
+
+とうつ。
 
 ### ngrokを起動する
 
@@ -45,7 +49,7 @@ Forwarding                    https://xxx.ngrok.io -> localhost:8080
 
 の部分はよく使うので、メモ帳などにコピーしておくとよい。
 
-### srping boot のプロジェクトを作成する 
+### Srping Boot のプロジェクトを作成する 
 
 https://start.spring.io/
 
@@ -63,7 +67,7 @@ https://start.spring.io/
 - Eclipse
   - ファイル ＞ インポート ＞ 既存Mavenプロジェクト でフォルダを選択
   - 読み込まれたら、プロジェクトを右クリックして Maven ＞ プロジェクトの更新
-- IntelliJ Idea
+- IntelliJ IDEA
   - import project でフォルダの中の pom.xml を選択
   - `import Maven projects automatically` にチェックして続行
 
@@ -100,7 +104,7 @@ LineBotApplication を右クリックで起動する。
 Hello!
 ```
 
-ブラウザから、ngrokに表示されていた `https://xxx.ngrok.io` を使って、 `https://xxx.ngrok.io/test` にもアクセスする。
+ブラウザから、ngrokに表示されていた `https://xxx.ngrok.io` を使って、 `https://xxx.ngrok.io/test` にもアクセスする。(xxxは各自のもの)
 
 上と同じように表示されればOK。 
 
@@ -124,7 +128,7 @@ Hello!
 
 - **アクセストークン（ロングターム）** の `再発行` ボタンを押す。（失効までの時間は0時間でよい）
 - **Webhook送信**を `利用する` に変更する
-- **WebHookURL**を、 `xxx.ngrok.io/callback` に変更する(xxxは各自のもの)
+- **WebHookURL**を、 `xxx.ngrok.io/callback` に変更する（xxxは各自のもの）
 - **自動応答メッセージ**を `利用しない` に変更する
 - **友達追加時あいさつ**を `利用しない` に変更する
 
@@ -377,9 +381,9 @@ public class Callback {
     return new TextMessage("こんばんは、Dukeです");
   }
 
-  // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(xxxxの所は、別途指示します）
+  // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
   private TextMessage makeRoomInfo() {
-    String key = "xxxx";
+    String key = "******";
     String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
     URI uri = URI.create(url + key);
     RestTemplate restTemplate = new RestTemplateBuilder().build();
