@@ -55,9 +55,17 @@ https://start.spring.io/
 
 **Generate Project** ボタンを押して、zipファイルをダウンロードする
 
-### NetBeansでプロジェクトを読み込む
+### IDEでプロジェクトを読み込む
 
-
+- Netbeans
+  - ファイル ＞ プロジェクトを開く でフォルダを選択
+  - 読み込まれたら、プロジェクトを右クリックして「依存性でビルド」と「消去してビルド」
+- Eclipse
+  - ファイル ＞ インポート ＞ 既存Mavenプロジェクト でフォルダを選択
+  - 読み込まれたら、プロジェクトを右クリックして Maven ＞ プロジェクトの更新
+- IntelliJ Idea
+  - import project でフォルダの中の pom.xml を選択
+  - `import Maven projects automatically` にチェックして続行
 
 
 ### Spring Bootの動作確認
@@ -112,7 +120,7 @@ Hello!
 
 ### Message APIの利用
 
-できあがったMessageAPIのチャンネルを開く。
+できあがったMessage APIのチャンネルを開く。
 
 - **アクセストークン（ロングターム）** の `再発行` ボタンを押す。（失効までの時間は0時間でよい）
 - **Webhook送信**を `利用する` に変更する
@@ -124,7 +132,7 @@ QRコードが表示されているので、作ったBot友達として登録す
 
 ### Java側の設定
 
-リソース・パッケージ（src/main/resources）の application.properties ファイルを書き換える。
+リソース・パッケージ（src/main/resources）の application.properties ファイルをMessage APIの情報で書き換える。
 
 ```properties
 line.bot.channel-token=アクセストークン（ロングターム）の値を改行なしで貼り付ける
@@ -346,7 +354,8 @@ public class Callback {
   private TextMessage makeRoomInfo() {
     String key = "xxxx";
     String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
-    URI uri = URI.create(url + key);    RestTemplate restTemplate = new RestTemplateBuilder().build();
+    URI uri = URI.create(url + key);
+    RestTemplate restTemplate = new RestTemplateBuilder().build();
     try {
       CO2 co2 = restTemplate.getForObject(uri, CO2.class);
       String message = "二酸化炭素は" + co2.getConcentration() + "ppm、温度は" + co2.getTemperature() + "度です";
