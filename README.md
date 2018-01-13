@@ -195,7 +195,6 @@ public class Callback {
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
     switch (text) {
-      case "こんにちは":
       default:
         return parrot(text);
     }
