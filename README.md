@@ -136,7 +136,7 @@ QRコードが表示されているので、作ったBot友達として登録す
 
 ### Java側の設定
 
-リソース・パッケージ（src/main/resources）の application.properties ファイルをMessage APIの情報で書き換える。
+その他のソース（src/main/resources）の application.properties ファイルをMessage APIの情報で書き換える。
 
 ```properties
 line.bot.channel-token=アクセストークン（ロングターム）の値を改行なしで貼り付ける
