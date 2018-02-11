@@ -19,4 +19,4 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
 
 ## 応用編1
 
-- [Wio Nodeのセンサーの情報を返答できるBotにする](doc/ex01.md)
+- [Wio Nodeのセンサーの情報を返答できるBot](doc/ex01.md)
