@@ -23,7 +23,7 @@ public class Callback {
     String text = tmc.getText();
     switch (text) {
       case "こんにちは":
-        return makeGreeting();
+        return greet();
       case "教室":
         return makeRoomInfo();
       default:
@@ -42,7 +42,7 @@ public class Callback {
   }
 
   // あいさつする
-  private TextMessage makeGreeting() {
+  private TextMessage greet() {
     LocalTime lt = LocalTime.now();
     int hour = lt.getHour();
     if (hour >= 6 && hour <= 11) {
