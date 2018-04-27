@@ -2,6 +2,15 @@
 
 Java アプリケーション（Spring Bootフレームワーク）でLINE BOTを作ってみる
 
+** 次の環境で動作確認しています **
+
+- macOS 10.12.6
+- Oracke JDK 1.8.0_172
+- Maven 3.5.3, 
+- IntelliJ 2018.2
+- ngrok 2.2.8 (mac os)
+
+
 ## 前準備
 
 - [ngrokの準備と起動](doc/01.md)
