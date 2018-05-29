@@ -19,6 +19,8 @@ public class Callback {
   @EventMapping
   public TextMessage handleText(MessageEvent<TextMessageContent> event) {
     System.out.println("event: " + event);
+    System.out.println("userid: " + event.getSource().getUserId());
+
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
     switch (text) {
