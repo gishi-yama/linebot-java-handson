@@ -2,10 +2,13 @@ package com.example.linebot;
 
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -16,9 +19,10 @@ import java.time.LocalTime;
 @LineMessageHandler
 public class Callback {
 
+  private static final Logger log = LoggerFactory.getLogger(Push.class);
+
   @EventMapping
-  public TextMessage handleText(MessageEvent<TextMessageContent> event) {
-    System.out.println("event: " + event);
+  public TextMessage handleMessage(MessageEvent<TextMessageContent> event) {
     System.out.println("userid: " + event.getSource().getUserId());
 
     TextMessageContent tmc = event.getMessage();
@@ -71,6 +75,11 @@ public class Callback {
       e.printStackTrace();
       return new TextMessage("センサーに接続できていません");
     }
+  }
+
+  @EventMapping
+  public TextMessage handlePostBack(PostbackEvent event) {
+    return new TextMessage(event.getPostbackContent().getData());
   }
 
 }
