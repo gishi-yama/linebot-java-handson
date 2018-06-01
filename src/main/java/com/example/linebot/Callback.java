@@ -1,6 +1,7 @@
 package com.example.linebot;
 
 import com.linecorp.bot.model.event.Event;
+import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -21,33 +22,36 @@ public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Push.class);
 
-  // MessageEventに対応する
-  @EventMapping
-  public TextMessage handleMessage(MessageEvent<TextMessageContent> event) {
-    TextMessageContent tmc = event.getMessage();
-    String text = tmc.getText();
-    switch (text) {
-      case "こんにちは":
-      case "おはよう":
-      case "こんばんは":
-        return greet();
-      case "教えて":
-        return replyUserId(event);
-      case "教室":
-        return makeRoomInfo();
-      default:
-        return parrot(text);
-    }
-  }
-
   // マッピングされていないEventに対応する
   @EventMapping
   public void handleEvent(Event event) {
     System.out.println("event: " + event);
   }
 
-  // オウム返しをする
-  private TextMessage parrot(String text) {
+  @EventMapping
+  public TextMessage handleFollow(FollowEvent event) {
+    // 実際はこのタイミングでフォロワーのユーザIDをデータベースにに格納しておくなど
+    String userId = event.getSource().getUserId();
+    return reply("あなたのユーザIDは " + userId);
+  }
+
+  // TextMessageに対応する
+  @EventMapping
+  public TextMessage handleMessage(MessageEvent<TextMessageContent> event) {
+    TextMessageContent tmc = event.getMessage();
+    String text = tmc.getText();
+    switch (text) {
+      case "やあ":
+        return greet();
+      case "部屋":
+        return replyRoomInfo();
+      default:
+        return reply(text);
+    }
+  }
+
+  // 返答メッセージを作る
+  private TextMessage reply(String text) {
     return new TextMessage(text);
   }
 
@@ -55,35 +59,27 @@ public class Callback {
   private TextMessage greet() {
     LocalTime lt = LocalTime.now();
     int hour = lt.getHour();
-    if (hour >= 6 && hour <= 11) {
-      return new TextMessage("おはようございます、Dukeです");
+    if (hour >= 17) {
+      return reply("こんばんは！");
     }
-    if (hour >= 12 && hour <= 16) {
-      return new TextMessage("こんにちは、Dukeです");
+    if (hour >= 11) {
+      return reply("こんにちは！");
     }
-
-    return new TextMessage("こんばんは、Dukeです");
-  }
-
-  // MessageEventからuserIdを取り出して返答する　
-  private TextMessage replyUserId(MessageEvent<TextMessageContent> event) {
-    String userId = event.getSource().getUserId();
-    return new TextMessage("あなたのユーザIDは " + userId);
+    return reply("おはよう！");
   }
 
   // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
-  private TextMessage makeRoomInfo() {
+  private TextMessage replyRoomInfo() {
     String key = "******";
     String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
     URI uri = URI.create(url + key);
     RestTemplate restTemplate = new RestTemplateBuilder().build();
     try {
       CO2 co2 = restTemplate.getForObject(uri, CO2.class);
-      String message = "二酸化炭素は" + co2.getConcentration() + "ppm、温度は" + co2.getTemperature() + "度です";
-      return new TextMessage(message);
+      return reply("二酸化炭素は" + co2.getConcentration() + "ppm、温度は" + co2.getTemperature() + "度です");
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
-      return new TextMessage("センサーに接続できていません");
+      return reply("センサーに接続できていません");
     }
   }
 
@@ -93,12 +89,11 @@ public class Callback {
     String actionLabel = event.getPostbackContent().getData();
     switch (actionLabel) {
       case "CY":
-        return new TextMessage("いいね！");
+        return reply("イイね！");
       case "CN":
-        return new TextMessage("つらたん...");
-      default:
-        return new TextMessage("？");
+        return reply("つらたん");
     }
+    return reply("?");
   }
 
 }

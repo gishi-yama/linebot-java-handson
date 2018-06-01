@@ -10,6 +10,7 @@ import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,11 +24,12 @@ public class Push {
 
   private static final Logger log = LoggerFactory.getLogger(Push.class);
 
-  // 返答から拾ってくる（本来は、友達登録をした瞬間にDBなどに格納しておく）
-  private String userId = "ユーザーID";
+  // push先のユーザID（本来は、友達登録をした瞬間にDBなどに格納しておく）
+  private String userId = "******";
 
   private final LineMessagingClient client;
 
+  @Autowired
   public Push(LineMessagingClient lineMessagingClient) {
     this.client = lineMessagingClient;
   }
@@ -38,7 +40,7 @@ public class Push {
     return "Hello!";
   }
 
-  //リマインドをプッシュ
+  // 時報をpush
   @GetMapping("timetone")
   @Scheduled(cron = "0 0-59 * * * *", zone = "Asia/Tokyo")
   public String pushTimeTone() {
@@ -54,7 +56,7 @@ public class Push {
     return text;
   }
 
-  //リマインドをプッシュ
+  // 確認メッセージをpush
   @GetMapping("confirm")
   public String pushConfirm() {
     String text = "質問だよ";
