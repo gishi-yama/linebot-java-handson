@@ -40,9 +40,9 @@ public class Push {
     return "Hello!";
   }
 
-  // 時報をpush
+  // 時報をpush。*/1は1分ごとの意味。5に変えれば5分ごととかになる。
   @GetMapping("timetone")
-  @Scheduled(cron = "0 0-59 * * * *", zone = "Asia/Tokyo")
+  @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
   public String pushTimeTone() {
     String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
     try {
