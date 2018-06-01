@@ -21,15 +21,18 @@ public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Push.class);
 
+  // MessageEventに対応する
   @EventMapping
   public TextMessage handleMessage(MessageEvent<TextMessageContent> event) {
-    System.out.println("userid: " + event.getSource().getUserId());
-
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
     switch (text) {
       case "こんにちは":
+      case "おはよう":
+      case "こんばんは":
         return greet();
+      case "教えて":
+        return replyUserId(event);
       case "教室":
         return makeRoomInfo();
       default:
@@ -37,6 +40,7 @@ public class Callback {
     }
   }
 
+  // マッピングされていないEventに対応する
   @EventMapping
   public void handleEvent(Event event) {
     System.out.println("event: " + event);
@@ -61,6 +65,12 @@ public class Callback {
     return new TextMessage("こんばんは、Dukeです");
   }
 
+  // MessageEventからuserIdを取り出して返答する　
+  private TextMessage replyUserId(MessageEvent<TextMessageContent> event) {
+    String userId = event.getSource().getUserId();
+    return new TextMessage("あなたのユーザIDは " + userId);
+  }
+
   // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
   private TextMessage makeRoomInfo() {
     String key = "******";
@@ -77,9 +87,18 @@ public class Callback {
     }
   }
 
+  // PostBackEventに対応する
   @EventMapping
   public TextMessage handlePostBack(PostbackEvent event) {
-    return new TextMessage(event.getPostbackContent().getData());
+    String actionLabel = event.getPostbackContent().getData();
+    switch (actionLabel) {
+      case "CY":
+        return new TextMessage("いいね！");
+      case "CN":
+        return new TextMessage("つらたん...");
+      default:
+        return new TextMessage("？");
+    }
   }
 
 }

@@ -10,6 +10,7 @@ import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class Push {
   private static final Logger log = LoggerFactory.getLogger(Push.class);
 
   // 返答から拾ってくる（本来は、友達登録をした瞬間にDBなどに格納しておく）
-  private String userId = "ユーザId";
+  private String userId = "ユーザーID";
 
   private final LineMessagingClient client;
 
@@ -38,9 +39,10 @@ public class Push {
   }
 
   //リマインドをプッシュ
-  @GetMapping("push1")
-  public String pushMessage1() {
-    String text = DateTimeFormatter.ofPattern("a K:k").format(LocalDateTime.now());
+  @GetMapping("timetone")
+  @Scheduled(cron = "0 0-59 * * * *", zone = "Asia/Tokyo")
+  public String pushTimeTone() {
+    String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
     try {
       PushMessage pMsg
         = new PushMessage(userId, new TextMessage(text));
@@ -53,14 +55,14 @@ public class Push {
   }
 
   //リマインドをプッシュ
-  @GetMapping("push2")
-  public String pushMessage2() {
+  @GetMapping("confirm")
+  public String pushConfirm() {
     String text = "質問だよ";
     try {
       Message msg = new TemplateMessage(text,
-        new ConfirmTemplate("おけまる？",
-          new PostbackAction("おけまる。", "QY"),
-          new PostbackAction("やばたに。", "QN")));
+        new ConfirmTemplate("いいかんじ？",
+          new PostbackAction("おけまる", "CY"),
+          new PostbackAction("やばたん", "CN")));
       PushMessage pMsg = new PushMessage(userId, msg);
       BotApiResponse resp = client.pushMessage(pMsg).get();
       log.info("Sent messages: {}", resp);
