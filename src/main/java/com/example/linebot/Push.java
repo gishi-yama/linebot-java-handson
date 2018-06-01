@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
@@ -36,8 +37,8 @@ public class Push {
 
   // テスト
   @GetMapping("test")
-  public String hello() {
-    return "Hello!";
+  public String hello(HttpServletRequest request) {
+    return "Get from " + request.getRequestURL();
   }
 
   // 時報をpush。*/1は1分ごとの意味。5に変えれば5分ごととかになる。
