@@ -28,6 +28,17 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
 
 ## 応用編
 
-- Botから話しかける
-- Botからの話しかけを自動化する
-- Botから聞いたことに答える（確認ウィンドウ）
+- Push通知をする
+    - [Botから話しかける](doc/08.md)
+    - [Botからの話しかけを自動化する](doc/09.md)
+
+- [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
+
+    
+
+## 参考資料
+
+- [LINEのBot開発 超入門（前編） ゼロから応答ができるまで](https://qiita.com/nkjm/items/38808bbc97d6927837cd)
+- [【LINE BOT】Java(Maven)+Heroku+SpringBootでラーメンBOTを作ってみたよ(1)](https://qiita.com/megaitai22/items/e3e130df1c044ec0f3fd)
+- [line-bot-sdk-javaでごみ出しリマインダーを作る](https://qiita.com/aytdm/items/7b8692662a0b161c555c)
+- [Spring Bootでtaskを定期実行する方法](https://qiita.com/rubytomato@github/items/4f0c64eb9a24eaceaa6e)
