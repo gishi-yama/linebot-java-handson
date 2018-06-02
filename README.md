@@ -1,13 +1,13 @@
-# 今日の内容
+# ハンズオンの内容
 
 Java アプリケーション（Spring Bootフレームワーク）でLINE BOTを作ってみる
 
-** 次の環境で動作確認しています **
+**次の環境で動作確認しています**
 
 - macOS 10.12.6
 - Oracke JDK 1.8.0_172
-- Maven 3.5.3, 
-- IntelliJ 2018.2
+- Maven 3.5.3 
+- IntelliJ 2018.1
 - ngrok 2.2.8 (mac os)
 
 
@@ -21,11 +21,24 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
 ## 基本編
 
 - [LINE Botの中身を作成](doc/05.md)
-- [時間帯にあわせてあいさつするBot](doc/05.md)
-- 自分のプログラミング知識をつかって、いろんな反応を作ってみよう。
-  たとえば...おみくじをひく、じゃんけんする、計算する...などなど。
+- [時間帯にあわせてあいさつするBot](doc/06.md)
+- [おみくじBot](doc/07.md)
 
+- [Wio Nodeのセンサーの情報を返答できるBot（ハンズオン用）](doc/ex01.md)
 
-## 応用編1
+## 応用編
 
-- [Wio Nodeのセンサーの情報を返答できるBot](doc/ex01.md)
+- Push通知をする
+    - [Botから話しかける](doc/08.md)
+    - [Botからの話しかけを自動化する](doc/09.md)
+
+- [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
+
+    
+
+## 参考資料
+
+- [LINEのBot開発 超入門（前編） ゼロから応答ができるまで](https://qiita.com/nkjm/items/38808bbc97d6927837cd)
+- [【LINE BOT】Java(Maven)+Heroku+SpringBootでラーメンBOTを作ってみたよ(1)](https://qiita.com/megaitai22/items/e3e130df1c044ec0f3fd)
+- [line-bot-sdk-javaでごみ出しリマインダーを作る](https://qiita.com/aytdm/items/7b8692662a0b161c555c)
+- [Spring Bootでtaskを定期実行する方法](https://qiita.com/rubytomato@github/items/4f0c64eb9a24eaceaa6e)
