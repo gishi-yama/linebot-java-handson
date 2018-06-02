@@ -41,7 +41,8 @@ public class Push {
     return "Get from " + request.getRequestURL();
   }
 
-  // 時報をpush。*/1は1分ごとの意味。5に変えれば5分ごととかになる。
+  // 時報をpushする
+  // */1は1分ごとの意味。5に変えれば5分ごととかになる。
   @GetMapping("timetone")
   @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
   public String pushTimeTone() {
