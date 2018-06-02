@@ -116,7 +116,7 @@ public class Callback {
 
   // PostBackEventに対応する
   @EventMapping
-  public TextMessage handlePostBack(PostbackEvent event) {
+  public Message handlePostBack(PostbackEvent event) {
     String actionLabel = event.getPostbackContent().getData();
     switch (actionLabel) {
       case "CY":
