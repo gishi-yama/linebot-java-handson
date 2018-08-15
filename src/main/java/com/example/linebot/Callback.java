@@ -1,9 +1,12 @@
 package com.example.linebot;
 
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.Message;
@@ -12,18 +15,34 @@ import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 @LineMessageHandler
 public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Callback.class);
+
+  private LineMessagingClient client;
+
+  @Autowired
+  public Callback(LineMessagingClient client) {
+    this.client = client;
+  }
 
   // マッピングされていないEventに対応する
   @EventMapping
@@ -128,5 +147,36 @@ public class Callback {
     }
     return reply("?");
   }
+
+  @EventMapping
+  public Message handleImg(MessageEvent<ImageMessageContent> event) {
+    String msgId = event.getMessage().getId();
+    Optional<String> opt = Optional.empty();
+    try {
+      MessageContentResponse resp = client.getMessageContent(msgId).get();
+      log.info("get content{}:", resp);
+      opt = makeFile("jpg", resp);
+    } catch (InterruptedException | ExecutionException e) {
+      e.printStackTrace();
+    }
+    return reply(opt.orElseGet(() -> "NG"));
+  }
+
+  private Optional<String> makeFile(String extension, MessageContentResponse resp) {
+    String tmpdir = System.getProperty("java.io.tmpdir");
+    if (!tmpdir.endsWith(File.separator)) {
+      tmpdir = tmpdir + File.separator;
+    }
+    Path tmpDirPath = Paths.get(tmpdir);
+    try (InputStream is = resp.getStream()) {
+      Path tmpFilePath = Files.createTempFile(tmpDirPath, "linebot", extension);
+      Files.copy(is, tmpFilePath);
+      return Optional.ofNullable(tmpFilePath.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return Optional.empty();
+  }
+
 
 }
