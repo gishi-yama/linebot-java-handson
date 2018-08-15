@@ -5,9 +5,9 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
 **次の環境で動作確認しています**
 
 - macOS 10.12.6
-- Oracke JDK 1.8.0_172
-- Maven 3.5.3 
-- IntelliJ 2018.1
+- Oracke JDK 1.8.0_181
+- Maven 3.5.4 
+- IntelliJ 2018.2
 - ngrok 2.2.8 (mac os)
 
 
