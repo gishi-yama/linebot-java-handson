@@ -39,7 +39,7 @@ public class RichMenuController {
   public String addRichMenu() {
     String text = "リッチメニューを作成し、ユーザーに紐付けます";
 
-    // リッチメニューを作成
+    // ①リッチメニューを作成
     // それぞれの意味は https://developers.line.me/ja/reference/messaging-api/#rich-menu-object を参照
     RichMenu richMenu = RichMenu.builder()
       .name("リッチメニュー1")
@@ -51,11 +51,11 @@ public class RichMenuController {
 
     try {
 
-      // 作成したリッチメニューの登録（ resp1 は作成結果で、リッチメニューIDが入っている）
+      // ②作成したリッチメニューの登録（ resp1 は作成結果で、リッチメニューIDが入っている）
       RichMenuIdResponse resp1 = client.createRichMenu(richMenu).get();
       log.info("create richmenu:{}", resp1);
 
-      // リッチメニューの背景画像の設定( resp2 は、画像の登録結果）
+      // ③リッチメニューの背景画像の設定( resp2 は、画像の登録結果）
       // ここでは、src/resource/img/RichMenuSample.jpg（ビルド後は classpath:/img/RichMenuSample.jpg）を指定
       // 画像の仕様は公式ドキュメントを参照されたい
       ClassPathResource cpr = new ClassPathResource("/img/RichMenuSample.jpg");
@@ -63,7 +63,7 @@ public class RichMenuController {
       BotApiResponse resp2 = client.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
       log.info("set richmenu image:{}", resp2);
 
-      // リッチメニューIdをユーザIdとリンクする（ resp3 は、紐付け結果）
+      // ④リッチメニューIdをユーザIdとリンクする（ resp3 は、紐付け結果）
       // リンクすることで作成したリッチメニューを使えるようになる
       BotApiResponse resp3 = client.linkRichMenuIdToUser(userId, resp1.getRichMenuId()).get();
       log.info("link richmenu:{}", resp3);
@@ -79,15 +79,16 @@ public class RichMenuController {
     String text = "リッチメニューをすべて削除します";
     try {
 
-      // ユーザからリッチメニューを解除する（※Messaging APIで作成したものだけ）
+      // ①ユーザからリッチメニューを解除する（※Messaging APIで作成したものだけ）
       client.unlinkRichMenuIdFromUser(userId);
 
-      // 作成されているリッチメニューの取得（ resp4 は、リッチメニューの一覧情報）
+      // ②作成されているリッチメニューの取得（ resp4 は、リッチメニューの一覧情報）
       RichMenuListResponse resp4 = client.getRichMenuList().get();
       log.info("get richmenus:{}", resp4);
 
-      // リッチメニューIdを指定して削除する
-      // ここでは resp4 のものをすべて
+      // ③リッチメニューIdを指定して削除する
+      // ここでは resp4 のものをすべて削除しているが、本来はリッチメニューIdと
+      // ユーザIDの対応をDBなどに保存しておいて、不要なものだけを削除する
       resp4.getRichMenus().stream()
         .forEach(r -> client.deleteRichMenu(r.getRichMenuId()));
 
@@ -109,19 +110,19 @@ public class RichMenuController {
     return richMenuAreas;
   }
 
-  // メッセージを送信する動作をリッチメニューとして割り当てます
+  // Botにメッセージを送信する動作をリッチメニューとして割り当てます
   private RichMenuArea makeMessageAction(int x, int y, int w, int h, String label) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
       new MessageAction(label, label + "　is tapped！"));
   }
 
-  // WebPageを表示する動作をリッチメニューとして割り当てます
+  // アプリ内ブラウザでWebサイトを表示する動作をリッチメニューとして割り当てます
   private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, String uri) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
       new URIAction(label, uri));
   }
 
-  // 日時を設定する動作をリッチメニューとして割り当てます
+  // Botに日時イベントを送信する動作をリッチメニューとして割り当てます
   private RichMenuArea makeDateTimeAction(int x, int y, int w, int h, String label) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
       new DatetimePickerAction(label, "DT", "datetime"));
