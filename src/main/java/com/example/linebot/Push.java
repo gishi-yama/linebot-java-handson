@@ -11,7 +11,6 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,7 +43,7 @@ public class Push {
   // 時報をpushする
   // */1は1分ごとの意味。5に変えれば5分ごととかになる。
   @GetMapping("timetone")
-  @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
+  //  @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
   public String pushTimeTone() {
     String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
     try {
