@@ -161,7 +161,8 @@ public class Callback {
       e.printStackTrace();
     }
     // サンプルコードだから許される暴挙！運用ではファイルパスを直接返すことはやめましょう
-    return reply(opt.orElseGet(() -> "ファイル書き込みNG"));
+    String path = opt.orElseGet(() -> "ファイル書き込みNG");
+    return reply(path);
   }
 
   private Optional<String> makeTmpFile(MessageContentResponse resp, String extension) {
