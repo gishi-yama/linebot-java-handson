@@ -20,17 +20,17 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @LineMessageHandler
 public class Callback {
@@ -155,28 +155,25 @@ public class Callback {
     try {
       MessageContentResponse resp = client.getMessageContent(msgId).get();
       log.info("get content{}:", resp);
-      opt = makeFile("jpg", resp);
+      // LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
+      opt = makeTmpFile(resp, ".jpg");
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
-    return reply(opt.orElseGet(() -> "NG"));
+    // サンプルコードだから許される暴挙！運用ではファイルパスを直接返すことはやめましょう
+    return reply(opt.orElseGet(() -> "ファイル書き込みNG"));
   }
 
-  private Optional<String> makeFile(String extension, MessageContentResponse resp) {
-    String tmpdir = System.getProperty("java.io.tmpdir");
-    if (!tmpdir.endsWith(File.separator)) {
-      tmpdir = tmpdir + File.separator;
-    }
-    Path tmpDirPath = Paths.get(tmpdir);
+  private Optional<String> makeTmpFile(MessageContentResponse resp, String extension) {
+    // tmpディレクトリに一時的に格納して、ファイルパスを返す
     try (InputStream is = resp.getStream()) {
-      Path tmpFilePath = Files.createTempFile(tmpDirPath, "linebot", extension);
-      Files.copy(is, tmpFilePath);
+      Path tmpFilePath = Files.createTempFile("linebot", extension);
+      Files.copy(is, tmpFilePath, REPLACE_EXISTING);
       return Optional.ofNullable(tmpFilePath.toString());
     } catch (IOException e) {
       e.printStackTrace();
     }
     return Optional.empty();
   }
-
 
 }
