@@ -14,7 +14,7 @@ Botからリッチメニューを作成/表示/非表示する
 
 ![公式のサンプル画像](https://developers.line.me/media/messaging-api/rich-menu/controller-rich-menu-image-e1734c7d.jpg)
 
-画像をダウンロードしたら、 `src/main/resource/img` フォルダに、 `RichMenuSample.jpg` という名称で保存する。
+画像をダウンロードしたら、 `src/main/resources/img` フォルダに、 `RichMenuSample.jpg` という名称で保存する。
 
 ### RichMenuPushクラスを作成
 
