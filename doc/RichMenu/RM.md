@@ -1,4 +1,4 @@
-## リッチメニューを使う
+## リッチメニューを作成・利用する
 
 Botからリッチメニューを作成/表示/非表示する
 
@@ -188,7 +188,7 @@ RichMenuController の最後のメソッドで、 `DatetimePickerAction` を利�
 1. LineBotApplication を一度停止して、再起動する
 2. [http://localhost:8080/addRich](http://localhost:8080/addRich) にブラウザでアクセスする
 3. Botのメッセージ欄に、「コントローラー」（chatBarTextに設定した文字列）のリッチメニューができていることを確認する
-  追加前：![リッチメニュー追加前](./RM01.jpg)
+  追加前：![リッチメニュー追加前](./RM01.jpg)<br>
   追加後：![リッチメニュー追加後](./RM02.jpg)
 4. 「コントローラー」を押すと、リッチメニューに設定した画像（RichMenuSample.jpg）が表示される。
   ![リッチメニュー表示](./RM03.jpg)
@@ -199,7 +199,7 @@ RichMenuController の最後のメソッドで、 `DatetimePickerAction` を利�
   ![赤左ボタンでWebサイト表示](./RM05.jpg)
 7. 赤い右ボタンを押すと、日時の選択メニューが表示される
   日時を送信すると Callback#handlePostBack メソッドで変更したとおり、選択された日時をBotがパラメータとして受信していることを表示する
-  ![赤右ボタンで尾日付を選択](./RM06.jpg)
+  ![赤右ボタンで尾日付を選択](./RM06.jpg)<br>
   ![選んだ日時をパラメータで受信](./RM07.jpg)
 8. [http://localhost:8080/delRich](http://localhost:8080/delRich) にブラウザでアクセスすると、リッチメニューが無くなる
 

@@ -31,7 +31,7 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
     - [Botから話しかける](doc/08.md)
     - [Botからの話しかけを自動化する](doc/09.md)
 - [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
-- [リッチメニューを表示する](doc/RichMenu/RM.md)
+- [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
 
 ## 参考資料
 
