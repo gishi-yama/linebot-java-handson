@@ -123,6 +123,8 @@ public class Callback {
         return reply("イイね！");
       case "CN":
         return reply("つらたん");
+      case "DT":
+        return reply(event.getPostbackContent().getParams().toString());
     }
     return reply("?");
   }
