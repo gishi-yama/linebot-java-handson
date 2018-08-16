@@ -70,9 +70,9 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
 ### 動作確認
 
 1. LineBotApplication を一度停止して、再起動する
-2. LINEで、Botに向かって画像を送付する。
-3. 画像の保存パスが表示される<br>![画像の保存パス](Bin01.jpg)
-4. Finderやエクスプローラーから、表示されたファイルのパスを表示し、ローカル上に画像ファイルが保存されていることを確認する
+2. LINEで、Botに向かって画像を送付する
+3. Botが画像の保存を表示する<br>![画像の保存パス](Bin01.jpg)
+4. Finderやエクスプローラーから、表示されたファイルパスを確認し、同じ画像ファイルが保存されていることを確認する
 
 ### 解説と補足
 
@@ -86,7 +86,7 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
     - 画像： `ImageMessageContent` （必ず `jpg` ファイル）
     - 音声： `AudioMessageContent` （必ず `m4a` ファイル）
     - 動画： `VideoMessageContent` （必ず `mp4` ファイル）
-    - ファイル： `FileMessageContent` （送信元のファイル名とサイズを<br>`getFilename()` 、 `getSize()` で取得可能）
+    - ファイル： `FileMessageContent` （送信元のファイル名とサイズを `getFilename()` 、 `getSize()` で取得可能）
 
 -----
 
