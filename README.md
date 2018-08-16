@@ -24,6 +24,7 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
 - [時間帯にあわせてあいさつするBot](doc/06.md)
 - [おみくじBot](doc/07.md)
 - [Wio Nodeのセンサーの情報を返答できるBot（ハンズオン用）](doc/ex01.md)
+- [バイナリデータを受信する](doc/Binary/Binary.md)
 
 ## 応用編
 
