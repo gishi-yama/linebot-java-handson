@@ -6,6 +6,7 @@ import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.message.FileMessageContent;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
@@ -148,23 +149,30 @@ public class Callback {
     return reply("?");
   }
 
+  // 画像のメッセージイベントに対応する
   @EventMapping
   public Message handleImg(MessageEvent<ImageMessageContent> event) {
+    // ①画像メッセージのidを取得する
     String msgId = event.getMessage().getId();
     Optional<String> opt = Optional.empty();
     try {
+      // ②画像メッセージのidを使って MessageContentResponse を取得する
       MessageContentResponse resp = client.getMessageContent(msgId).get();
       log.info("get content{}:", resp);
-      // LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
+      // ③ MessageContentResponse からファイルをローカルに保存する
+      // ※LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
       opt = makeTmpFile(resp, ".jpg");
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
-    // サンプルコードだから許される暴挙！運用ではファイルパスを直接返すことはやめましょう
+    // ④ ファイルが保存できたことが確認できるように、ローカルのファイルパスをコールバックする
+    // 運用ではファイルパスを直接返すことはやめましょう
     String path = opt.orElseGet(() -> "ファイル書き込みNG");
     return reply(path);
   }
 
+  // MessageContentResponseの中のバイト入力ストリームを、拡張子を指定してファイルに書き込む。
+  // また、保存先のファイルパスをOptional型で返す。
   private Optional<String> makeTmpFile(MessageContentResponse resp, String extension) {
     // tmpディレクトリに一時的に格納して、ファイルパスを返す
     try (InputStream is = resp.getStream()) {
