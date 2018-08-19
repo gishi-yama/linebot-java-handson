@@ -33,6 +33,8 @@ Java アプリケーション（Spring Bootフレームワーク）でLINE BOT�
     - [Botからの話しかけを自動化する](doc/09.md)
 - [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
 - [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
+- LIFF
+    - [LIFFを動かす](doc/Liff/Liff_P1.md)
 
 ## 参考資料
 
