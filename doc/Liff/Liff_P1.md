@@ -80,7 +80,13 @@ public class LIFFController {
 
 }
 ```
+
 ### 動作確認
 
- 
-### 解説と補足
+1. LineBotApplication を一度停止して、再起動する
+2. [http://localhost:8080/liff](http://localhost:8080/liff) にアクセスする
+3. ブラウザに下のように表示されることを確認する<br>![Hello by Thymeleaf](Liff_P1_01.jpg)<br>これは、 liff.html の`[[${test}]]`の部分を、 LIFFController で書き換えている。
+
+-----
+
+[戻る](../../README.md)
