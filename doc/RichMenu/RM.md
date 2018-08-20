@@ -199,7 +199,7 @@ RichMenuController の最後のメソッドで、 `DatetimePickerAction` を利�
 <br>日時を送信すると Callback#handlePostBack メソッドで変更したとおり、選択された日時をBotがパラメータとして受信していることを表示する
 <br>![赤右ボタンで尾日付を選択](./RM06.jpg)<br>
 <br>![選んだ日時をパラメータで受信](./RM07.jpg)
-8. [http://localhost:8080/delRich](http://localhost:8080/delRich) にブラウザでアクセスすると、リッチメニューが無くなる
+8. [http://localhost:8080/delRich](http://localhost:8080/delRich) にブラウザでアクセスすると、リッチメニューのリンク解除・削除が行われる
 
 ### 解説と補足
 
