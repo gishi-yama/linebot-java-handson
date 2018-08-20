@@ -7,8 +7,8 @@ LIFFは、別途に用意したWebページやフォームをLINE Bot内部に�
 ここでは、
 
 1. ライブラリにThymeleafを追加する
-1. Spring BootでThymeleafのWebページを表示できるようにする
-2. LIFFのサンプルを表示する
+2. Spring BootでThymeleafのWebページを表示する
+3. LIFFのサンプルを表示する
 
 の手順で進める。
 
@@ -36,6 +36,8 @@ LIFFは、別途に用意したWebページやフォームをLINE Bot内部に�
   （中略）
 </dependencies>
 ```
+
+### Spring BootでThymeleafのWebページを表示する
 
 その他のソース（src/main/resources）に templates フォルダを作成し、その中に liff.html を作成する
 
@@ -81,11 +83,14 @@ public class LIFFController {
 }
 ```
 
-### 動作確認
+#### Thymeleafの動作確認
 
 1. LineBotApplication を一度停止して、再起動する
-2. [http://localhost:8080/liff](http://localhost:8080/liff) にアクセスする
+2. [http://localhost:m8080/liff](http://localhost:8080/liff) にアクセスする
 3. ブラウザに下のように表示されることを確認する<br>![Hello by Thymeleaf](Liff_P1_01.jpg)<br>これは、 liff.html の`[[${test}]]`の部分を、 LIFFController で書き換えている。
+
+
+### LIFFのサンプルを表示する
 
 -----
 

@@ -9,7 +9,7 @@ public class LIFFController {
 
   @GetMapping("/liff")
   public String hello(Model model) {
-    model.addAttribute("test", "Hello by Tymeleaf!");
+    model.addAttribute("test", "Hello Tymeleaf!");
     return "liff";
   }
 
