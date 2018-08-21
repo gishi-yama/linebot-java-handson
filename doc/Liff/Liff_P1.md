@@ -189,9 +189,9 @@ public class LIFFController {
 
 LIFFアプリを追加するために、下のコマンドを端末（ターミナル）から実行する。
 
-Windowsの場合はcurlをインストールするか、同等のパラメータでHTTPリクエストが行えるツール（[ARC](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=ja)など）を利用する。
+Windowsの場合はcurlをインストールするか、同等のパラメータでHTTPリクエストが行えるツール（[ARC](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=ja)など）を利用する。<br>また、[line/line-bot-sdk-java](https://github.com/line/line-bot-sdk-java/) には、Javaで動作するLIFF/リッチメニュー登録用のコマンドラインツール([line-bot-cli](https://github.com/line/line-bot-sdk-java/tree/master/line-bot-cli))も用意されている。
 
-ただし、以下の部分は個別に編集が必要。
+コマンドを実行する場合、以下の部分は個別に編集が必要。
 
 - `"Authorization: Bearer xxxxxx..."` の `xxxxxx...` には、Botのアクセストークン（ロングターム）の値を改行なしで貼り付ける（ので、コマンドがとても長くなる）
 - `"https://xxx.ngrok.io/liff"` の `xxx.ngrok.io` は、ngrokで取得したURLにする
