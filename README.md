@@ -1,6 +1,6 @@
 # ハンズオンの内容
 
-Java アプリケーション（Spring Bootフレームワーク）でLINE BOTを作ってみる
+[line/line-bot-sdk-java](https://github.com/line/line-bot-sdk-java)を使って、Java アプリケーション（Spring Bootフレームワーク）でLINE BOTを作ってみる
 
 **次の環境で動作確認しています**
 
