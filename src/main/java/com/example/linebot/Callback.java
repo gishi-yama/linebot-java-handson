@@ -2,10 +2,7 @@ package com.example.linebot;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
-import com.linecorp.bot.model.event.Event;
-import com.linecorp.bot.model.event.FollowEvent;
-import com.linecorp.bot.model.event.MessageEvent;
-import com.linecorp.bot.model.event.PostbackEvent;
+import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
@@ -182,6 +179,13 @@ public class Callback {
       e.printStackTrace();
     }
     return Optional.empty();
+  }
+
+
+  // BeaconEventに対応する
+  @EventMapping
+  public Message handleBeacon(BeaconEvent event) {
+    return reply(event.getBeacon().toString());
   }
 
 }
