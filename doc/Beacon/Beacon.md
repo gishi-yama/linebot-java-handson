@@ -44,7 +44,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 6. `元のパッケージを削除して「linebeacon」を追加する` ボタンを押す。<br />![beacon09](beacon09.png)
 7. メニューから `無線` 欄が消え、代わりに `Line Beacon` 欄と `Bluetooth` 欄が表示されていることを確認する。<br />![beacon10](beacon10.png)<br />※なお、元のエディタのメニューに戻したいときは `プロジェクト` → `新しいプロジェクト` すれば良い。
 8. 以下の図のようにプログラミングする。<br />![beacon11](beacon11.png)
-    - `Bluetooth 送信強度`　ブロックは、 `Bluetooth` 欄にある。<br />デフォルト値（最大値）は `7` だが、電波強度が高すぎる（〜30m）なので、手元で試すなら `1` で十分。
+    - `Bluetooth 送信強度`　ブロックは、 `Bluetooth` 欄にある。<br />デフォルト値（最大値）は `7` だが、電波強度が高すぎる（+4dBm, 最大70m）なので、卓上で試すなら `0` もしくは `1` （-30dBm〜-20dBm）で十分。
     - `アイコンを表示` ブロックは、 `基本` 欄にある。 
     - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、0〜Fのによる16進数値（最大13バイト:26桁）にする。
     - `LINE Beacon stop` ブロックも、 `LINE Beacon` 欄にある。
