@@ -46,7 +46,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 8. 以下の図のようにプログラミングする。<br />![beacon11](beacon11.png)
     - `Bluetooth 送信強度`　ブロックは、 `Bluetooth` 欄にある。<br />デフォルト値（最大値）は `7` だが、電波強度が高すぎる（〜30m）なので、手元で試すなら `1` で十分。
     - `アイコンを表示` ブロックは、 `基本` 欄にある。 
-    - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、n文字までの半角英数字にする。
+    - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、0〜Fのによる16進数値（最大13バイト:26桁）にする。
     - `LINE Beacon stop` ブロックも、 `LINE Beacon` 欄にある。
 9. エディタの `名称未設定` 欄に `linebeacon` と入力し、保存ボタンを押す。
 10. ローカルフォルダに、 microbit-linebeacon.hex ファイルが保存されていることを確認する。
