@@ -2,14 +2,12 @@ package com.example.linebot;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
-import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.slf4j.Logger;
@@ -187,7 +185,9 @@ public class Callback {
   // BeaconEventに対応する
   @EventMapping
   public Message handleBeacon(BeaconEvent event) {
+    // Beaconイベントの内容を文字列に変換する
     String eventStr = event.getBeacon().toString();
+    // eventStr をBotで返信する
     return reply(eventStr);
   }
 

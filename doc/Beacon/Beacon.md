@@ -57,6 +57,24 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 
 ### ビーコンのエリアに入った際にBotを反応させる
 
+LINEアプリを起動した端末をLINE Beaconに近づけると、ビーコンイベントがBotに送信される。
+
+Messsage APIでは、このイベントに対するコールバック処理を作成する。
+
+#### Callbackクラスを変更
+
+ビーコンイベントに対応するメソッドを追加する。<br/>（必要であれば `com.linecorp.bot.model.event.BeaconEvent` を import する）
+
+```java
+  // BeaconEventに対応する
+  @EventMapping
+  public Message handleBeacon(BeaconEvent event) {
+    // Beaconイベントの内容を文字列に変換する
+    String eventStr = event.getBeacon().toString();
+    // eventStr をBotで返信する
+    return reply(eventStr);
+  }
+```
 
 ### 動作確認
 
