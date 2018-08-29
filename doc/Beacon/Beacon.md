@@ -8,8 +8,8 @@ LINE Beacon と Bot を連携させることで、ビーコンを配置した特
 
 もしくは、node.jsやBBC micro:bitでビーコンを自作することもできる。
 
--node.js用　[line/line-simple-beacon](https://github.com/line/line-simple-beacon)
--micro:bit用 [pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon)
+- node.js用　[line/line-simple-beacon](https://github.com/line/line-simple-beacon)
+- micro:bit用 [pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon)
 
 ここでは、
 
@@ -63,7 +63,7 @@ Messsage APIでは、このイベントに対するコールバック処理を�
 
 #### Callbackクラスを変更
 
-ビーコンイベントに対応するメソッドを追加する。<br/>（必要であれば `com.linecorp.bot.model.event.BeaconEvent` を import する）
+ビーコンイベントに対応するメソッドを追加する。<br/>（必要であれば `com.linecorp.bot.model.event.BeaconEvent` を import の行につけくわえる）
 
 ```java
   // BeaconEventに対応する
@@ -77,6 +77,26 @@ Messsage APIでは、このイベントに対するコールバック処理を�
 ```
 
 ### 動作確認
+
+**必ずスマートフォン（タブレット）のLINEアプリで動作確認してください（本稿執筆時点でPC版は対応していない）**
+
+1. LineBotApplication を一度停止して、再起動する
+2. micro:bit を再起動する
+3. LINEアプリを開いた状態で、micro:bitに近づける
+4. micro:bit のAボタンを押す（ビーコン信号送信開始）
+5. Botが、アプリが受信したビーコン信号の内容を投稿する<br />![beacon12](beacon12.png)
+6. micro:bit のBボタンを押す（ビーコン送信停止）
+7. しばらく待つとBotが、アプリが受信したビーコン信号の内容を投稿する<br />![beacon12](beacon12.png)
+
+### 解説と補足
+
+LINE BeaconはBluetooth（BLE）の電波で ハードウェアID と deviceMessage を周囲に送る。
+
+この電波をLINEアプリがキャッチすると、`enter`タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。
+
+電波がキャッチできなくなって一定時間がたつと、 `leave`タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。
+
+これによって、LINE Beaconに近づいた時（電波が届く範囲に入る： `enter` タイプのイベント）、LINE Beaconから離れた時（電波が届く範囲から出る： `leave` タイプのイベント）をBotが検知して処理を行うしくみを作れる。例えば「店に入るとBotがクーポンを表示する」といった仕組みに利用されている。
 
 -----
 
