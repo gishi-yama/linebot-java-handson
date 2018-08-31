@@ -23,18 +23,21 @@
 - [LINE Botの中身を作成](doc/05.md)
 - [時間帯にあわせてあいさつするBot](doc/06.md)
 - [おみくじBot](doc/07.md)
-- [Wio Nodeのセンサーの情報を返答できるBot（ハンズオン用）](doc/ex01.md)
+- [Wio Nodeのセンサーの情報を返答できるBot（ハンズオン専用）](doc/ex01.md)
 - [バイナリデータを受信する](doc/Binary/Binary.md)
 
-## 応用編
+## 応用編1 特別なやりとり
 
-- Push通知をする
-    - [Botから話しかける](doc/08.md)
-    - [Botからの話しかけを自動化する](doc/09.md)
+- [Botから話しかける](doc/08.md)
+- [Botからの話しかけを自動化する](doc/09.md)
 - [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
+- [LINE Beaconに反応させる](doc/Beacon/Beacon.md)
+
+## 応用編2 ユーザーインターフェース
+
 - [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
-- LIFF
-    - [LIFFを動かす](doc/Liff/Liff_P1.md)
+- [LIFFを動かす](doc/Liff/Liff_P1.md)
+
 
 ## 参考資料
 

@@ -219,6 +219,8 @@ https://api.line.me/liff/v1/apps
 
 #### LIFFアプリの動作確認
 
+**必ずスマートフォン（タブレット）のLINEアプリで動作確認してください（本稿執筆時点でPC版は対応していない）**
+
 上記の手順で取得した liffId をもとに、アプリにアクセスするURLを作成する。
 
 URLは、 `line://app/` と liffId を結合した `line://app/0000000000-nnnnnnnn` となる。
