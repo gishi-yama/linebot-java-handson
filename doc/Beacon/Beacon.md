@@ -98,6 +98,8 @@ LINE BeaconはBluetooth（BLE）の電波で ハードウェアID と deviceMess
 
 これによって、LINE Beaconに近づいた時（電波が届く範囲に入る： `enter` タイプのイベント）、LINE Beaconから離れた時（電波が届く範囲から出る： `leave` タイプのイベント）をBotが検知して処理を行うしくみを作れる。例えば「店に入るとBotがクーポンを表示する」といった仕組みに利用されている。
 
+なお、[`leave` タイプのイベントは将来的に廃止予定](https://developers.line.me/ja/reference/messaging-api/#beacon-event-types)であり、今後挙動が変わる可能性もある。
+
 -----
 
 [戻る](../../README.md)
