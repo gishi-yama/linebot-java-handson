@@ -19,6 +19,7 @@ Callbackクラスを変更する。
 - `com.linecorp.bot.model.message.flex.unit.FlexAlign`
 - `com.linecorp.bot.model.message.flex.unit.FlexFontSize`
 - `com.linecorp.bot.model.message.flex.unit.FlexLayout`
+- `java.util.Arrays`
 
 ```java  
 @LineMessageHandler
@@ -89,6 +90,7 @@ Callbackクラスを変更する。
 
 必要に応じて、以下を import に追加する（同名のクラスが多いので注意）。
 
+- `com.linecorp.bot.model.action.URIAction`
 - `com.linecorp.bot.model.message.flex.container.Carousel`
 
 ```java
