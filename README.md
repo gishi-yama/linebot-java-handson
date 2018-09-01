@@ -35,9 +35,9 @@
 
 ## 応用編2 ユーザーインターフェース
 
+- [Flexメッセージを送信する](doc/Flex/Flex.md)
 - [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
 - [LIFFを動かす](doc/Liff/Liff_P1.md)
-
 
 ## 参考資料
 
