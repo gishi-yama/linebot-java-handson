@@ -30,13 +30,12 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
-
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @LineMessageHandler
 public class Callback {
@@ -186,7 +185,7 @@ public class Callback {
     // tmpディレクトリに一時的に格納して、ファイルパスを返す
     try (InputStream is = resp.getStream()) {
       Path tmpFilePath = Files.createTempFile("linebot", extension);
-      Files.copy(is, tmpFilePath, REPLACE_EXISTING);
+      Files.copy(is, tmpFilePath, StandardCopyOption.REPLACE_EXISTING);
       return Optional.ofNullable(tmpFilePath.toString());
     } catch (IOException e) {
       e.printStackTrace();

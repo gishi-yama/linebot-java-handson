@@ -29,6 +29,20 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
 
 *注意：あくまでハンズオンとしての動作なので、運用環境ではファイルパスを表示するようなことは避ける。*
 
+必要に応じて、以下をimportに追加する。（同名のクラスがあるので注意！）
+
+- `com.linecorp.bot.client.LineMessagingClient`
+- `com.linecorp.bot.client.MessageContentResponse`
+- `com.linecorp.bot.model.event.message.ImageMessageContent`
+- `org.springframework.beans.factory.annotation.Autowired`
+- `java.io.IOException`
+- `java.io.InputStream`
+- `java.nio.file.Files`
+- `java.nio.file.Path`
+- `java.nio.file.StandardCopyOption`
+- `java.util.Optional`
+- `java.util.concurrent.ExecutionException`
+
 ```java
 // 画像のメッセージイベントに対応する
   @EventMapping
@@ -58,7 +72,7 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
     // tmpディレクトリに一時的に格納して、ファイルパスを返す
     try (InputStream is = resp.getStream()) {
       Path tmpFilePath = Files.createTempFile("linebot", extension);
-      Files.copy(is, tmpFilePath, REPLACE_EXISTING);
+      Files.copy(is, tmpFilePath, StandardCopyOption.REPLACE_EXISTING);
       return Optional.ofNullable(tmpFilePath.toString());
     } catch (IOException e) {
       e.printStackTrace();
