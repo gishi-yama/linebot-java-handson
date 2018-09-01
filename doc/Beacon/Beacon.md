@@ -39,7 +39,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/) にアクセスする。<br />![beacon05](beacon05.png)
 2. `高度なブロック` 欄をクリックする。<br />![beacon06](beacon06.png)
 3. `+ パッケージを追加する` 欄をクリックする。<br />![beacon06](beacon07.png) 
-4. `検索またはプロジェクトのURLを入力...` 欄に、[line/line-simple-beacon](https://github.com/line/line-simple-beacon)のURL `https://github.com/line/line-simple-beacon` を入力し、虫眼鏡ボタンを押す。
+4. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
 5. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08](beacon08.png)
 6. `元のパッケージを削除して「linebeacon」を追加する` ボタンを押す。<br />![beacon09](beacon09.png)
 7. メニューから `無線` 欄が消え、代わりに `Line Beacon` 欄と `Bluetooth` 欄が表示されていることを確認する。<br />![beacon10](beacon10.png)<br />※なお、元のエディタのメニューに戻したいときは `プロジェクト` → `新しいプロジェクト` すれば良い。
