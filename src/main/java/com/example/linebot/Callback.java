@@ -2,12 +2,20 @@ package com.example.linebot;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.FlexMessage;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.flex.component.*;
+import com.linecorp.bot.model.message.flex.container.Bubble;
+import com.linecorp.bot.model.message.flex.container.Carousel;
+import com.linecorp.bot.model.message.flex.unit.FlexAlign;
+import com.linecorp.bot.model.message.flex.unit.FlexFontSize;
+import com.linecorp.bot.model.message.flex.unit.FlexLayout;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.slf4j.Logger;
@@ -23,6 +31,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -73,6 +82,10 @@ public class Callback {
         return replyOmikuji();
       case "部屋":
         return replyRoomInfo();
+      case "バブル":
+        return replyBubble();
+      case "カルーセル":
+        return replyCarousel();
       default:
         return reply(text);
     }
@@ -189,6 +202,33 @@ public class Callback {
     String eventStr = event.getBeacon().toString();
     // eventStr をBotで返信する
     return reply(eventStr);
+  }
+
+  private FlexMessage replyBubble() {
+    Text hello = Text.builder()
+      .text("Hello")
+      .build();
+
+    Text world = Text.builder()
+      .text("world")
+      .weight(Text.TextWeight.BOLD)
+      .size(FlexFontSize.XL)
+      .align(FlexAlign.CENTER)
+      .color("#FF0000")
+      .build();
+
+    Separator separator = Separator.builder().build();
+
+    Box box = Box.builder()
+      .layout(FlexLayout.HORIZONTAL)
+      .contents(Arrays.asList(hello, separator, world))
+      .build();
+
+    Bubble bubble = Bubble.builder()
+      .body(box)
+      .build();
+
+    return new FlexMessage("BubbleSample", bubble);
   }
 
 }
