@@ -23,7 +23,7 @@
 - [LINE Botの中身を作成](doc/05.md)
 - [時間帯にあわせてあいさつするBot](doc/06.md)
 - [おみくじBot](doc/07.md)
-- [Wio Nodeのセンサーの情報を返答できるBot（ハンズオン専用）](doc/ex01.md)
+- [Web-APIとの連携（ハンズオン専用）](doc/ex01.md)
 - [バイナリデータを受信する](doc/Binary/Binary.md)
 
 ## 応用編1 特別なやりとり
