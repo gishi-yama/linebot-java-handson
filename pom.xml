@@ -5,7 +5,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>linebot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>v20180927</version>
   <packaging>jar</packaging>
 
   <name>linebot</name>
@@ -80,6 +80,15 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerVersion>${java.version}</compilerVersion>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
