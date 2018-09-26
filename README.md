@@ -7,9 +7,10 @@
 - macOS 10.12.6
 - Oracle JDK 1.8.0_181
 - Maven 3.5.4 
-- IntelliJ 2018.2.2
+- IntelliJ 2018.2.4
 - ngrok 2.2.8 (mac os)
-
+- line-bot-sdk-java 1.20.0
+- Spring Boot 1.5.16
 
 ## 前準備
 
