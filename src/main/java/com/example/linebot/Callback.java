@@ -2,9 +2,12 @@ package com.example.linebot;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
-import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.action.*;
 import com.linecorp.bot.model.action.URIAction.AltUri;
-import com.linecorp.bot.model.event.*;
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.FlexMessage;
@@ -17,6 +20,8 @@ import com.linecorp.bot.model.message.flex.container.Carousel;
 import com.linecorp.bot.model.message.flex.unit.FlexAlign;
 import com.linecorp.bot.model.message.flex.unit.FlexFontSize;
 import com.linecorp.bot.model.message.flex.unit.FlexLayout;
+import com.linecorp.bot.model.message.quickreply.QuickReply;
+import com.linecorp.bot.model.message.quickreply.QuickReplyItem;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.slf4j.Logger;
@@ -38,10 +43,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
+
 @LineMessageHandler
 public class Callback {
-
-  private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
   private LineMessagingClient client;
 
@@ -50,16 +54,12 @@ public class Callback {
     this.client = client;
   }
 
-  // マッピングされていないEventに対応する
-  @EventMapping
-  public void handleEvent(Event event) {
-    System.out.println("event: " + event);
-  }
+  private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
   // フォローイベントに対応する
   @EventMapping
   public TextMessage handleFollow(FollowEvent event) {
-    // 実際はこのタイミングでフォロワーのユーザIDをデータベースにに格納しておくなど
+    // 実際の開発ではユーザIDを返信せず、フォロワーのユーザIDをデータベースに格納しておくなど
     String userId = event.getSource().getUserId();
     return reply("あなたのユーザIDは " + userId);
   }
@@ -86,6 +86,8 @@ public class Callback {
         return replyBubble();
       case "カルーセル":
         return replyCarousel();
+      case "クイックリプライ":
+        return get();
       default:
         return reply(text);
     }
@@ -126,36 +128,25 @@ public class Callback {
 
   // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
   private TextMessage replyRoomInfo() {
-    String key = "******";
-    String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
+    String key = "736862004b81b1abeed5c716cacbf048";
+    String url = "https://us.wio.seeed.io/v1/node/GroveUltraRangerD1/range_in_cm?access_token=";
     URI uri = URI.create(url + key);
     RestTemplate restTemplate = new RestTemplateBuilder().build();
     try {
-      CO2 co2 = restTemplate.getForObject(uri, CO2.class);
-      return reply("二酸化炭素は"
-        + co2.getConcentration()
-        + "ppm、温度は"
-        + co2.getTemperature()
-        + "度です");
+      //②二酸化炭素検知センサを用いて空気中の二酸化炭素の量を計測する
+           /* CO2 co2 = restTemplate.getForObject(uri, CO2.class);
+            return reply("二酸化炭素は"
+                    + co2.getConcentration()
+                    + "ppm、温度は"
+                    + co2.getTemperature()
+                    + "度です。よって部屋の利用者数は"+ co2.getConcentration()/500+"人です。");*/
+      //①超音波センサを用いた障害物との距離を計測する
+      Range range = restTemplate.getForObject(uri, Range.class);
+      return reply("障害物までの距離は" + range.getRange_cm() + "cmです。");
     } catch (HttpClientErrorException e) {
       e.printStackTrace();
       return reply("センサーに接続できていません");
     }
-  }
-
-  // PostBackEventに対応する
-  @EventMapping
-  public Message handlePostBack(PostbackEvent event) {
-    String actionLabel = event.getPostbackContent().getData();
-    switch (actionLabel) {
-      case "CY":
-        return reply("イイね！");
-      case "CN":
-        return reply("つらたん");
-      case "DT":
-        return reply(event.getPostbackContent().getParams().toString());
-    }
-    return reply("?");
   }
 
   // 画像のメッセージイベントに対応する
@@ -175,7 +166,7 @@ public class Callback {
       e.printStackTrace();
     }
     // ④ ファイルが保存できたことが確認できるように、ローカルのファイルパスをコールバックする
-    // 運用ではファイルパスを直接返すことはやめましょう
+    // 運用ではファイルパスを表示することは避けましょう
     String path = opt.orElseGet(() -> "ファイル書き込みNG");
     return reply(path);
   }
@@ -193,6 +184,24 @@ public class Callback {
     }
     return Optional.empty();
   }
+
+  // PostBackEventに対応する
+  @EventMapping
+  public Message handlePostBack(PostbackEvent event) {
+    String actionLabel = event.getPostbackContent().getData();
+    switch (actionLabel) {
+      case "CY":
+        return reply("イイね！");
+      case "CN":
+        return reply("つらたん");
+      case "DT":
+        return reply(event.getPostbackContent().getParams().toString());
+      default:
+        return reply("?");
+    }
+  }
+    return Optional.empty();
+}
 
 
   // BeaconEventに対応する
@@ -316,5 +325,38 @@ public class Callback {
 
     return new FlexMessage("カルーセル", carousel);
   }
+
+  public Message get() {
+    var items = Arrays.asList(
+      QuickReplyItem.builder()
+        .action(new MessageAction("メッセージ", "メッセージ"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(CameraAction.withLabel("カメラ"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(CameraRollAction.withLabel("カメラロール"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(LocationAction.withLabel("位置情報"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(PostbackAction.builder()
+          .label("PostbackAction")
+          .text("PostbackAction clicked")
+          .data("{PostbackAction: true}")
+          .build())
+        .build()
+    );
+
+    var quickReply = QuickReply.items(items);
+
+    return TextMessage
+      .builder()
+      .text("Message with QuickReply")
+      .quickReply(quickReply)
+      .build();
+  }
+
 
 }
