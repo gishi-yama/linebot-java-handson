@@ -2,7 +2,7 @@ package com.example.linebot;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
-import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.action.*;
 import com.linecorp.bot.model.action.URIAction.AltUri;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
@@ -17,6 +17,8 @@ import com.linecorp.bot.model.message.flex.container.Carousel;
 import com.linecorp.bot.model.message.flex.unit.FlexAlign;
 import com.linecorp.bot.model.message.flex.unit.FlexFontSize;
 import com.linecorp.bot.model.message.flex.unit.FlexLayout;
+import com.linecorp.bot.model.message.quickreply.QuickReply;
+import com.linecorp.bot.model.message.quickreply.QuickReplyItem;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
 
 @LineMessageHandler
 public class Callback {
@@ -86,6 +89,8 @@ public class Callback {
         return replyBubble();
       case "カルーセル":
         return replyCarousel();
+      case "クイックリプライ":
+        return replyQuickReply();
       default:
         return reply(text);
     }
@@ -315,6 +320,39 @@ public class Callback {
       .build();
 
     return new FlexMessage("カルーセル", carousel);
+  }
+
+
+  public Message replyQuickReply() {
+    var items = Arrays.asList(
+      QuickReplyItem.builder()
+        .action(new MessageAction("メッセージ", "メッセージ"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(CameraAction.withLabel("カメラ"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(CameraRollAction.withLabel("カメラロール"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(LocationAction.withLabel("位置情報"))
+        .build(),
+      QuickReplyItem.builder()
+        .action(PostbackAction.builder()
+          .label("PostbackAction")
+          .text("PostbackAction clicked")
+          .data("{PostbackAction: true}")
+          .build())
+        .build()
+    );
+
+    var quickReply = QuickReply.items(items);
+
+    return TextMessage
+      .builder()
+      .text("Message with QuickReply")
+      .quickReply(quickReply)
+      .build();
   }
 
 }
