@@ -187,6 +187,26 @@ public class LIFFController {
 
 #### LIFFアプリとして追加する
 
+Message APIの設定画面 から、LIFF を選択し、追加ボタンを押す
+
+![LIFF設定画面](Liff_P1_06.png)
+
+表示された LIFFの追加 画面に必要事項を入力する
+
+- **名前** LIFFアプリを識別する名前。今回は仮に `LIFFテスト` とする。
+- **サイズ** どれかを選ぶ。これによって、LINEアプリ上に表示されるLIFFアプリウィンドウのサイズが変わる。
+- **エンドポイントURL** 作成したLIFFアプリの（外部からアクセス可能な）URLを入力する。今回であれば、`https://xxx.ngrok.io/liff` になる。
+- **オプション** 今回はデフォルト（OFF）でよい。
+
+![URLの投稿](Liff_P1_07.png)
+
+LIFEの情報が設定される。
+発行された LIFF URL（例：`line://app/0000000000-nnnnnnnn`）がBotとの会話で実行（開かれる）と、LIFFアプリが起動する。
+
+![URLの登録情報](Liff_P1_08.png)
+
+
+<!--
 LIFFアプリを追加するために、下のコマンドを端末（ターミナル）から実行する。
 
 Windowsの場合はcurlをインストールするか、同等のパラメータでHTTPリクエストが行えるツール（[ARC](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=ja)など）を利用する。<br>また、[line/line-bot-sdk-java](https://github.com/line/line-bot-sdk-java/) には、Javaで動作するLIFF/リッチメニュー登録用のコマンドラインツール([line-bot-cli](https://github.com/line/line-bot-sdk-java/tree/master/line-bot-cli))も用意されている。
@@ -216,16 +236,19 @@ https://api.line.me/liff/v1/apps
 ```
 {"liffId":"0000000000-nnnnnnnn"}%
 ```
+-->
 
 #### LIFFアプリの動作確認
 
 **必ずスマートフォン（タブレット）のLINEアプリで動作確認してください（本稿執筆時点でPC版は対応していない）**
 
+<~--
 上記の手順で取得した liffId をもとに、アプリにアクセスするURLを作成する。
 
 URLは、 `line://app/` と liffId を結合した `line://app/0000000000-nnnnnnnn` となる。
+-->
 
-本来はトリガとなる行動にあわせてBotがユーザにURLを発話すれば良いが、ここでは簡易的な動作確認のため、自分でURLを投稿する。
+本来はLIFEアプリの起動トリガとなる行動にあわせてBotがユーザにLIFE URLを発話すれば良いが、ここでは簡易的な動作確認のため、自分でURLを投稿する。
 
 ![URLの投稿](Liff_P1_02.jpg)
 
@@ -247,6 +270,9 @@ URLは、 `line://app/` と liffId を結合した `line://app/0000000000-nnnnnn
 
 #### LIFFアプリの削除
 
+Message APIの設定画面 から、LIFF を選択し、削除したいLIFFアプリのゴミ箱ボタンを押す。
+
+<!--
 追加したLIFFアプリを削除するには、下のコマンドを端末（ターミナル）から実行する。
 
 - `0000000000-nnnnnnnn` の部分は、 liffId と置き換える 
@@ -258,6 +284,7 @@ curl -X DELETE https://api.line.me/liff/v1/apps/0000000000-nnnnnnnn \
 ```
 
 成功すれば何も表示されない。（失敗時にはエラーメッセージが表示される）
+-->
 
 -----
 
