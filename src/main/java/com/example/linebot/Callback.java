@@ -3,6 +3,7 @@ package com.example.linebot;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.action.URIAction.AltUri;
 import com.linecorp.bot.model.event.*;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -254,7 +255,9 @@ public class Callback {
 
     Button currentBtn = Button.builder()
       .style(Button.ButtonStyle.SECONDARY)
-      .action(new URIAction("表示", "https://javado.connpass.com/event/97107/"))
+      .action(new URIAction("表示",
+        "https://javado.connpass.com/event/97107/",
+        new AltUri(URI.create("https://javado.connpass.com/event/97107/"))))
       .build();
 
     Box currentBody = Box.builder()
@@ -291,7 +294,9 @@ public class Callback {
 
     Button nextBtn = Button.builder()
       .style(Button.ButtonStyle.PRIMARY)
-      .action(new URIAction("申し込み", "https://linedev.connpass.com/event/96793/"))
+      .action(new URIAction("申し込み",
+        "https://linedev.connpass.com/event/96793/",
+        new AltUri(URI.create("https://linedev.connpass.com/event/96793/"))))
       .build();
 
     Box nextBody = Box.builder()

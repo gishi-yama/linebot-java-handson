@@ -19,8 +19,8 @@ LIFFは、別途に用意したWebページやフォームをLINE Bot内部に�
 ```xml
 <properties>
   (中略）
-  <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
-  <thymeleaf-layout-dialect.version>2.3.0</thymeleaf-layout-dialect.version>
+  <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
+  <thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
 </properties>
 ```
 
