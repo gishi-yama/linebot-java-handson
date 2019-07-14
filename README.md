@@ -8,7 +8,7 @@
 - AdoptOpenJDK (build 11.0.3+7)
 - Maven 3.5.4 
 - IntelliJ 2018.2.4
-- ngrok 2.3.27 (mac os)
+- ngrok 2.3.30
 - line-bot-sdk-java 2.6.1
 - Spring Boot 2.1.6
 
