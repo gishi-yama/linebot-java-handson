@@ -172,7 +172,7 @@ public class Callback {
     try {
       // ②画像メッセージのidを使って MessageContentResponse を取得する
       MessageContentResponse resp = client.getMessageContent(msgId).get();
-      log.info("replyQuickReply content{}:", resp);
+      log.info("get content{}:", resp);
       // ③ MessageContentResponse からファイルをローカルに保存する
       // ※LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
       opt = makeTmpFile(resp, ".jpg");
