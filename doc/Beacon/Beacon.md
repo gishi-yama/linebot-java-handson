@@ -10,6 +10,7 @@ LINE Beacon と Bot を連携させることで、ビーコンを配置した特
 
 - node.js用　[line/line-simple-beacon](https://github.com/line/line-simple-beacon)
 - micro:bit用 [pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon)
+  - (2018年11月現在、旧バージョンのMicrosoft MakeCode for micro:biのみ対応されている)
 
 ここでは、
 
@@ -36,7 +37,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 
 ここでは手元に micro:bit の実機があり、開発しているPCとUSBケーブルで接続されていることを前提に進める。
 
-1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/) にアクセスする。<br />![beacon05](beacon05.png)
+1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/v0) にアクセスする。<br />![beacon05](beacon05.png)
 2. `高度なブロック` 欄をクリックする。<br />![beacon06](beacon06.png)
 3. `+ パッケージを追加する` 欄をクリックする。<br />![beacon06](beacon07.png) 
 4. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
@@ -82,8 +83,8 @@ Messsage APIでは、このイベントに対するコールバック処理を�
 
 また、動作確認前に、以下のLineアプリの設定を確認してください。
 
-- スマートフォン・タブレットの設定で、Lineアプリへの位置情報の提供が「アプリの使用中のみ許可」もしくは「常に許可」になっている
-- スマートフォン・タブレットの設定で、 Bluetooth の利用がonになっている
+- スマートフォン・タブレット本体の設定で、Lineアプリへの位置情報の提供が「アプリの使用中のみ許可」もしくは「常に許可」になっている
+- スマートフォン・タブレット本体の設定で、 Bluetooth の利用がonになっている
 - LINEアプリの 設定＞プライバシー管理＞情報の提供 で、 LINE Beacon がONになっている
 
 #### 確認方法 

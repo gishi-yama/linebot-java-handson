@@ -4,6 +4,7 @@ import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.action.DatetimePickerAction;
 import com.linecorp.bot.model.action.MessageAction;
 import com.linecorp.bot.model.action.URIAction;
+import com.linecorp.bot.model.action.URIAction.AltUri;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.model.richmenu.*;
 import org.slf4j.Logger;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
 
 @RestController
 public class RichMenuController {
@@ -119,7 +122,7 @@ public class RichMenuController {
   // アプリ内ブラウザでWebサイトを表示する動作をリッチメニューとして割り当てます
   private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, String uri) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new URIAction(label, uri));
+      new URIAction(label, uri, new AltUri(URI.create(uri))));
   }
 
   // Botに日時イベントを送信する動作をリッチメニューとして割り当てます

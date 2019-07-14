@@ -4,13 +4,13 @@
 
 **次の環境で動作確認しています**
 
-- macOS 10.12.6
-- Oracle JDK 1.8.0_181 & Oracle OpenJDK 11+28 builds
+- macOS 10.14.5
+- AdoptOpenJDK (build 11.0.3+7)
 - Maven 3.5.4 
 - IntelliJ 2018.2.4
-- ngrok 2.2.8 (mac os)
-- line-bot-sdk-java 2.1.0
-- Spring Boot 2.0.5
+- ngrok 2.3.30
+- line-bot-sdk-java 2.6.1
+- Spring Boot 2.1.6
 
 ## 前準備
 
@@ -22,9 +22,8 @@
 ## 基本編
 
 - [LINE Botの中身を作成](doc/05.md)
-- [時間帯にあわせてあいさつするBot](doc/06.md)
+- [時間帯にあわせてあいさつする](doc/06.md)
 - [おみくじBot](doc/07.md)
-- [Web-APIとの連携（ハンズオン専用）](doc/ex01.md)
 - [バイナリデータを受信する](doc/Binary/Binary.md)
 
 ## 応用編1 特別なやりとり
@@ -32,13 +31,19 @@
 - [Botから話しかける](doc/08.md)
 - [Botからの話しかけを自動化する](doc/09.md)
 - [確認画面を表示し、ユーザの回答に対応する](doc/10.md)
-- [LINE Beaconに反応させる](doc/Beacon/Beacon.md)
 
 ## 応用編2 ユーザーインターフェース
 
 - [Flexメッセージを送信する](doc/Flex/Flex.md)
 - [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
 - [LIFFを動かす](doc/Liff/Liff_P1.md)
+
+## ハンズオン時専用
+
+特別なハードウェア（Wio-Node, LINE Beacon）を利用する例です。
+
+- [センサーとの連携](doc/ex01.md)
+- [LINE Beaconに反応させる](doc/Beacon/Beacon.md)
 
 ## 参考資料
 
