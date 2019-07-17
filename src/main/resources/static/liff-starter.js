@@ -31,8 +31,8 @@ function initializeApp(data) {
             text: "You've successfully sent a message! Hooray!"
         }, {
             type: 'sticker',
-            packageId: '2',
-            stickerId: '144'
+            packageId: '11537',
+            stickerId: '52002734'
         }]).then(function () {
             window.alert("Message sent");
         }).catch(function (error) {
