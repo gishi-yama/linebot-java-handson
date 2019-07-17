@@ -280,6 +280,14 @@ URLは、 `line://app/` と liffId を結合した `line://app/0000000000-nnnnnn
 
 このように、LIFFアプリを用いると、LINEのWebサイトにLINEの情報を連携させたり、Webサイト側からLINEのクライアントにイベントを発生させることができる。
 
+**Note（2019-07-17）:** liff-starter.js が古いスタンプコードを利用しているため、スタンプが表示されない。スタンプの表示も確認したい場合は、 liff-starter.js の以下の部分を[新しいスタンプコード](https://developers.line.biz/media/messaging-api/sticker_list.pdf)に書き換える。
+
+```javascript
+            type: 'sticker',
+            packageId: '11537',
+            stickerId: '52002734'
+```
+
 #### LIFFアプリの削除
 
 Message APIの設定画面 から、LIFF を選択し、削除したいLIFFアプリのゴミ箱ボタンを押す。
