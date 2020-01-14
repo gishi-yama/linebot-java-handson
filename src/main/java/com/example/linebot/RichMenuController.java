@@ -108,7 +108,7 @@ public class RichMenuController {
     richMenuAreas.add(makeMessageAction(876, 651, 321, 321, "Right"));
     richMenuAreas.add(makeMessageAction(551, 972, 321, 321, "Down"));
     richMenuAreas.add(makeMessageAction(225, 651, 321, 321, "Left"));
-    richMenuAreas.add(makeURIAction(1433, 657, 367, 367, "a", "https://google.com/"));
+    richMenuAreas.add(makeURIAction(1433, 657, 367, 367, "a", URI.create("https://google.com/")));
     richMenuAreas.add(makeDateTimeAction(1907, 657, 367, 367, "b"));
     return richMenuAreas;
   }
@@ -120,9 +120,9 @@ public class RichMenuController {
   }
 
   // アプリ内ブラウザでWebサイトを表示する動作をリッチメニューとして割り当てます
-  private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, String uri) {
+  private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, URI uri) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new URIAction(label, URI.create(uri), new AltUri(URI.create(uri))));
+      new URIAction(label, uri, new AltUri(uri)));
   }
 
   // Botに日時イベントを送信する動作をリッチメニューとして割り当てます
