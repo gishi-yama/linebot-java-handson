@@ -5,12 +5,12 @@
 **次の環境で動作確認しています**
 
 - macOS 10.14.5
-- AdoptOpenJDK (build 11.0.3+7)
-- Maven 3.5.4 
-- IntelliJ 2018.2.4
-- ngrok 2.3.30
-- line-bot-sdk-java 2.6.1
-- Spring Boot 2.1.6
+- AdoptOpenJDK (build 11.0.5+10)
+- Maven 3.5.2 
+- IntelliJ 2019.3.1
+- ngrok 2.3.35
+- line-bot-sdk-java 3.1.0
+- Spring Boot 2.2.2
 
 ## 前準備
 

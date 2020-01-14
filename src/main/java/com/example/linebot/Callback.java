@@ -110,23 +110,27 @@ public class Callback {
   }
 
   // 画像メッセージを作る
-  private ImageMessage replyImage(String url) {
+  private ImageMessage replyImage(URI url) {
     // 本来は、第一引数が実際の画像URL、第二画像がサムネイルのurl
     return new ImageMessage(url, url);
   }
 
   // ランダムにおみくじ画像を返す
   private ImageMessage replyOmikuji() {
-    int ranNum = new Random().nextInt(3);
+    var ranNum = new Random().nextInt(3);
+    var uriString = "";
     switch (ranNum) {
       case 2:
-        return replyImage("https://3.bp.blogspot.com/-vQSPQf-ytsc/T3K7QM3qaQI/AAAAAAAAE-s/6SB2q7ltxwg/s1600/omikuji_daikichi.png");
+        uriString = "https://3.bp.blogspot.com/-vQSPQf-ytsc/T3K7QM3qaQI/AAAAAAAAE-s/6SB2q7ltxwg/s1600/omikuji_daikichi.png";
+        break;
       case 1:
-        return replyImage("https://2.bp.blogspot.com/-27IG0CNV-ZE/VKYfn_1-ycI/AAAAAAAAqXw/fr6Y72lOP9s/s400/omikuji_kichi.png");
+        uriString = "https://2.bp.blogspot.com/-27IG0CNV-ZE/VKYfn_1-ycI/AAAAAAAAqXw/fr6Y72lOP9s/s400/omikuji_kichi.png";
+        break;
       case 0:
       default:
-        return replyImage("https://4.bp.blogspot.com/-qCfF4H7YOvE/T3K7R5ZjQVI/AAAAAAAAE-4/Hd1u2tzMG3Q/s1600/omikuji_kyou.png");
+        uriString = "https://4.bp.blogspot.com/-qCfF4H7YOvE/T3K7R5ZjQVI/AAAAAAAAE-4/Hd1u2tzMG3Q/s1600/omikuji_kyou.png";
     }
+    return replyImage(URI.create(uriString));
   }
 
   // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
@@ -247,7 +251,7 @@ public class Callback {
       .build();
 
     Image currentImage = Image.builder()
-      .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png")
+      .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
@@ -261,7 +265,7 @@ public class Callback {
     Button currentBtn = Button.builder()
       .style(Button.ButtonStyle.SECONDARY)
       .action(new URIAction("表示",
-        "https://javado.connpass.com/event/97107/",
+        URI.create("https://javado.connpass.com/event/97107/"),
         new AltUri(URI.create("https://javado.connpass.com/event/97107/"))))
       .build();
 
@@ -286,7 +290,7 @@ public class Callback {
       .build();
 
     Image nextImage = Image.builder()
-      .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png")
+      .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
@@ -300,7 +304,7 @@ public class Callback {
     Button nextBtn = Button.builder()
       .style(Button.ButtonStyle.PRIMARY)
       .action(new URIAction("申し込み",
-        "https://linedev.connpass.com/event/96793/",
+        URI.create("https://linedev.connpass.com/event/96793/"),
         new AltUri(URI.create("https://linedev.connpass.com/event/96793/"))))
       .build();
 
