@@ -122,7 +122,7 @@ public class RichMenuController {
   // アプリ内ブラウザでWebサイトを表示する動作をリッチメニューとして割り当てます
   private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, String uri) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new URIAction(label, uri, new AltUri(URI.create(uri))));
+      new URIAction(label, URI.create(uri), new AltUri(URI.create(uri))));
   }
 
   // Botに日時イベントを送信する動作をリッチメニューとして割り当てます
