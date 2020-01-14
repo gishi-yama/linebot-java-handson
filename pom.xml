@@ -5,7 +5,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>linebot</artifactId>
-  <version>v20190714</version>
+  <version>v20200114</version>
   <packaging>jar</packaging>
 
   <name>linebot</name>
