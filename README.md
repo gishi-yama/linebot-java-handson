@@ -9,7 +9,7 @@
 - Maven 3.5.4 
 - IntelliJ 2018.2.4
 - ngrok 2.3.30
-- line-bot-sdk-java 2.6.1
+- line-bot-sdk-java 3.6.0
 - Spring Boot 2.1.6
 
 ## 前準備
