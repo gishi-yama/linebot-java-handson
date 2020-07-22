@@ -5,7 +5,7 @@
 
   <groupId>com.example</groupId>
   <artifactId>linebot</artifactId>
-  <version>v20190714</version>
+  <version>v20200114</version>
   <packaging>jar</packaging>
 
   <name>linebot</name>
@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.6.RELEASE</version>
+    <version>2.2.2.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -22,7 +22,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>11</java.version>
+<<<<<<< HEAD
     <linebot-version>3.6.0</linebot-version>
+=======
+    <linebot-version>3.1.0</linebot-version>
+>>>>>>> 5f594405e210f95b5daa30992e5a4a89a8bb2127
     <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     <thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
   </properties>
