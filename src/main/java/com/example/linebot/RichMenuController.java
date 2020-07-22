@@ -67,7 +67,7 @@ public class RichMenuController {
       // 画像の仕様は公式ドキュメントを参照されたい
       ClassPathResource cpr = new ClassPathResource("/img/RichMenuSample.jpg");
       byte[] fileContent = Files.readAllBytes(cpr.getFile().toPath());
-      BotApiResponse resp2 = messagingClient.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
+      BotApiResponse resp2 = blobClient.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
       log.info("set richmenu image:{}", resp2);
 
       // ④リッチメニューIdをユーザIdとリンクする（ resp3 は、紐付け結果）
