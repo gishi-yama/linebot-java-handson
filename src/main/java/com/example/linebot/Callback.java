@@ -1,6 +1,6 @@
 package com.example.linebot;
 
-import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.LineBlobClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.action.*;
 import com.linecorp.bot.model.action.URIAction.AltUri;
@@ -46,12 +46,13 @@ public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
-  private LineMessagingClient client;
+  private final LineBlobClient blobClient;
 
   @Autowired
-  public Callback(LineMessagingClient client) {
-    this.client = client;
+  public Callback(LineBlobClient blobClient) {
+    this.blobClient = blobClient;
   }
+
 
   // マッピングされていないEventに対応する
   @EventMapping
@@ -171,7 +172,7 @@ public class Callback {
     Optional<String> opt = Optional.empty();
     try {
       // ②画像メッセージのidを使って MessageContentResponse を取得する
-      MessageContentResponse resp = client.getMessageContent(msgId).get();
+      MessageContentResponse resp = blobClient.getMessageContent(msgId).get();
       log.info("get content{}:", resp);
       // ③ MessageContentResponse からファイルをローカルに保存する
       // ※LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
