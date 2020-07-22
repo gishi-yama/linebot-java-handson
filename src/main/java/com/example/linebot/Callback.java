@@ -112,7 +112,7 @@ public class Callback {
   // 画像メッセージを作る
   private ImageMessage replyImage(String url) {
     // 本来は、第一引数が実際の画像URL、第二画像がサムネイルのurl
-    return new ImageMessage(url, url);
+    return new ImageMessage(URI.create(url), URI.create(url));
   }
 
   // ランダムにおみくじ画像を返す
@@ -247,7 +247,7 @@ public class Callback {
       .build();
 
     Image currentImage = Image.builder()
-      .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png")
+      .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
@@ -261,7 +261,7 @@ public class Callback {
     Button currentBtn = Button.builder()
       .style(Button.ButtonStyle.SECONDARY)
       .action(new URIAction("表示",
-        "https://javado.connpass.com/event/97107/",
+        URI.create("https://javado.connpass.com/event/97107/"),
         new AltUri(URI.create("https://javado.connpass.com/event/97107/"))))
       .build();
 
@@ -286,7 +286,7 @@ public class Callback {
       .build();
 
     Image nextImage = Image.builder()
-      .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png")
+      .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
@@ -300,7 +300,7 @@ public class Callback {
     Button nextBtn = Button.builder()
       .style(Button.ButtonStyle.PRIMARY)
       .action(new URIAction("申し込み",
-        "https://linedev.connpass.com/event/96793/",
+        URI.create("https://linedev.connpass.com/event/96793/"),
         new AltUri(URI.create("https://linedev.connpass.com/event/96793/"))))
       .build();
 
