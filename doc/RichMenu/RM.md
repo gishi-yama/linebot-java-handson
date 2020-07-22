@@ -23,6 +23,7 @@
 ```java
 package com.example.linebot;
 
+import com.linecorp.bot.client.LineBlobClient;
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.action.DatetimePickerAction;
 import com.linecorp.bot.model.action.MessageAction;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -52,11 +54,14 @@ public class RichMenuController {
   // push先のユーザID（本来は、友達登録をした瞬間にDBなどに格納しておく）
   private String userId = "******";
 
-  private final LineMessagingClient client;
+  private final LineMessagingClient messagingClient;
+
+  private final LineBlobClient blobClient;
 
   @Autowired
-  public RichMenuController(LineMessagingClient lineMessagingClient) {
-    this.client = lineMessagingClient;
+  public RichMenuController(LineMessagingClient lineMessagingClient, LineBlobClient blobClient) {
+    this.messagingClient = lineMessagingClient;
+    this.blobClient = blobClient;
   }
 
   // リッチーメニューを作成する
@@ -77,20 +82,19 @@ public class RichMenuController {
     try {
 
       // ②作成したリッチメニューの登録（ resp1 は作成結果で、リッチメニューIDが入っている）
-      RichMenuIdResponse resp1 = client.createRichMenu(richMenu).get();
+      RichMenuIdResponse resp1 = messagingClient.createRichMenu(richMenu).get();
       log.info("create richmenu:{}", resp1);
-
       // ③リッチメニューの背景画像の設定( resp2 は、画像の登録結果）
       // ここでは、src/resource/img/RichMenuSample.jpg（ビルド後は classpath:/img/RichMenuSample.jpg）を指定
       // 画像の仕様は公式ドキュメントを参照されたい
       ClassPathResource cpr = new ClassPathResource("/img/RichMenuSample.jpg");
       byte[] fileContent = Files.readAllBytes(cpr.getFile().toPath());
-      BotApiResponse resp2 = client.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
+      BotApiResponse resp2 = blobClient.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
       log.info("set richmenu image:{}", resp2);
 
       // ④リッチメニューIdをユーザIdとリンクする（ resp3 は、紐付け結果）
       // リンクすることで作成したリッチメニューを使えるようになる
-      BotApiResponse resp3 = client.linkRichMenuIdToUser(userId, resp1.getRichMenuId()).get();
+      BotApiResponse resp3 = messagingClient.linkRichMenuIdToUser(userId, resp1.getRichMenuId()).get();
       log.info("link richmenu:{}", resp3);
 
     } catch (InterruptedException | ExecutionException | IOException e) {
@@ -105,17 +109,17 @@ public class RichMenuController {
     try {
 
       // ①ユーザからリッチメニューを解除する（※Messaging APIで作成したものだけ）
-      client.unlinkRichMenuIdFromUser(userId);
+      messagingClient.unlinkRichMenuIdFromUser(userId);
 
       // ②作成されているリッチメニューの取得（ resp4 は、リッチメニューの一覧情報）
-      RichMenuListResponse resp4 = client.getRichMenuList().get();
+      RichMenuListResponse resp4 = messagingClient.getRichMenuList().get();
       log.info("get richmenus:{}", resp4);
 
       // ③リッチメニューIdを指定して削除する
       // ここでは resp4 のものをすべて削除しているが、本来はリッチメニューIdと
       // ユーザIDの対応をDBなどに保存しておいて、不要なものだけを削除する
       resp4.getRichMenus().stream()
-        .forEach(r -> client.deleteRichMenu(r.getRichMenuId()));
+        .forEach(r -> messagingClient.deleteRichMenu(r.getRichMenuId()));
 
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
@@ -144,15 +148,20 @@ public class RichMenuController {
   // アプリ内ブラウザでWebサイトを表示する動作をリッチメニューとして割り当てます
   private RichMenuArea makeURIAction(int x, int y, int w, int h, String label, String uri) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new URIAction(label, uri, new URIAction.AltUri(URI.create(uri))));
+      new URIAction(label, URI.create(uri), new AltUri(URI.create(uri))));
   }
-  
+
   // Botに日時イベントを送信する動作をリッチメニューとして割り当てます
   private RichMenuArea makeDateTimeAction(int x, int y, int w, int h, String label) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new DatetimePickerAction(label, "DT", "datetime"));
+      DatetimePickerAction.OfLocalDatetime.builder()
+            .label(label)
+            .data("DT")
+            .initial(LocalDateTime.now())
+            .min(LocalDateTime.now().minusYears(10l))
+            .max(LocalDateTime.now().plusYears(10l))
+            .build());
   }
-
 }
 ```
 
