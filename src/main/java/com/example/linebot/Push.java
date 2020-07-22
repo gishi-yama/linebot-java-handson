@@ -45,11 +45,11 @@ public class Push {
   @GetMapping("timetone")
   //  @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
   public String pushTimeTone() {
-    String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
+    var text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
     try {
-      PushMessage pMsg
+      var pMsg
         = new PushMessage(userId, new TextMessage(text));
-      BotApiResponse resp = client.pushMessage(pMsg).get();
+      var resp = client.pushMessage(pMsg).get();
       log.info("Sent messages: {}", resp);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
@@ -60,14 +60,14 @@ public class Push {
   // 確認メッセージをpush
   @GetMapping("confirm")
   public String pushConfirm() {
-    String text = "質問だよ";
+    var text = "質問だよ";
     try {
-      Message msg = new TemplateMessage(text,
+      var msg = new TemplateMessage(text,
         new ConfirmTemplate("いいかんじ？",
           new PostbackAction("おけまる", "CY"),
           new PostbackAction("やばたん", "CN")));
-      PushMessage pMsg = new PushMessage(userId, msg);
-      BotApiResponse resp = client.pushMessage(pMsg).get();
+      var pMsg = new PushMessage(userId, msg);
+      var resp = client.pushMessage(pMsg).get();
       log.info("Sent messages: {}", resp);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);

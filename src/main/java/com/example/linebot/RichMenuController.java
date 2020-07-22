@@ -44,11 +44,11 @@ public class RichMenuController {
   // リッチーメニューを作成する
   @GetMapping("addRich")
   public String addRichMenu() {
-    String text = "リッチメニューを作成し、ユーザーに紐付けます";
+    var text = "リッチメニューを作成し、ユーザーに紐付けます";
 
     // ①リッチメニューを作成
     // それぞれの意味は https://developers.line.me/ja/reference/messaging-api/#rich-menu-object を参照
-    RichMenu richMenu = RichMenu.builder()
+    var richMenu = RichMenu.builder()
       .name("リッチメニュー1")
       .chatBarText("コントローラー")
       .areas(makeRichMenuAreas())
@@ -59,19 +59,19 @@ public class RichMenuController {
     try {
 
       // ②作成したリッチメニューの登録（ resp1 は作成結果で、リッチメニューIDが入っている）
-      RichMenuIdResponse resp1 = messagingClient.createRichMenu(richMenu).get();
+      var resp1 = messagingClient.createRichMenu(richMenu).get();
       log.info("create richmenu:{}", resp1);
       // ③リッチメニューの背景画像の設定( resp2 は、画像の登録結果）
       // ここでは、src/resource/img/RichMenuSample.jpg（ビルド後は classpath:/img/RichMenuSample.jpg）を指定
       // 画像の仕様は公式ドキュメントを参照されたい
-      ClassPathResource cpr = new ClassPathResource("/img/RichMenuSample.jpg");
-      byte[] fileContent = Files.readAllBytes(cpr.getFile().toPath());
-      BotApiResponse resp2 = blobClient.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
+      var cpr = new ClassPathResource("/img/RichMenuSample.jpg");
+      var fileContent = Files.readAllBytes(cpr.getFile().toPath());
+      var resp2 = blobClient.setRichMenuImage(resp1.getRichMenuId(), "image/jpeg", fileContent).get();
       log.info("set richmenu image:{}", resp2);
 
       // ④リッチメニューIdをユーザIdとリンクする（ resp3 は、紐付け結果）
       // リンクすることで作成したリッチメニューを使えるようになる
-      BotApiResponse resp3 = messagingClient.linkRichMenuIdToUser(userId, resp1.getRichMenuId()).get();
+      var resp3 = messagingClient.linkRichMenuIdToUser(userId, resp1.getRichMenuId()).get();
       log.info("link richmenu:{}", resp3);
 
     } catch (InterruptedException | ExecutionException | IOException e) {
@@ -82,14 +82,14 @@ public class RichMenuController {
 
   @GetMapping("delRich")
   public String delRichMenu() {
-    String text = "リッチメニューをすべて削除します";
+    var text = "リッチメニューをすべて削除します";
     try {
 
       // ①ユーザからリッチメニューを解除する（※Messaging APIで作成したものだけ）
       messagingClient.unlinkRichMenuIdFromUser(userId);
 
       // ②作成されているリッチメニューの取得（ resp4 は、リッチメニューの一覧情報）
-      RichMenuListResponse resp4 = messagingClient.getRichMenuList().get();
+      var resp4 = messagingClient.getRichMenuList().get();
       log.info("get richmenus:{}", resp4);
 
       // ③リッチメニューIdを指定して削除する
@@ -106,7 +106,7 @@ public class RichMenuController {
 
   // 画像のどの部分（ピクセル）に、どんな動作をするリッチメニューを割り当てるか設定します
   private List<RichMenuArea> makeRichMenuAreas() {
-    final ArrayList<RichMenuArea> richMenuAreas = new ArrayList<>();
+    final var richMenuAreas = new ArrayList<RichMenuArea>();
     richMenuAreas.add(makeMessageAction(551, 325, 321, 321, "Up"));
     richMenuAreas.add(makeMessageAction(876, 651, 321, 321, "Right"));
     richMenuAreas.add(makeMessageAction(551, 972, 321, 321, "Down"));

@@ -64,7 +64,7 @@ public class Callback {
   @EventMapping
   public TextMessage handleFollow(FollowEvent event) {
     // 実際はこのタイミングでフォロワーのユーザIDをデータベースにに格納しておくなど
-    String userId = event.getSource().getUserId();
+    var userId = event.getSource().getUserId();
     return reply("あなたのユーザIDは " + userId);
   }
 
@@ -77,8 +77,8 @@ public class Callback {
   // 文章で話しかけられたとき（テキストメッセージのイベント）に対応する
   @EventMapping
   public Message handleMessage(MessageEvent<TextMessageContent> event) {
-    TextMessageContent tmc = event.getMessage();
-    String text = tmc.getText();
+    var tmc = event.getMessage();
+    var text = tmc.getText();
     switch (text) {
       case "やあ":
         return greet();
@@ -99,7 +99,7 @@ public class Callback {
 
   // あいさつする
   private TextMessage greet() {
-    LocalTime lt = LocalTime.now();
+    var lt = LocalTime.now();
     int hour = lt.getHour();
     if (hour >= 17) {
       return reply("こんばんは！");
@@ -136,10 +136,10 @@ public class Callback {
 
   // センサーの値をWebから取得して、CO2クラスのインスタンスにいれる(******の所は、別途指示します）
   private TextMessage replyRoomInfo() {
-    String key = "******";
-    String url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
-    URI uri = URI.create(url + key);
-    RestTemplate restTemplate = new RestTemplateBuilder().build();
+    var key = "******";
+    var url = "https://us.wio.seeed.io/v1/node/GroveCo2MhZ16UART0/concentration_and_temperature?access_token=";
+    var uri = URI.create(url + key);
+    var restTemplate = new RestTemplateBuilder().build();
     try {
       CO2 co2 = restTemplate.getForObject(uri, CO2.class);
       return reply("二酸化炭素は"
@@ -156,7 +156,7 @@ public class Callback {
   // PostBackEventに対応する
   @EventMapping
   public Message handlePostBack(PostbackEvent event) {
-    String actionLabel = event.getPostbackContent().getData();
+    var actionLabel = event.getPostbackContent().getData();
     switch (actionLabel) {
       case "CY":
         return reply("イイね！");
@@ -172,11 +172,11 @@ public class Callback {
   @EventMapping
   public Message handleImg(MessageEvent<ImageMessageContent> event) {
     // ①画像メッセージのidを取得する
-    String msgId = event.getMessage().getId();
+    var msgId = event.getMessage().getId();
     Optional<String> opt = Optional.empty();
     try {
       // ②画像メッセージのidを使って MessageContentResponse を取得する
-      MessageContentResponse resp = blobClient.getMessageContent(msgId).get();
+      var resp = blobClient.getMessageContent(msgId).get();
       log.info("get content{}:", resp);
       // ③ MessageContentResponse からファイルをローカルに保存する
       // ※LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
@@ -186,7 +186,7 @@ public class Callback {
     }
     // ④ ファイルが保存できたことが確認できるように、ローカルのファイルパスをコールバックする
     // 運用ではファイルパスを直接返すことはやめましょう
-    String path = opt.orElseGet(() -> "ファイル書き込みNG");
+    var path = opt.orElseGet(() -> "ファイル書き込みNG");
     return reply(path);
   }
 
@@ -195,7 +195,7 @@ public class Callback {
   private Optional<String> makeTmpFile(MessageContentResponse resp, String extension) {
     // tmpディレクトリに一時的に格納して、ファイルパスを返す
     try (InputStream is = resp.getStream()) {
-      Path tmpFilePath = Files.createTempFile("linebot", extension);
+      var tmpFilePath = Files.createTempFile("linebot", extension);
       Files.copy(is, tmpFilePath, StandardCopyOption.REPLACE_EXISTING);
       return Optional.ofNullable(tmpFilePath.toString());
     } catch (IOException e) {
@@ -209,17 +209,17 @@ public class Callback {
   @EventMapping
   public Message handleBeacon(BeaconEvent event) {
     // Beaconイベントの内容を文字列に変換する
-    String eventStr = event.getBeacon().toString();
+    var eventStr = event.getBeacon().toString();
     // eventStr をBotで返信する
     return reply(eventStr);
   }
 
   private FlexMessage replyBubble() {
-    Text hello = Text.builder()
+    var hello = Text.builder()
       .text("Hello")
       .build();
 
-    Text world = Text.builder()
+    var world = Text.builder()
       .text("world")
       .weight(Text.TextWeight.BOLD)
       .size(FlexFontSize.XL)
@@ -227,14 +227,14 @@ public class Callback {
       .color("#FF0000")
       .build();
 
-    Separator separator = Separator.builder().build();
+    var separator = Separator.builder().build();
 
-    Box box = Box.builder()
+    var box = Box.builder()
       .layout(FlexLayout.HORIZONTAL)
       .contents(Arrays.asList(hello, separator, world))
       .build();
 
-    Bubble bubble = Bubble.builder()
+    var bubble = Bubble.builder()
       .body(box)
       .build();
 
@@ -242,85 +242,85 @@ public class Callback {
   }
 
   private FlexMessage replyCarousel() {
-    Text currentTitle = Text.builder()
+    var currentTitle = Text.builder()
       .text("今日のイベントはこちら")
       .build();
 
-    Box currentHeader = Box.builder()
+    var currentHeader = Box.builder()
       .layout(FlexLayout.VERTICAL)
       .contents(Arrays.asList(currentTitle))
       .build();
 
-    Image currentImage = Image.builder()
+    var currentImage = Image.builder()
       .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
 
-    Text currentText = Text.builder()
+    var currentText = Text.builder()
       .text("LINE Messaging API for Java でLINE Botを作ってみませんか？\n" +
         "エントリーを考えている方・考えていない方、社会人、学生の皆さん、誰でも大歓迎です！")
       .wrap(true)
       .build();
 
-    Button currentBtn = Button.builder()
+    var currentBtn = Button.builder()
       .style(Button.ButtonStyle.SECONDARY)
       .action(new URIAction("表示",
         URI.create("https://javado.connpass.com/event/97107/"),
         new AltUri(URI.create("https://javado.connpass.com/event/97107/"))))
       .build();
 
-    Box currentBody = Box.builder()
+    var currentBody = Box.builder()
       .layout(FlexLayout.VERTICAL)
       .contents(Arrays.asList(currentText, currentBtn))
       .build();
 
-    Bubble currentBbl = Bubble.builder()
+    var currentBbl = Bubble.builder()
       .header(currentHeader)
       .hero(currentImage)
       .body(currentBody)
       .build();
 
-    Text nextTitle = Text.builder()
+    var nextTitle = Text.builder()
       .text("次回のイベントはこちら")
       .build();
 
-    Box nextHeader = Box.builder()
+    var nextHeader = Box.builder()
       .layout(FlexLayout.VERTICAL)
       .contents(Arrays.asList(nextTitle))
       .build();
 
-    Image nextImage = Image.builder()
+    var nextImage = Image.builder()
       .url(URI.create("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png"))
       .size(Image.ImageSize.FULL_WIDTH)
       .aspectMode(Image.ImageAspectMode.Fit)
       .build();
 
-    Text nextText = Text.builder()
+    var nextText = Text.builder()
       .text("待ちに待ったスキルの開発環境・CEK(Clova Extension Kit)がお目見えしました!!\n" +
         "Clovaスキルを作ってみたい！Clovaと触れ合いたい！とお考えの皆さんのためにCEKのハンズオンを行います。")
       .wrap(true)
       .build();
 
-    Button nextBtn = Button.builder()
+    var nextBtn = Button.builder()
       .style(Button.ButtonStyle.PRIMARY)
       .action(new URIAction("申し込み",
         URI.create("https://linedev.connpass.com/event/96793/"),
         new AltUri(URI.create("https://linedev.connpass.com/event/96793/"))))
       .build();
 
-    Box nextBody = Box.builder()
+    var nextBody = Box.builder()
       .layout(FlexLayout.VERTICAL)
       .contents(Arrays.asList(nextText, nextBtn))
       .build();
 
-    Bubble nextBbl = Bubble.builder()
+    var nextBbl = Bubble.builder()
       .header(nextHeader)
       .hero(nextImage)
       .body(nextBody)
       .build();
 
-    Carousel carousel = Carousel.builder()
+    var carousel = Carousel.builder()
       .contents(Arrays.asList(currentBbl, nextBbl))
       .build();
 
