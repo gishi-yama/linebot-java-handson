@@ -22,11 +22,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>11</java.version>
-<<<<<<< HEAD
     <linebot-version>3.6.0</linebot-version>
-=======
-    <linebot-version>3.1.0</linebot-version>
->>>>>>> 5f594405e210f95b5daa30992e5a4a89a8bb2127
     <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     <thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
   </properties>
