@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -57,7 +58,6 @@ public class RichMenuController {
       // ②作成したリッチメニューの登録（ resp1 は作成結果で、リッチメニューIDが入っている）
       RichMenuIdResponse resp1 = client.createRichMenu(richMenu).get();
       log.info("create richmenu:{}", resp1);
-
       // ③リッチメニューの背景画像の設定( resp2 は、画像の登録結果）
       // ここでは、src/resource/img/RichMenuSample.jpg（ビルド後は classpath:/img/RichMenuSample.jpg）を指定
       // 画像の仕様は公式ドキュメントを参照されたい
@@ -128,7 +128,13 @@ public class RichMenuController {
   // Botに日時イベントを送信する動作をリッチメニューとして割り当てます
   private RichMenuArea makeDateTimeAction(int x, int y, int w, int h, String label) {
     return new RichMenuArea(new RichMenuBounds(x, y, w, h),
-      new DatetimePickerAction(label, "DT", "datetime"));
+      DatetimePickerAction.OfLocalDatetime.builder()
+            .label(label)
+            .data("DT")
+            .initial(LocalDateTime.now())
+            .min(LocalDateTime.now().minusYears(10l))
+            .max(LocalDateTime.now().plusYears(10l))
+            .build());
   }
 
 }
