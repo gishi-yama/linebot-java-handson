@@ -6,11 +6,11 @@
 
 - macOS 10.14.5
 - AdoptOpenJDK (build 11.0.5+10)
-- Maven 3.5.2 
+- Maven 3.5.4 
 - IntelliJ 2019.3.1
 - ngrok 2.3.35
-- line-bot-sdk-java 3.1.0
-- Spring Boot 2.2.2
+- line-bot-sdk-java 3.6.0
+- Spring Boot 2.3.1
 
 ## 前準備
 
