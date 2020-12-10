@@ -12,30 +12,7 @@ LIFFは、別途に用意したWebページやフォームをLINE Bot内部に�
 
 の手順で進める。
 
-### 1. ライブラリにThymeleafを追加する
-
-プロジェクトファイル（ルートフォルダ）の pom.xml の `<properties>〜</properties>` の中に、Thymeleafの記述を追加する。
-
-```xml
-<properties>
-  (中略）
-  <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
-  <thymeleaf-layout-dialect.version>2.4.1</thymeleaf-layout-dialect.version>
-</properties>
-```
-
-プロジェクトファイル（ルートフォルダ）の pom.xml の `<dependencies>〜</dependencies>` の中に、Thymeleafの記述を追加する。（spring-boot-starter-webの下あたり）
-
-```xml
-<dependencies>
-  （中略）
-  <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-thymeleaf</artifactId>
-  </dependency>
-  （中略）
-</dependencies>
-```
+### 1. Thymeleafの設定を行う
 
 その他のソース（src/main/resources）の application.properties の末尾に、Thymeleafの設定を追加する
 
@@ -43,7 +20,6 @@ LIFFは、別途に用意したWebページやフォームをLINE Bot内部に�
 ## thymeleaf
 spring.thymeleaf.mode=HTML
 ```
-
 
 ### 2. Spring BootでThymeleafのWebページを表示する
 
@@ -89,7 +65,7 @@ public class LIFFController {
 #### Thymeleafの動作確認
 
 1. LineBotApplication を一度停止して、再起動する
-2. [http://localhost:m8080/liff](http://localhost:8080/liff) にアクセスする
+2. [http://localhost:8080/liff](http://localhost:8080/liff) にアクセスする
 3. ブラウザに下のように表示されることを確認する<br>![Hello Thymeleaf](Liff_P1_01.jpg)<br>これは、 liff.html の`[[${test}]]`の部分を、 LIFFController で書き換えている。
 
 
