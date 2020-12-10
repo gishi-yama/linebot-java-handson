@@ -10,15 +10,15 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
 
 #### LineMessageClientをフィールド変数に追加する
 
-文字列、位置情報、スタンプなど、バイナリデータが含まれないメッセージイベントと異なり、バイナリデータを含むメッセージでは `LineMessageClient` のメソッドを利用する。
+文字列、位置情報、スタンプなど、バイナリデータが含まれないメッセージイベントと異なり、バイナリデータを含むメッセージでは `LineBlobClient` のメソッドを利用する。
 
 このため、Callbackクラスのフィールド変数を用意し、インジェクションできるようにする。
 
 ```java
-  private LineMessagingClient client;
+  private LineBlobClient client;
 
   @Autowired
-  public Callback(LineMessagingClient client) {
+  public Callback(LineBlobClient client) {
     this.client = client;
   }
 ```
@@ -29,19 +29,23 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
 
 *注意：あくまでハンズオンとしての動作なので、運用環境ではファイルパスを表示するようなことは避ける。*
 
-必要に応じて、以下をimportに追加する。（同名のクラスがあるので注意！）
+以下をimportに追加する。（同名のクラスがあるので注意！）
 
-- `com.linecorp.bot.client.LineMessagingClient`
-- `com.linecorp.bot.client.MessageContentResponse`
-- `com.linecorp.bot.model.event.message.ImageMessageContent`
-- `org.springframework.beans.factory.annotation.Autowired`
-- `java.io.IOException`
-- `java.io.InputStream`
-- `java.nio.file.Files`
-- `java.nio.file.Path`
-- `java.nio.file.StandardCopyOption`
-- `java.util.Optional`
-- `java.util.concurrent.ExecutionException`
+```java
+import com.linecorp.bot.client.LineBlobClient;
+import com.linecorp.bot.client.MessageContentResponse;
+import com.linecorp.bot.model.event.message.ImageMessageContent;
+import com.linecorp.bot.model.message.TextMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+```
 
 ```java
 // 画像のメッセージイベントに対応する
@@ -83,7 +87,7 @@ Botは、文字列のメッセージだけではなく、画像・動画・フ�
 
 ### 動作確認
 
-1. LineBotApplication を一度停止して、再起動する
+1. LinebotApplication を一度停止して、再起動する
 2. LINEで、Botに向かって画像を送付する
 3. Botが画像の保存を表示する<br>![画像の保存パス](Bin01.jpg)
 4. Finderやエクスプローラーから、表示されたファイルパスを確認し、同じ画像ファイルが保存されていることを確認する

@@ -169,24 +169,24 @@ public class RichMenuController {
 
 RichMenuController の最後のメソッドで、 `DatetimePickerAction` を利用している。
 
-これは `PostbackAction` と同様に `PostBackEvent` をBotに送信するので、対応する Callback#handlePostBack メソッドを変更しておく。
+これは `PostbackAction` と同様に `PostBackEvent` をBotに送信するので、対応する DialogAnswer#reply メソッドを変更しておく。
 
 ```java
   // PostBackEventに対応する
-  @EventMapping
-  public Message handlePostBack(PostbackEvent event) {
+  @Override
+  public Message reply() {
     String actionLabel = event.getPostbackContent().getData();
-    switch (actionLabel) {
-      case "CY":
-        return reply("イイね！");
-      case "CN":
-        return reply("つらたん");
-      // ---------- ここから変更 -----------
-      case "DT":
-        return reply(event.getPostbackContent().getParams().toString());
-      // ---------- ここまで変更 -----------
-    }
-    return reply("?");
+      switch (actionLabel) {
+        case "CY":
+          return new TextMessage("イイね！");
+        case "CN":
+          return new TextMessage("つらたん");
+        // ---------- ここから変更 -----------
+        case "DT":
+          return new TextMessage(this.event.getPostbackContent().getParams().toString());
+        // ---------- ここまで変更 -----------
+      }
+    return new TextMessage("?");
   }
 ```
 
@@ -194,7 +194,7 @@ RichMenuController の最後のメソッドで、 `DatetimePickerAction` を利�
 
 必ずスマートフォン（タブレット）のLINEアプリで動作確認してください（本稿執筆時点でPC版は対応していない）
 
-1. LineBotApplication を一度停止して、再起動する
+1. LinebotApplication を一度停止して、再起動する
 2. [http://localhost:8080/addRich](http://localhost:8080/addRich) にブラウザでアクセスする
 3. Botのメッセージ欄に、「コントローラー」（chatBarTextに設定した文字列）のリッチメニューができていることを確認する
 <br>追加前：![リッチメニュー追加前](./RM01.jpg)

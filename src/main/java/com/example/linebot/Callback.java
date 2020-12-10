@@ -61,9 +61,6 @@ public class Callback {
       case "おみくじ":
         Omikuji omikuji = new Omikuji();
         return omikuji.reply();
-      case "部屋":
-        RoomInfo roomInfo = new RoomInfo();
-        return roomInfo.reply();
       case "バブル":
         BubbleSample bubbleSample = new BubbleSample();
         return bubbleSample.reply();
@@ -73,6 +70,9 @@ public class Callback {
       case "クイックリプライ":
         QRFunctions qrFunctions = new QRFunctions();
         return qrFunctions.reply();
+      case "部屋":
+        RoomInfo roomInfo = new RoomInfo();
+        return roomInfo.reply();
       default:
         Parrot parrot = new Parrot(event);
         return parrot.reply();
