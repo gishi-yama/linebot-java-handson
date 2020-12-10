@@ -36,7 +36,8 @@
 
 - [Flexメッセージを送信する](doc/Flex/Flex.md)
 - [リッチメニューを作成・利用する](doc/RichMenu/RM.md)
-- [LIFFを動かす](doc/Liff/Liff_P1.md)
+- ~~[LIFFを動かす](doc/Liff/Liff_P1.md)~~
+  - 現在、この資料の方法でのLIFFの利用は推奨されていません
 
 ## ハンズオン時専用
 
