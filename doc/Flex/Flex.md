@@ -9,8 +9,6 @@ Flex Message は、コンポーネントベースでBotの吹き出し（「バ�
 
 ### バブルを表示する
 
-Callbackクラスを変更する。
-
 必要に応じて、以下を import に追加する（同名のクラスが多いので注意）。
 
 - `com.linecorp.bot.model.message.FlexMessage`
@@ -21,7 +19,58 @@ Callbackクラスを変更する。
 - `com.linecorp.bot.model.message.flex.unit.FlexLayout`
 - `java.util.Arrays`
 
-```java  
+#### BubbleSample クラスを追加
+
+```java
+package com.example.linebot.replier;
+
+import com.linecorp.bot.model.message.FlexMessage;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.flex.component.Box;
+import com.linecorp.bot.model.message.flex.component.Separator;
+import com.linecorp.bot.model.message.flex.component.Text;
+import com.linecorp.bot.model.message.flex.unit.FlexAlign;
+import com.linecorp.bot.model.message.flex.unit.FlexFontSize;
+import com.linecorp.bot.model.message.flex.unit.FlexLayout;
+
+import java.util.Arrays;
+
+public class BubbleSample implements Replier {
+
+  @Override
+  public Message reply() {
+    var hello = Text.builder()
+      .text("Hello")
+      .build();
+
+    var world = Text.builder()
+      .text("world")
+      .weight(Text.TextWeight.BOLD)
+      .size(FlexFontSize.XL)
+      .align(FlexAlign.CENTER)
+      .color("#FF0000")
+      .build();
+
+    var separator = Separator.builder().build();
+
+    var box = Box.builder()
+      .layout(FlexLayout.HORIZONTAL)
+      .contents(Arrays.asList(hello, separator, world))
+      .build();
+
+    var bubble = com.linecorp.bot.model.message.flex.container.Bubble.builder()
+      .body(box)
+      .build();
+
+    return new FlexMessage("BubbleSample", bubble);
+  }
+  
+}
+```
+
+#### Collback クラスを変更
+
+```java
 @LineMessageHandler
 public class Callback {
 
@@ -34,51 +83,29 @@ public class Callback {
     String text = tmc.getText();
     switch (text) {
       case "やあ":
-        return greet();
+        Greet greet = new Greet();
+        return greet.reply();
       case "おみくじ":
-        return replyOmikuji();
+        Omikuji omikuji = new Omikuji();
+        return omikuji.reply();
       case "部屋":
-        return replyRoomInfo();
+        RoomInfo roomInfo = new RoomInfo();
+        return roomInfo.reply();
       case "バブル":
-        return replyBubble();
+        BubbleSample bubbleSample = new BubbleSample();
+        return bubbleSample.reply();
       default:
-        return reply(text);
+        Parrot parrot = new Parrot(event);
+        return parrot.reply();
     }
   }
 
   // ------------ 中略・変更なし ------------ 
-
-  private FlexMessage replyBubble() {
-    Text hello = Text.builder()
-      .text("Hello")
-      .build();
-
-    Text world = Text.builder()
-      .text("world")
-      .weight(Text.TextWeight.BOLD)
-      .size(FlexFontSize.XL)
-      .align(FlexAlign.CENTER)
-      .color("#FF0000")
-      .build();
-
-    Separator separator = Separator.builder().build();
-
-    Box box = Box.builder()
-      .layout(FlexLayout.HORIZONTAL)
-      .contents(Arrays.asList(hello, separator, world))
-      .build();
-
-    Bubble bubble = Bubble.builder()
-      .body(box)
-      .build();
-
-    return new FlexMessage("BubbleSample", bubble);
-  }
-  
+ 
 }
 ```
 
-### 動作確認
+#### 動作確認
 
 1. LineBotApplication を一度停止して、再起動する
 2. LINEアプリで、Botに向かって `バブル` と送信する
@@ -86,7 +113,15 @@ public class Callback {
 
 ### カルーセルを表示する
 
-Callbackクラスを変更する。
+#### CarouselSample クラスを作成する
+
+```java
+
+
+```
+
+
+#### Collback クラスを変更
 
 必要に応じて、以下を import に追加する（同名のクラスが多いので注意）。
 
@@ -107,108 +142,28 @@ public class Callback {
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
     switch (text) {
-      case "やあ":
-        return greet();
-      case "おみくじ":
-        return replyOmikuji();
-      case "部屋":
-        return replyRoomInfo();
-      case "バブル":
-        return replyBubble();
-      case "カルーセル":
-        return replyCarousel();
-      default:
-        return reply(text);
+       case "やあ":
+          Greet greet = new Greet();
+          return greet.reply();
+       case "おみくじ":
+          Omikuji omikuji = new Omikuji();
+          return omikuji.reply();
+       case "部屋":
+          RoomInfo roomInfo = new RoomInfo();
+          return roomInfo.reply();
+       case "バブル":
+          BubbleSample bubbleSample = new BubbleSample();
+          return bubbleSample.reply();
+       case "カルーセル":
+          CarouselSample carouselSample = new CarouselSample();
+          return carouselSample.reply();
+       default:
+          Parrot parrot = new Parrot(event);
+          return parrot.reply();
     }
   }
 
   // ------------ 中略・変更なし ------------ 
-
-  private FlexMessage replyCarousel() {
-      Text currentTitle = Text.builder()
-        .text("今日のイベントはこちら")
-        .build();
-  
-      Box currentHeader = Box.builder()
-        .layout(FlexLayout.VERTICAL)
-        .contents(Arrays.asList(currentTitle))
-        .build();
-  
-      Image currentImage = Image.builder()
-        .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/3e/b8/3eb8be3f66515598c47c76bd65e3ebb2.png")
-        .size(Image.ImageSize.FULL_WIDTH)
-        .aspectMode(Image.ImageAspectMode.Fit)
-        .build();
-  
-      Text currentText = Text.builder()
-        .text("LINE Messaging API for Java でLINE Botを作ってみませんか？\n" +
-          "エントリーを考えている方・考えていない方、社会人、学生の皆さん、誰でも大歓迎です！")
-        .wrap(true)
-        .build();
-  
-      Button currentBtn = Button.builder()
-        .style(Button.ButtonStyle.SECONDARY)
-        .action(new URIAction("表示",
-          "https://javado.connpass.com/event/97107/",
-          new AltUri(URI.create("https://javado.connpass.com/event/97107/"))))
-        .build();
-  
-      Box currentBody = Box.builder()
-        .layout(FlexLayout.VERTICAL)
-        .contents(Arrays.asList(currentText, currentBtn))
-        .build();
-  
-      Bubble currentBbl = Bubble.builder()
-        .header(currentHeader)
-        .hero(currentImage)
-        .body(currentBody)
-        .build();
-  
-      Text nextTitle = Text.builder()
-        .text("次回のイベントはこちら")
-        .build();
-  
-      Box nextHeader = Box.builder()
-        .layout(FlexLayout.VERTICAL)
-        .contents(Arrays.asList(nextTitle))
-        .build();
-  
-      Image nextImage = Image.builder()
-        .url("https://connpass-tokyo.s3.amazonaws.com/thumbs/9a/82/9a82ae80521b1f119cc6ed1e3e5edac0.png")
-        .size(Image.ImageSize.FULL_WIDTH)
-        .aspectMode(Image.ImageAspectMode.Fit)
-        .build();
-  
-      Text nextText = Text.builder()
-        .text("待ちに待ったスキルの開発環境・CEK(Clova Extension Kit)がお目見えしました!!\n" +
-          "Clovaスキルを作ってみたい！Clovaと触れ合いたい！とお考えの皆さんのためにCEKのハンズオンを行います。")
-        .wrap(true)
-        .build();
-  
-      Button nextBtn = Button.builder()
-        .style(Button.ButtonStyle.PRIMARY)
-        .action(new URIAction("申し込み",
-          "https://linedev.connpass.com/event/96793/",
-          new AltUri(URI.create("https://linedev.connpass.com/event/96793/"))))
-        .build();
-  
-      Box nextBody = Box.builder()
-        .layout(FlexLayout.VERTICAL)
-        .contents(Arrays.asList(nextText, nextBtn))
-        .build();
-  
-      Bubble nextBbl = Bubble.builder()
-        .header(nextHeader)
-        .hero(nextImage)
-        .body(nextBody)
-        .build();
-  
-      Carousel carousel = Carousel.builder()
-        .contents(Arrays.asList(currentBbl, nextBbl))
-        .build();
-  
-      return new FlexMessage("カルーセル", carousel);
-    }
   
 }
 ```
