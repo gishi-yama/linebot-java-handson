@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.3.6.RELEASE</version>
+    <version>2.3.7.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.example</groupId>
   <artifactId>linebot</artifactId>
-  <version>v20201210</version>
+  <version>v20201212</version>
   <name>linebot</name>
   <description>Demo project for Spring Boot</description>
 

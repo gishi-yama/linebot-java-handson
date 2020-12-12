@@ -9,8 +9,9 @@
 - Maven 3.6.3 
 - IntelliJ 2020.2.4
 - ngrok 2.3.35
+- Spring Boot 2.3.7
 - line-bot-sdk-java 4.3.0
-- Spring Boot 2.3.6
+
 
 ## 前準備
 
