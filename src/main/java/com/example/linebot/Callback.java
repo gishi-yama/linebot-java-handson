@@ -104,7 +104,7 @@ public class Callback {
     }
     // ④ ファイルが保存できたことが確認できるように、ローカルのファイルパスをコールバックする
     // 運用ではファイルパスを直接返すことはやめましょう
-    String path = opt.orElseGet(() -> "ファイル書き込みNG");
+    String path = opt.orElse("ファイル書き込みNG");
     return new TextMessage(path);
   }
 
@@ -125,10 +125,8 @@ public class Callback {
   // BeaconEventに対応する
   @EventMapping
   public Message handleBeacon(BeaconEvent event) {
-    // Beaconイベントの内容を文字列に変換する
-    var eventStr = event.getBeacon().toString();
-    // eventStr をBotで返信する
-    return new TextMessage(eventStr);
+    BeaconInfo beaconInfo = new BeaconInfo(event);
+    return beaconInfo.reply();
   }
 
 }
