@@ -15,10 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -89,34 +85,21 @@ public class Callback {
   // 画像のメッセージイベントに対応する
   @EventMapping
   public Message handleImg(MessageEvent<ImageMessageContent> event) {
-    // ①画像メッセージのidを取得する
+    // 画像メッセージのidを取得する
     String msgId = event.getMessage().getId();
-    Optional<String> opt = Optional.empty();
-    try {
-      // ②画像メッセージのidを使って MessageContentResponse を取得する
-      MessageContentResponse resp = blobClient.getMessageContent(msgId).get();
-      log.info("get content{}:", resp);
-      // ③ MessageContentResponse からファイルをローカルに保存する
-      // ※LINEでは、どの解像度で写真を送っても、サーバ側でjpgファイルに変換される
-      opt = makeTmpFile(resp, ".jpg");
-    } catch (InterruptedException | ExecutionException e) {
-      e.printStackTrace();
-    }
-    // ④ ファイルが保存できたことが確認できるように、ローカルのファイルパスをコールバックする
-    // 運用ではファイルパスを直接返すことはやめましょう
-    String path = opt.orElse("ファイル書き込みNG");
-    return new TextMessage(path);
+    Optional<MessageContentResponse> resp = getContentResponse(msgId);
+    return resp
+      .map(HandleImage::new)
+      .map(HandleImage::reply)
+      .orElseGet(() -> new TextMessage("ファイル読み込みNG"));
   }
 
-  // MessageContentResponseの中のバイト入力ストリームを、拡張子を指定してファイルに書き込む。
-  // また、保存先のファイルパスをOptional型で返す。
-  private Optional<String> makeTmpFile(MessageContentResponse resp, String extension) {
-    // tmpディレクトリに一時的に格納して、ファイルパスを返す
-    try (InputStream is = resp.getStream()) {
-      Path tmpFilePath = Files.createTempFile("linebot", extension);
-      Files.copy(is, tmpFilePath, StandardCopyOption.REPLACE_EXISTING);
-      return Optional.ofNullable(tmpFilePath.toString());
-    } catch (IOException e) {
+  public Optional<MessageContentResponse> getContentResponse(String msgId) {
+    //  ②メッセージのidを使って MessageContentResponse を取得する
+    try (MessageContentResponse resp = blobClient.getMessageContent(msgId).get()) {
+      log.info("get content{}:", resp);
+      return Optional.of(resp);
+    } catch (InterruptedException | ExecutionException | IOException e) {
       e.printStackTrace();
     }
     return Optional.empty();
