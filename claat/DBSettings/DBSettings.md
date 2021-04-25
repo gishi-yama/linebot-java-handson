@@ -1,7 +1,7 @@
 author: @gishi_yama
 id: DBSettings
 categories: java, h2db
-status: Draft
+status: Published
 environments: Web
 feedback link: mailto:cist-softeng-qa@googlegroups.com
 
