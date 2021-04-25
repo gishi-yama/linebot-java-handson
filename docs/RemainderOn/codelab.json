@@ -1,0 +1,24 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2021-04-25T13:41:26+09:00",
+  "id": "RemainderOn",
+  "duration": 0,
+  "title": "リマインダを登録する",
+  "summary": "",
+  "source": "ReminderOn.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "java"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "mailto:cist-softeng-qa@googlegroups.com",
+  "url": "RemainderOn"
+}

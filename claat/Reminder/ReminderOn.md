@@ -45,6 +45,8 @@ Intent Enum の内容を次のように書き換える。
 
 ![正規表現をEnumに作成する](RO0302.png)
 
+#### ポイント
+
 **^(\d{1,2}):(\d{1,2})に(.{1,32})$** は、**13:15に授業**、 **16:55にバス** などのように、**XX:YYに〇〇** という文字列かどうかを判別するための正規表現パターンである。
 
 - XX, YY は最大2文字の数字。〇〇は最大32文字の文字列を想定
@@ -62,3 +64,29 @@ Negative
 
 Callbackクラスの handleMessage メソッドで、Intentを使った話題の判断をする。
 
+### Callback クラス に Intent Enum の import に加える
+
+![Intent Enum を import に加える](RO0401.png)
+
+### Callback クラスの handleMessage メソッドの中身を書き換える
+
+Callback クラスの handleMessage メソッドの中身を書き換える。  
+これまでの処理はコメントアウトして残しておいても良いし、削除して画像と同じように置き換えても良い。
+
+![handleMessage メソッドの中身を書き換える](RO0402.png)
+
+#### ポイント
+
+- 変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた
+- 変更後は、Intentクラスに作成した makeIntent メソッド（static メソッド）を使い、 `Intent.makeIntent(text)` を実行して、textのパターンから Intent (つまり、 `REMINDER` or `UNKNOWN` ) を得る 
+- さらに、switch 文の引数を `String text` から `Intent intent` に切り替えたことで、 intent = `REMINDER` の時と、 `UNKNOWN` の時で、処理が切り替わるようになった（つまり、**Intentの識別 になった**）
+
+
+### 動作確認
+
+LINEBot としてプログラムを起動し、 **13:15に授業**, **こんにちは** などを送信してみる。
+
+![動作確認](RO0403.png)
+
+Positive
+: 13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。

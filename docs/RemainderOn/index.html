@@ -1,0 +1,105 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>リマインダを登録する</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="RemainderOn"
+                  title="リマインダを登録する"
+                  environment="web"
+                  feedback-link="mailto:cist-softeng-qa@googlegroups.com">
+    
+      <google-codelab-step label="はじめに" duration="0">
+        <p>ここでは、 <strong>13:15に授業</strong> などのように時間と用件をLINEBotに話しかけると、それをリマインダの登録要求として識別し、データベースに記録する部分を作成する。</p>
+<p>まず、<strong>ユーザのメッセージから、ユーザが何を要求しているのかの意図（これをインテントと呼ぶ）を識別する</strong> 必要がある。インテントを識別したら、メッセージから <strong>データベースに記録するデータを作</strong> し、実際に <strong>データベースのテーブルに記録</strong> する。</p>
+<h2 is-upgraded>ポイント</h2>
+<ol type="1">
+<li><strong>インテントをJavaの Enum(列挙型) で作成</strong>する</li>
+<li>インテントの識別は <strong>初歩的な方法として正規表現で識別</strong> をする</li>
+<li>インテントを識別したメッセージから <strong>時間と要件を分離し、データベースのテーブルに記録するためのデータを作る</strong></li>
+<li>LINEBotの制御にも使っている Spring フレームワークの機能で、<strong>テーブルを作成し、テーブルにデータを記録する</strong></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="インテントのための Enum を作成する" duration="0">
+        <p>このChatBotで識別できるIntentを定義する。</p>
+<p>Javaでは、システム内で変わらない定義や定数に <code>Enum</code> （列挙型）と呼ばれる特別なクラスを使う。</p>
+<h2 is-upgraded>Enum を作成する</h2>
+<p><code>com.example.linebot.replier</code> パッケージの中に、 <code>Intent</code> Enum を作る。</p>
+<p>IntelliJ IDEA では、クラス作成時に <strong>列挙型（Enum）</strong> を選べば良い。</p>
+<p class="image-container"><img alt="Enum を作成する" src="img/a2bbbbdcac7b2287.png"></p>
+<p>作成されるIntent Enumは以下のようになる。通常、 <code>public class XXXX</code> と書くところが、<code>public enum XXXX</code> になっていることに注目。</p>
+<p class="image-container"><img alt="Enum の例" src="img/8e25e07cb62b5642.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="インテントを識別する正規表現をEnumに作成する" duration="0">
+        <p>Intent Enum の内容を次のように書き換える。</p>
+<p class="image-container"><img alt="正規表現をEnumに作成する" src="img/3747d5e671c0e497.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<p><strong>^(\d{1,2}):(\d{1,2})に(.{1,32})$</strong> は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>XX:YYに〇〇</strong> という文字列かどうかを判別するための正規表現パターンである。</p>
+<ul>
+<li>XX, YY は最大2文字の数字。〇〇は最大32文字の文字列を想定</li>
+<li>文字列のパターンに当てはまれば、メッセージが「リマインダを登録したい」ものだと判断する(<code>REMINDER</code>を使う)</li>
+<li>文字列のパターンに当てはまらない時は、通常のメッセージだと判断する（<code>UNKNOWN</code> を使う）</li>
+<li>Javaコードでは \ が一つ増える:エスケープすることに注意</li>
+</ul>
+<p><strong>makeIntent メソッドは static メソッド</strong> のため、<strong>インスタンス化しなくても呼び出せる</strong> （詳しくは次ページ）。</p>
+<aside class="warning"><p>Javaの正規表現をより詳しく勉強したい場合は、<a href="https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html" target="_blank">JavaDoc</a> や <a href="http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html" target="_blank">Javaの正規表現</a> を参考にすると良い<br> 列挙型をより詳しく勉強したい場合は、<a href="https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html" target="_blank">Java列挙型</a> や <a href="https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html" target="_blank">Typesafe Enum</a> を参考にすると良い</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Callback クラスでIntentを判断する" duration="0">
+        <p>Callbackクラスの handleMessage メソッドで、Intentを使った話題の判断をする。</p>
+<h2 is-upgraded>Callback クラス に Intent Enum の import に加える</h2>
+<p class="image-container"><img alt="Intent Enum を import に加える" src="img/93118ad723c6d72c.png"></p>
+<h2 is-upgraded>Callback クラスの handleMessage メソッドの中身を書き換える</h2>
+<p>Callback クラスの handleMessage メソッドの中身を書き換える。<br> これまでの処理はコメントアウトして残しておいても良いし、削除して画像と同じように置き換えても良い。</p>
+<p class="image-container"><img alt="handleMessage メソッドの中身を書き換える" src="img/8bb49a7a1692a434.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<ul>
+<li>変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた。</li>
+<li>変更後は、Intentクラスに作成した makeIntent メソッド（static メソッド）を使い、 <code>Intent.makeIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る。 さらに、switch 文の引数を <code>String text</code> から <code>Intent intent</code> に切り替えたことで、 intent = <code>REMINDER</code> の時と、 <code>UNKNOWN</code> の時で、処理を切り替える。</li>
+</ul>
+<h2 is-upgraded>動作確認</h2>
+<p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>, <strong>こんにちは</strong> などを送信してみる。</p>
+<p class="image-container"><img alt="動作確認" src="img/9fbd9a030ac10b7.png"></p>
+<aside class="special"><p>13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

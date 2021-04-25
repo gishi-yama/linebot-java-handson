@@ -1,5 +1,6 @@
 package com.example.linebot;
 
+import com.example.linebot.replier.Intent;
 import com.example.linebot.replier.*;
 import com.linecorp.bot.client.LineBlobClient;
 import com.linecorp.bot.client.MessageContentResponse;
