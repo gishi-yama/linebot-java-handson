@@ -50,6 +50,14 @@ public class Callback {
   public Message handleMessage(MessageEvent<TextMessageContent> event) {
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
+    switch (Intent.makeIntent(text)) {
+      case REMINDER:
+        return new TextMessage("リマインダーです");
+      case UNKNOWN:
+        Parrot parrot = new Parrot(event);
+        return parrot.reply();
+    }
+
     switch (text) {
       case "やあ":
         Greet greet = new Greet();

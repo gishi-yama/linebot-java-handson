@@ -14,8 +14,6 @@ feedback link: mailto:cist-softeng-qa@googlegroups.com
 まず、**ユーザのメッセージから、ユーザが何を要求しているのかの意図（これをインテントと呼ぶ）を識別する** 必要がある。インテントを識別したら、メッセージから **データベースに記録するデータを作** し、実際に **データベースのテーブルに記録** する。
 
 
-
-
 ### ポイント
 
 1. **インテントをJavaの Enum(列挙型) で作成**する
@@ -56,9 +54,11 @@ Intent Enum の内容を次のように書き換える。
 
 **makeIntent メソッドは static メソッド** のため、**インスタンス化しなくても呼び出せる** （詳しくは次ページ）。
 
-
 Negative
 : Javaの正規表現をより詳しく勉強したい場合は、[JavaDoc](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html) や [Javaの正規表現](http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html) を参考にすると良い  
 列挙型をより詳しく勉強したい場合は、[Java列挙型](https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html) や [Typesafe Enum](https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html) を参考にすると良い
 
-##  
+## Callback クラスでIntentを判断する
+
+Callbackクラスの handleMessage メソッドで、Intentを使った話題の判断をする。
+
