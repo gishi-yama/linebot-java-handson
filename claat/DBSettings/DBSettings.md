@@ -158,7 +158,7 @@ Negative
 
 [LINE Developers コンソール](https://developers.line.biz/console/) で、LINEBotのチャンネルをクリックする。
 
-チャンネル基本設定の下の方に表示されている `あなたのユーザーID` をコピーする。
+チャンネル基本設定の下の方に表示されている **あなたのユーザーID** をコピーする。
 
 ![あなたのユーザーID](DBS0401.png)
 

@@ -2,6 +2,7 @@ package com.example.linebot;
 
 import com.example.linebot.replier.Intent;
 import com.example.linebot.replier.*;
+import com.example.linebot.service.RemainderService;
 import com.linecorp.bot.client.LineBlobClient;
 import com.linecorp.bot.client.MessageContentResponse;
 import com.linecorp.bot.model.event.*;
@@ -27,9 +28,12 @@ public class Callback {
 
   private final LineBlobClient blobClient;
 
+  private final RemainderService remainderService;
+
   @Autowired
-  public Callback(LineBlobClient blobClient) {
+  public Callback(LineBlobClient blobClient, RemainderService remainderService) {
     this.blobClient = blobClient;
+    this.remainderService = remainderService;
   }
 
   // マッピングされていないEventに対応する

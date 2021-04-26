@@ -30,8 +30,12 @@
       <google-codelab-step label="はじめに" duration="0">
         <p>ここでは、 <strong>13:15に授業</strong> などのように時間と用件をLINEBotに話しかけると、それをリマインダの登録要求として識別し、データベースに記録する部分を作成する。</p>
 <p>まず、<strong>ユーザのメッセージから、ユーザが何を要求しているのかの意図（これをインテントと呼ぶ）を識別する</strong> 必要がある。インテントを識別したら、メッセージから <strong>データベースに記録するデータを作</strong> し、実際に <strong>データベースのテーブルに記録</strong> する。</p>
-<h2 is-upgraded>ポイント</h2>
-<ol type="1">
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="What you&#39;ll learn" duration="0">
+        <ol type="1">
 <li><strong>インテントをJavaの Enum(列挙型) で作成</strong>する</li>
 <li>インテントの識別は <strong>初歩的な方法として正規表現で識別</strong> をする</li>
 <li>インテントを識別したメッセージから <strong>時間と要件を分離し、データベースのテーブルに記録するためのデータを作る</strong></li>
@@ -81,8 +85,9 @@
 <p class="image-container"><img alt="handleMessage メソッドの中身を書き換える" src="img/8bb49a7a1692a434.png"></p>
 <h3 is-upgraded>ポイント</h3>
 <ul>
-<li>変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた。</li>
-<li>変更後は、Intentクラスに作成した makeIntent メソッド（static メソッド）を使い、 <code>Intent.makeIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る。 さらに、switch 文の引数を <code>String text</code> から <code>Intent intent</code> に切り替えたことで、 intent = <code>REMINDER</code> の時と、 <code>UNKNOWN</code> の時で、処理を切り替える。</li>
+<li>変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた</li>
+<li>変更後は、Intentクラスに作成した makeIntent メソッド（static メソッド）を使い、 <code>Intent.makeIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る</li>
+<li>さらに、switch 文の引数を <code>String text</code> から <code>Intent intent</code> に切り替えたことで、 intent = <code>REMINDER</code> の時と、 <code>UNKNOWN</code> の時で、処理が切り替わるようになった（つまり、<strong>Intentの識別 になった</strong>）</li>
 </ul>
 <h2 is-upgraded>動作確認</h2>
 <p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>, <strong>こんにちは</strong> などを送信してみる。</p>
