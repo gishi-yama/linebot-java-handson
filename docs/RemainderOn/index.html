@@ -207,14 +207,14 @@ git push
 
       </google-codelab-step>
     
-      <google-codelab-step label="ReminderService を Callback クラスから呼び出す" duration="0">
-        <p>Callbackクラスの handleMessage メソッドで、ReminderService を呼び出す。</p>
+      <google-codelab-step label="ReminderService クラスを Callback クラスから呼び出す" duration="0">
+        <p>Callbackクラスの handleMessage メソッドで、ReminderService クラスを呼び出す。</p>
 <p>ReminderService はSpringがインスタンス化を管理するので、 <code>@Autowired</code> でインスタンス化するコンストラクタと、参照先のフィールド変数を用意する。</p>
-<h2 is-upgraded>Callback クラス に ReminderService の import を加える</h2>
+<h2 is-upgraded>Callback クラス に ReminderService クラスの import を加える</h2>
 <p class="image-container"><img alt="ReminderService を import に加える" src="img/5ffad4c826729be6.png"></p>
 <h2 is-upgraded>Callback クラス に、フイールド変数と、引数つきコンストラクタを用意する</h2>
 <p class="image-container"><img alt="ReminderService の Autowired" src="img/2df66db531eb79e5.png"></p>
-<h2 is-upgraded>handleMessage メソッドから、 ReminderService を利用する</h2>
+<h2 is-upgraded>Callback クラス の handleMessage メソッドから、 ReminderService を利用する</h2>
 <p>破線部分を書き換えている。</p>
 <p class="image-container"><img alt="handleMessageメソッド" src="img/1d55b5df9b4efc52.png"></p>
 <h2 is-upgraded>動作確認</h2>
@@ -244,6 +244,9 @@ spring.datasource.url=jdbc:h2:~/h2db/softeng;AUTO_SERVER=TRUE;MODE=PostgreSQL
 spring.datasource.username=b199xxxx
 spring.datasource.password=b199xxxx
 </code></pre>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
 <pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-9まで完了&#34;
 git push 
 </code></pre>
@@ -256,7 +259,7 @@ git push
 <p><code>com.example.linebot.repository</code> パッケージを作成し、その中に ReminderRepository クラスを作成する。</p>
 <p>このクラスは、Springが管理する <code>@Repository</code> クラスに設定する。</p>
 <h2 is-upgraded>ReminderRepository のクラス図</h2>
-<p class="image-container"><img alt="ReminderRepository のクラス図" src="img/d7ce691d7a9f4476.png"></p>
+<p class="image-container"><img alt="ReminderRepository のクラス図" src="img/6461d08689512490.png"></p>
 <h2 is-upgraded>ReminderRepository のソースコード</h2>
 <p class="image-container"><img alt="ReminderRepository のソースコード" src="img/e7e948d42882703f.png"></p>
 <p><code>String sql = ...</code> の部分は途中で + で文字列を結合しているが、<strong>結合の前に必ずスペースを入れておく</strong> 。</p>
@@ -269,6 +272,47 @@ git push
 <li><code>@Repository</code> アノテーションをつけているので、Springがインスタンス化を管理する</li>
 <li>Springがこのクラスをインスタンス化するときに、<code>JdbcTemplate</code> にデータベースの設定を行っている</li>
 </ul>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-10まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="ReminderRepository クラスを ReminderService クラスから呼び出す" duration="0">
+        <p>データベースを登録できる様にした ReminderRepository クラスを、ReminderService クラスから呼び出して、テーブルに記録するためのデータを実際に記録できる様にする。</p>
+<h2 is-upgraded>ReminderService クラス に ReminderRepository クラスの import を加える</h2>
+<p class="image-container"><img alt="ReminderRepository を import に加える" src="img/7c002c65262db85f.png"></p>
+<h2 is-upgraded>ReminderService クラス に、フイールド変数と、引数つきコンストラクタを用意する</h2>
+<p class="image-container"><img alt="ReminderRepository の Autowired" src="img/4121c8798e23341.png"></p>
+<h2 is-upgraded>ReminderService クラス の doReplyOfNewItem メソッドから、ReminderRepository を利用する</h2>
+<p>破線部分を書き換えている。</p>
+<p class="image-container"><img alt="ReminderRepository の 利用" src="img/aa59ce007ce0b658.png"></p>
+<p>なお、ここまでの内容が反映された、ReminderService のクラス図は次の様になる。</p>
+<p class="image-container"><img alt="ReminderService の 最終的なクラス図" src="img/3295af43bec9b6a9.png"></p>
+<p>また、Callback, ReminderService, ReminderRepositoryの呼び出しの関係は、次の様になる。</p>
+<p class="image-container"><img alt="各クラス間の呼び出し関係" src="img/e54a1a6239250ce7.png"></p>
+<h2 is-upgraded>動作確認</h2>
+<p>LINEBot としてプログラムを起動し、 <strong>12:15に昼食</strong>　や、 <strong>こんにちは</strong> などを送信してみる。</p>
+<p class="image-container"><img alt="動作確認3" src="img/fbec10c92b2c8d55.png"></p>
+<p>動作は、データベースに接続する前と変わらない。</p>
+<p>ただし今回は、データベースのテーブルに組が追加されているはずである。</p>
+<p>IntelliJ IDEAのクエリコンソールから、検索クエリを実行し、テーブルの内容を確認する。</p>
+<pre><code language="language-sql" class="language-sql">select * from reminder_item;
+</code></pre>
+<p class="image-container"><img alt="動作確認4" src="img/6eb00778f0955a3c.png"></p>
+<p>Chatbotに送信した内容が、テーブルの組に追加されている。</p>
+<aside class="special"><p><strong>時間と用件をいくつか自由に送信し、テーブルに組が追加されていくのを確認しましょう。</strong></p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4をすべて完了&#34;
+git push 
+</code></pre>
 
 
       </google-codelab-step>
