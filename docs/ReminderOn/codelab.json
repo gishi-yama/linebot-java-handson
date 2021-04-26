@@ -3,8 +3,8 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2021-04-27T02:46:23+09:00",
-  "id": "RemainderOn",
+  "updated": "2021-04-27T02:53:00+09:00",
+  "id": "ReminderOn",
   "duration": 0,
   "title": "リマインダを登録する",
   "summary": "",
@@ -20,5 +20,5 @@
     "web"
   ],
   "feedback": "mailto:cist-softeng-qa@googlegroups.com",
-  "url": "RemainderOn"
+  "url": "ReminderOn"
 }

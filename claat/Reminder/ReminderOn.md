@@ -1,5 +1,5 @@
 author: @gishi_yama
-id: RemainderOn
+id: ReminderOn
 categories: java
 status: Publish
 environments: Web
