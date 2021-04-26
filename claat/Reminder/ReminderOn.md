@@ -18,6 +18,10 @@ feedback link: mailto:cist-softeng-qa@googlegroups.com
 - **hh:mmに〇〇** というパターンのメッセージは、リマインダ登録のインテントだと判断する
 - **時間 hh:mm** と **用件 〇〇** をスロットとし、データベースに記録する
 
+![動作確認4](RO1006.png)
+
+![動作確認4](RO1007.png)
+
 ### ポイント
 
 1. **インテントをJavaの Enum(列挙型) で定義** する
