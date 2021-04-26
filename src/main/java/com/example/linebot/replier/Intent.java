@@ -16,10 +16,13 @@ public enum Intent {
   }
 
   // メッセージと正規表現パターンからメッセージの意図を取得
-  public static Intent makeIntent(String text) {
+  public static Intent whichIntent(String text) {
     return EnumSet.allOf(Intent.class).stream()
       .filter(i -> Pattern.matches(i.regexp, text))
       .findFirst().orElse(UNKNOWN);
   }
 
+  public String getRegexp() {
+    return regexp;
+  }
 }

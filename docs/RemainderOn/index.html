@@ -29,24 +29,26 @@
     
       <google-codelab-step label="はじめに" duration="0">
         <p>ここでは、 <strong>13:15に授業</strong> などのように時間と用件をLINEBotに話しかけると、それをリマインダの登録要求として識別し、データベースに記録する部分を作成する。</p>
-<p>まず、<strong>ユーザのメッセージから、ユーザが何を要求しているのかの意図（これをインテントと呼ぶ）を識別する</strong> 必要がある。インテントを識別したら、メッセージから <strong>データベースに記録するデータを作</strong> し、実際に <strong>データベースのテーブルに記録</strong> する。</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="What you&#39;ll learn" duration="0">
-        <ol type="1">
-<li><strong>インテントをJavaの Enum(列挙型) で作成</strong>する</li>
-<li>インテントの識別は <strong>初歩的な方法として正規表現で識別</strong> をする</li>
-<li>インテントを識別したメッセージから <strong>時間と要件を分離し、データベースのテーブルに記録するためのデータを作る</strong></li>
-<li>LINEBotの制御にも使っている Spring フレームワークの機能で、<strong>テーブルを作成し、テーブルにデータを記録する</strong></li>
+<p>まず、<strong>ユーザのメッセージから、ユーザが何を要求しているのかの意図（インテント）を識別する</strong> 必要がある。インテントを識別したら、メッセージから <strong>要求を実行する条件（スロット）</strong> を分離し、これをもとに <strong>データベースに記録するデータ</strong> を作成する。さらに、 <strong>データベースのテーブルに記録</strong> する。</p>
+<p>例えば、 <strong>13:15に授業</strong> というメッセージが送られてきたら、</p>
+<ul>
+<li><strong>hh:mmに〇〇</strong> というパターンのメッセージは、リマインダ登録のインテントだと判断する</li>
+<li><strong>時間 hh:mm</strong> と <strong>用件 〇〇</strong> をスロットとし、データベースに記録する</li>
+</ul>
+<h2 is-upgraded>ポイント</h2>
+<ol type="1">
+<li><strong>インテントをJavaの Enum(列挙型) で定義</strong> する</li>
+<li>インテントの識別は、初歩的な方法として <strong>正規表現で識別する仕組み</strong> にする</li>
+<li><strong>送信されたメッセージ正規表現パターンを比較し、インテントを識別</strong> する<br></li>
+<li>インテントを識別したメッセージから <strong>スロット（時間と用件）を抽出し、データベースのテーブルに記録するためのデータを作る</strong> （ReminderService）</li>
+<li>LINEBotの制御にも使っている Spring フレームワークの機能で、<strong>テーブルを作成し、テーブルにデータを記録する</strong> （ReminderRepository）</li>
 </ol>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="インテントのための Enum を作成する" duration="0">
-        <p>このChatBotで識別できるIntentを定義する。</p>
+      <google-codelab-step label="インテントを Enum で作成する" duration="0">
+        <p>このChatBotで識別できるインテントを定義する。</p>
 <p>Javaでは、システム内で変わらない定義や定数に <code>Enum</code> （列挙型）と呼ばれる特別なクラスを使う。</p>
 <h2 is-upgraded>Enum を作成する</h2>
 <p><code>com.example.linebot.replier</code> パッケージの中に、 <code>Intent</code> Enum を作る。</p>
@@ -58,26 +60,36 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="インテントを識別する正規表現をEnumに作成する" duration="0">
+      <google-codelab-step label="正規表現でインテントを識別する仕組みを作成する" duration="0">
         <p>Intent Enum の内容を次のように書き換える。</p>
+<h3 is-upgraded>クラス図</h3>
+<p class="image-container"><img alt="Intent Enumのクラス図" src="img/d9b7ca871ca94b81.png"></p>
+<h3 is-upgraded>ソースコード</h3>
 <p class="image-container"><img alt="正規表現をEnumに作成する" src="img/3747d5e671c0e497.png"></p>
 <h3 is-upgraded>ポイント</h3>
-<p><strong>^(\d{1,2}):(\d{1,2})に(.{1,32})$</strong> は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>XX:YYに〇〇</strong> という文字列かどうかを判別するための正規表現パターンである。</p>
+<p><strong>^(\d{1,2}):(\d{1,2})に(.{1,32})$</strong> は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>hh:mmに〇〇</strong> という文字列かどうか識別するための正規表現パターンである。</p>
 <ul>
-<li>XX, YY は最大2文字の数字。〇〇は最大32文字の文字列を想定</li>
-<li>文字列のパターンに当てはまれば、メッセージが「リマインダを登録したい」ものだと判断する(<code>REMINDER</code>を使う)</li>
-<li>文字列のパターンに当てはまらない時は、通常のメッセージだと判断する（<code>UNKNOWN</code> を使う）</li>
+<li>hh, mm は最大2文字の数字。〇〇は最大32文字の文字列を想定</li>
+<li>文字列のパターンに当てはまれば、メッセージが「リマインダを登録したい」インテントだと判断する(<code>REMINDER</code>を使う)</li>
+<li>文字列のパターンに当てはまらない時は、別のインテントだと判断する（<code>UNKNOWN</code> を使う）</li>
 <li>Javaコードでは \ が一つ増える:エスケープすることに注意</li>
 </ul>
-<p><strong>makeIntent メソッドは static メソッド</strong> のため、<strong>インスタンス化しなくても呼び出せる</strong> （詳しくは次ページ）。</p>
-<aside class="warning"><p>Javaの正規表現をより詳しく勉強したい場合は、<a href="https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html" target="_blank">JavaDoc</a> や <a href="http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html" target="_blank">Javaの正規表現</a> を参考にすると良い<br> 列挙型をより詳しく勉強したい場合は、<a href="https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html" target="_blank">Java列挙型</a> や <a href="https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html" target="_blank">Typesafe Enum</a> を参考にすると良い</p>
+<p><strong>whichIntent メソッドは static メソッド</strong> のため、<strong>インスタンス化しなくても呼び出せる</strong> （詳しくは次ページ）。</p>
+<aside class="warning"><p>Javaの正規表現をより詳しく勉強したい場合は、<a href="https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html" target="_blank">JavaDoc</a> や <a href="https://www.mlab.im.dendai.ac.jp/~yamada/java/regex/" target="_blank">正規表現によるマッチング</a> を参考にすると良い<br> 列挙型をより詳しく勉強したい場合は、<a href="https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html" target="_blank">Java列挙型</a> や <a href="https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html" target="_blank">Typesafe Enum</a> を参考にすると良い</p>
 </aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<p>ここまで作成できたら、git（Windowsの方はgit bash, macOSの方はターミナルなど）を使い、Classroom に push しましょう。</p>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください<br></p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-3まで完了&#34;
+git push 
+</code></pre>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Callback クラスでIntentを判断する" duration="0">
-        <p>Callbackクラスの handleMessage メソッドで、Intentを使った話題の判断をする。</p>
+        <p>Callbackクラスの handleMessage メソッドで、メッセージとIntentを使った識別を行う。</p>
 <h2 is-upgraded>Callback クラス に Intent Enum の import に加える</h2>
 <p class="image-container"><img alt="Intent Enum を import に加える" src="img/93118ad723c6d72c.png"></p>
 <h2 is-upgraded>Callback クラスの handleMessage メソッドの中身を書き換える</h2>
@@ -86,14 +98,86 @@
 <h3 is-upgraded>ポイント</h3>
 <ul>
 <li>変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた</li>
-<li>変更後は、Intentクラスに作成した makeIntent メソッド（static メソッド）を使い、 <code>Intent.makeIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る</li>
+<li>変更後は、Intentクラスの static メソッドである <code>Intent.whichIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る  <ul>
+<li>static メソッドは、インスタンス化(new)せずに、クラス名.メソッド名 で利用する。</li>
+</ul>
+</li>
 <li>さらに、switch 文の引数を <code>String text</code> から <code>Intent intent</code> に切り替えたことで、 intent = <code>REMINDER</code> の時と、 <code>UNKNOWN</code> の時で、処理が切り替わるようになった（つまり、<strong>Intentの識別 になった</strong>）</li>
 </ul>
 <h2 is-upgraded>動作確認</h2>
-<p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>, <strong>こんにちは</strong> などを送信してみる。</p>
+<p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>　や、 <strong>こんにちは</strong> などを送信してみる。</p>
 <p class="image-container"><img alt="動作確認" src="img/9fbd9a030ac10b7.png"></p>
-<aside class="special"><p>13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。</p>
+<aside class="special"><p>13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。これにより chatbot が、 <strong>hh:mmに〇〇</strong> というメッセージを、リマインダの登録の意図（インテント）だと判断していることになる。</p>
 </aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-4まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="スロット（時間と用件）を抽出する" duration="0">
+        <p>ここまでの課題で、インテントは識別できるようになったが、そのインテントをどの様な条件（スロット）で実行すれば良いのかはメッセージから抽出できていない。このパートではこの部分を解決する。</p>
+<h2 is-upgraded>Slotを抽出するクラスを作成する</h2>
+<p><code>com.example.linebot.value</code> パッケージを作成し、その中に ReminderSlot クラスを作成する。</p>
+<p>コードが長いので、 InteliJ IDEA の <a href="https://pleiades.io/help/idea/auto-completing-code.html" target="_blank">コード補完機能</a> を活用して作ると少し楽になります。</p>
+<h3 is-upgraded>ReminderSlotのクラス図</h3>
+<p class="image-container"><img alt="クラス図" src="img/aaf2642bc5c2c669.png"></p>
+<h3 is-upgraded>ソースコード</h3>
+<p class="image-container"><img alt="ReminderSlotクラス" src="img/6c6cf10f5e7dfc00.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<p>作成した ReminderSlot クラスの中身と見比べてみましょう。</p>
+<ul>
+<li><strong>13:15に昼食</strong> という文字列を例にすると、時間（13:15）と用件（昼食）をスロットと捉える。</li>
+<li>時間: <code>pushAt</code>, 用件: <code>puthText</code> をフィールド変数で管理する</li>
+<li>引数つきコンストラクタに text で文字列を渡すと、正規表現を使って、以下の部分を文字列から抜き出す  <ol type="1">
+<li>13 の部分の文字列を抜き出し、整数型の hour とおく</li>
+<li>15 の部分の文字列を抜き出し、整数方の minutes とおく</li>
+<li>13, 15 を使って、時間を表す <code>LocalTime</code> 型のインスタンスを作る（ <code>pushAt</code> フィールド変数で参照する）<br></li>
+<li>昼食 の部分の文字列を抜き出し、<code>pushText</code> フィールド変数で参照する</li>
+</ol>
+</li>
+<li>もし、正規表現にマッチしない（スロットに抽出できない）text が引数に渡された場合は、例外を throw する</li>
+<li><code>getPushAt()</code> , <code>getPushText()</code> メソッドで、外部からメソッドの参照を取得できる</li>
+</ul>
+<aside class="warning"><p>正規表現を使って文字列を抜き出す部分は一見難解だが、学んでおくといろいろな処理に応用できて便利。 （例えば、データの加工とか）<br> この辺りもわかりやすいスモールケースは <a href="https://www.mlab.im.dendai.ac.jp/~yamada/java/regex/" target="_blank">正規表現によるマッチング</a> などに掲載されている</p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-5までs完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テーブルに記録するためのデータを作る" duration="0">
+        <p>抽出したスロットの情報も含めて、データベースのテーブルに記録するデータを作る。</p>
+<p><code>com.example.linebot.value</code> パッケージの中に ReminderItem クラスを作成する。</p>
+<h3 is-upgraded>ReminderItemのクラス図</h3>
+<p class="image-container"><img alt="ReminderItemのクラス図" src="img/315f6ff2b075abde.png"></p>
+<h3 is-upgraded>ソースコード</h3>
+<p class="image-container"><img alt="ReminderItemのクラス" src="img/f2581b7aa9217a03.png"></p>
+<p>このクラスは、単なる値の格納用のクラスである。</p>
+<p>フィールドに、先ほどを作成した ReminderSlot をコンポジションしていることに注意。</p>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-6まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="test" duration="0">
+        <p>これはリマインダーの主要な処理になるので、Spring フレームワークで <code>@Service</code> のクラスを作り、この中でスロットの分離の処理を作成する。</p>
+<h2 is-upgraded>前準備</h2>
+<p><code>com.example.linebot.service</code> パッケージを作成し、その中に ReminderService クラスを作成する。</p>
 
 
       </google-codelab-step>

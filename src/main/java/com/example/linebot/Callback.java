@@ -1,6 +1,5 @@
 package com.example.linebot;
 
-import com.example.linebot.replier.Intent;
 import com.example.linebot.replier.*;
 import com.example.linebot.service.RemainderService;
 import com.linecorp.bot.client.LineBlobClient;
@@ -55,9 +54,10 @@ public class Callback {
   public Message handleMessage(MessageEvent<TextMessageContent> event) {
     TextMessageContent tmc = event.getMessage();
     String text = tmc.getText();
-    switch (Intent.makeIntent(text)) {
+    switch (Intent.whichIntent(text)) {
       case REMINDER:
-        return new TextMessage("リマインダーです");
+        RemindOn reminderOn = remainderService.doReplyOfNewItem(event);
+        return reminderOn.reply();
       case UNKNOWN:
         Parrot parrot = new Parrot(event);
         return parrot.reply();
