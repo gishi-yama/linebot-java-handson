@@ -394,7 +394,7 @@ git push
 
 LINEBot としてプログラムを起動し、 **12:15に昼食**　や、 **こんにちは** などを送信してみる。
 
-![動作確認3](RO0804.png)
+![動作確認3](RO1006.png)
 
 動作は、データベースに接続する前と変わらない。
 
@@ -406,7 +406,12 @@ IntelliJ IDEAのクエリコンソールから、検索クエリを実行し、�
 select * from reminder_item;
 ```
 
+![動作確認4](RO1007.png)
 
+Chatbotに送信した内容が、テーブルの組に追加されている。
+
+Positive
+: **時間と用件をいくつか自由に送信し、テーブルに組が追加されていくのを確認しましょう。**
 
 ### Classroom に commit / push
 
@@ -414,6 +419,6 @@ Negative
 : 自分の Classroom 用のフォルダに移動して実行してください
 
 ```shell
-git commit -m "課題4-10まで完了"
+git commit -m "課題4をすべて完了"
 git push 
 ```
