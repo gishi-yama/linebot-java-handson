@@ -193,3 +193,62 @@ public Callback(RemainderService remainderService) {
   this.remainderService = remainderService;
 }
 ```
+
+```java
+package com.example.linebot.repository;
+
+import com.example.linebot.value.ReminderItem;
+import com.example.linebot.value.ReminderSlot;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class ReminderRepository {
+
+  private final JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  public ReminderRepository(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
+
+  public void insert(ReminderItem item) {
+    // language=sql
+    String sql = "insert into reminder_item (user_id, push_at, push_text) values (?, ?, ?)";
+
+    String userId = item.getUserId();
+    ReminderSlot slot = item.getSlot();
+    jdbcTemplate.update(sql, userId, slot.getPushAt(), slot.getPushText());
+  }
+
+}
+```
+
+```java
+import com.example.linebot.repository.ReminderRepository;
+```
+
+
+```java
+  private ReminderRepository repository;
+
+  @Autowired
+  public RemainderService(ReminderRepository reminderRepository) {
+    this.repository = reminderRepository;
+  }
+```
+
+```java
+  public RemindOn doReplyOfNewItem(MessageEvent<TextMessageContent> event) {
+    String userId = event.getSource().getUserId();
+    TextMessageContent tmc = event.getMessage();
+    String text = tmc.getText();
+    ReminderSlot slot = new ReminderSlot(text);
+    ReminderItem item = new ReminderItem(userId, slot);
+
+    repository.insert(item);
+
+    return new RemindOn(text);
+  }
+```

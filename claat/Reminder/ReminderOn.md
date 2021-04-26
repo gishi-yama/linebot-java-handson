@@ -24,7 +24,7 @@ feedback link: mailto:cist-softeng-qa@googlegroups.com
 1. インテントの識別は、初歩的な方法として **正規表現で識別する仕組み** にする
 1. **送信されたメッセージ正規表現パターンを比較し、インテントを識別** する   
 1. インテントを識別したメッセージから **スロット（時間と用件）を抽出し、データベースのテーブルに記録するためのデータを作る** （ReminderService）
-1. LINEBotの制御にも使っている Spring フレームワークの機能で、**テーブルを作成し、テーブルにデータを記録する** （ReminderRepository）
+1. LINEBotの制御にも使っている Spring フレームワークの機能で、**テーブルにデータを記録する** （ReminderRepository）
 
 ## インテントを Enum で作成する
 
@@ -176,7 +176,7 @@ git commit -m "課題4-5まで完了"
 git push 
 ```
 
-## テーブルに記録するためのデータを作る
+## テーブルに記録するためのデータを作る (1)
 
 抽出したスロットの情報も含めて、データベースのテーブルに記録するデータを作る。
 
@@ -204,9 +204,9 @@ git commit -m "課題4-6まで完了"
 git push 
 ```
 
-## テーブルに記録するためのデータを作る
+## テーブルに記録するためのデータを作る (2)
 
-これはリマインダーの主要な処理になるので、Spring フレームワークで `@Service` のクラスを作り、この中でスロットの分離の処理を作成する。
+これはリマインダーの主要な処理になるので、Spring フレームワークで `@Service` のクラスを作り、この中でスロットの抽出の処理と、データベース登録用データの作成を実行する。
 
 ### 処理結果となる RemindOn クラスを作る
 
@@ -253,13 +253,13 @@ git commit -m "課題4-7まで完了"
 git push 
 ```
 
-## ReminderService を Callback クラスから呼び出す
+## ReminderService クラスを Callback クラスから呼び出す
 
-Callbackクラスの handleMessage メソッドで、ReminderService を呼び出す。
+Callbackクラスの handleMessage メソッドで、ReminderService クラスを呼び出す。
 
 ReminderService はSpringがインスタンス化を管理するので、 `@Autowired` でインスタンス化するコンストラクタと、参照先のフィールド変数を用意する。
 
-### Callback クラス に ReminderService の import を加える
+### Callback クラス に ReminderService クラスの import を加える
 
 ![ReminderService を import に加える](RO0801.png)
 
@@ -267,18 +267,121 @@ ReminderService はSpringがインスタンス化を管理するので、 `@Auto
 
 ![ReminderService の Autowired](RO0802.png)
 
-### handleMessage メソッドから、 ReminderService を利用する
+### Callback クラス の handleMessage メソッドから、 ReminderService を利用する
 
 破線部分を書き換えている。
 
 ![handleMessageメソッド](RO0803.png)
 
-
 ### 動作確認
 
 LINEBot としてプログラムを起動し、 **13:15に授業**　や、 **こんにちは** などを送信してみる。
 
-![動作確認2](RO0403.png)
+![動作確認2](RO0804.png)
 
 Positive
-: 13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。これにより chatbot が、 **hh:mmに〇〇** というメッセージを、リマインダの登録の意図（インテント）だと判断していることになる。
+: 13:15に授業 を送った時は「13:15に授業 を登録しました」と返信され、それ以外の時にはおうむ返しになれば良い。    
+もちろん、現時点ではまだデータベースに記録していないので、メッセージ上だけのものである。
+
+### Classroom に commit / push
+
+Negative
+: 自分の Classroom 用のフォルダに移動して実行してください
+
+```shell
+git commit -m "課題4-8まで完了"
+git push 
+```
+
+
+## テーブルにデータを記録する(1)
+
+これはデータベースを用いる処理になるので、Spring フレームワークで `@Repository` のクラスを作り、この中でデータベースへの記録を実行する。
+
+### データベースの設定を Spring フレームワークに行う
+
+`src` > `main` > `resources` フォルダにある、 `application.properties` ファイルを開き、次の設定を書き込む。
+
+ミスをすると原因が使いみづくなるので、コピー&ペーストを推奨する。
+
+Negative
+: すでにある `line.bot.channel-token` `line.bot.channel-secret` `handler.path` などは変更せずに、その下に追加設定する。
+**b199xxxx の部分は、あなたの学籍番号に書き換える** こと。
+
+```properties
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:~/h2db/softeng;AUTO_SERVER=TRUE;MODE=PostgreSQL
+spring.datasource.username=b199xxxx
+spring.datasource.password=b199xxxx
+```
+
+### Classroom に commit / push
+
+Negative
+: 自分の Classroom 用のフォルダに移動して実行してください
+
+```shell
+git commit -m "課題4-9まで完了"
+git push 
+```
+
+## テーブルにデータを記録する(2)
+
+### データベースの設定が行われた ReminderRepository クラスを作成する
+
+`com.example.linebot.repository` パッケージを作成し、その中に ReminderRepository クラスを作成する。
+
+このクラスは、Springが管理する `@Repository` クラスに設定する。
+
+### ReminderRepository のクラス図
+
+![ReminderRepository のクラス図](RO0901.png)
+
+### ReminderRepository のソースコード
+
+![ReminderRepository のソースコード](RO0902.png)
+
+`String sql = ...` の部分は途中で + で文字列を結合しているが、**結合の前に必ずスペースを入れておく** 。
+
+![ReminderRepository の注意点](RO0903.png)
+
+#### ポイント
+
+- ここまで作成した `ReminderSlot` `ReminderItem` を用いている
+- `sql` が、テーブルにデータを追加するクエリ
+- `jdbc.update(...` の部分で、SQLの `?` のところを順番に設定し、SQLを実行している
+- `@Repository` アノテーションをつけているので、Springがインスタンス化を管理する
+- Springがこのクラスをインスタンス化するときに、`JdbcTemplate` にデータベースの設定を行っている
+
+
+### Classroom に commit / push
+
+Negative
+: 自分の Classroom 用のフォルダに移動して実行してください
+
+```shell
+git commit -m "課題4-10まで完了"
+git push 
+```
+
+## ReminderRepository クラスを ReminderService クラスから呼び出す
+
+データベースを登録できる様にした ReminderRepository クラスを、ReminderService クラスから呼び出して、テーブルに記録するためのデータを実際に記録できる様にする。
+
+### ReminderService クラス に ReminderRepository クラスの import を加える
+
+![ReminderRepository を import に加える](RO1001.png)
+
+### ReminderService クラス に、フイールド変数と、引数つきコンストラクタを用意する
+
+![ReminderRepository の Autowired](RO1002.png)
+
+### ReminderService クラス の doReplyOfNewItem メソッドから、ReminderRepository を利用する
+
+破線部分を書き換えている。
+
+![ReminderRepository の 利用](RO1003.png)
+
+なお、ここまでの内容が反映された、ReminderService のクラス図は次の様になる。
+
+![ReminderRepository の 利用](RO1004.png)
