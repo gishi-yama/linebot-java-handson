@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RemainderService {
 
-  private ReminderRepository repository;
+  private final ReminderRepository repository;
 
   @Autowired
   public RemainderService(ReminderRepository reminderRepository) {

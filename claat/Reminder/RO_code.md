@@ -231,7 +231,7 @@ import com.example.linebot.repository.ReminderRepository;
 
 
 ```java
-  private ReminderRepository repository;
+  private final ReminderRepository repository;
 
   @Autowired
   public RemainderService(ReminderRepository reminderRepository) {

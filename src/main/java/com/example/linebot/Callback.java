@@ -25,20 +25,11 @@ public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
-  private final LineBlobClient blobClient;
-
   private final RemainderService remainderService;
 
   @Autowired
-  public Callback(LineBlobClient blobClient, RemainderService remainderService) {
-    this.blobClient = blobClient;
+  public Callback(RemainderService remainderService) {
     this.remainderService = remainderService;
-  }
-
-  // マッピングされていないEventに対応する
-  @EventMapping
-  public void handleEvent(Event event) {
-    System.out.println("event: " + event);
   }
 
   // フォローイベントに対応する
@@ -86,43 +77,6 @@ public class Callback {
         Parrot parrot = new Parrot(event);
         return parrot.reply();
     }
-  }
-
-  // PostBackEventに対応する
-  @EventMapping
-  public Message handlePostBack(PostbackEvent event) {
-    DialogAnswer dialogAnswer = new DialogAnswer(event);
-    return dialogAnswer.reply();
-  }
-
-  // 画像のメッセージイベントに対応する
-  @EventMapping
-  public Message handleImg(MessageEvent<ImageMessageContent> event) {
-    // 画像メッセージのidを取得する
-    String msgId = event.getMessage().getId();
-    Optional<MessageContentResponse> resp = getContentResponse(msgId);
-    return resp
-      .map(HandleImage::new)
-      .map(HandleImage::reply)
-      .orElseGet(() -> new TextMessage("ファイル読み込みNG"));
-  }
-
-  public Optional<MessageContentResponse> getContentResponse(String msgId) {
-    //  ②メッセージのidを使って MessageContentResponse を取得する
-    try (MessageContentResponse resp = blobClient.getMessageContent(msgId).get()) {
-      log.info("get content{}:", resp);
-      return Optional.of(resp);
-    } catch (InterruptedException | ExecutionException | IOException e) {
-      e.printStackTrace();
-    }
-    return Optional.empty();
-  }
-
-  // BeaconEventに対応する
-  @EventMapping
-  public Message handleBeacon(BeaconEvent event) {
-    BeaconInfo beaconInfo = new BeaconInfo(event);
-    return beaconInfo.reply();
   }
 
 }

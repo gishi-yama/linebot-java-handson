@@ -384,4 +384,36 @@ git push
 
 なお、ここまでの内容が反映された、ReminderService のクラス図は次の様になる。
 
-![ReminderRepository の 利用](RO1004.png)
+![ReminderService の 最終的なクラス図](RO1004.png)
+
+また、Callback, ReminderService, ReminderRepositoryの呼び出しの関係は、次の様になる。
+
+![各クラス間の呼び出し関係](RO1005.png)
+
+### 動作確認
+
+LINEBot としてプログラムを起動し、 **12:15に昼食**　や、 **こんにちは** などを送信してみる。
+
+![動作確認3](RO0804.png)
+
+動作は、データベースに接続する前と変わらない。
+
+ただし今回は、データベースのテーブルに組が追加されているはずである。
+
+IntelliJ IDEAのクエリコンソールから、検索クエリを実行し、テーブルの内容を確認する。
+
+```sql
+select * from reminder_item;
+```
+
+
+
+### Classroom に commit / push
+
+Negative
+: 自分の Classroom 用のフォルダに移動して実行してください
+
+```shell
+git commit -m "課題4-10まで完了"
+git push 
+```
