@@ -1,7 +1,7 @@
 author: @gishi_yama
 id: RemainderOn
 categories: java
-status: Draft
+status: Publish
 environments: Web
 feedback link: mailto:cist-softeng-qa@googlegroups.com
 
@@ -294,7 +294,7 @@ git push
 ```
 
 
-## テーブルにデータを記録する(1)
+## テーブルにデータを記録する部分の作成(1)
 
 これはデータベースを用いる処理になるので、Spring フレームワークで `@Repository` のクラスを作り、この中でデータベースへの記録を実行する。
 
@@ -325,7 +325,7 @@ git commit -m "課題4-9まで完了"
 git push 
 ```
 
-## テーブルにデータを記録する(2)
+## テーブルにデータを記録する部分の作成(2)
 
 ### データベースの設定が行われた ReminderRepository クラスを作成する
 

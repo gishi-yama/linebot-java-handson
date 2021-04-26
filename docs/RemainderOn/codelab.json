@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2021-04-27T02:43:00+09:00",
+  "updated": "2021-04-27T02:46:23+09:00",
   "id": "RemainderOn",
   "duration": 0,
   "title": "リマインダを登録する",
@@ -11,7 +11,7 @@
   "source": "ReminderOn.md",
   "theme": "",
   "status": [
-    "draft"
+    "publish"
   ],
   "category": [
     "java"
