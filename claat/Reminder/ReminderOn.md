@@ -140,7 +140,8 @@ git push
 
 `com.example.linebot.value` パッケージを作成し、その中に ReminderSlot クラスを作成する。
 
-コードが長いので、 InteliJ IDEA の [コード補完機能](https://pleiades.io/help/idea/auto-completing-code.html) を活用して作ると少し楽になります。
+Positive
+: コードが長いので、 InteliJ IDEA の [コード補完機能](https://pleiades.io/help/idea/auto-completing-code.html) を活用して作ると少し楽になります。
 
 
 #### ReminderSlot のクラス図
