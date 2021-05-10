@@ -3,7 +3,7 @@ id: ReminderOn
 categories: java
 status: Publish
 environments: Web
-feedback link: mailto:cist-softeng-qa@googlegroups.com
+feedback link: mailto:cist-softdsgn-qa@googlegroups.com
 
 # リマインダを登録する
 

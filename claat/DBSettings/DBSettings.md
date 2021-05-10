@@ -3,7 +3,7 @@ id: DBSettings
 categories: java, h2db
 status: Published
 environments: Web
-feedback link: mailto:cist-softeng-qa@googlegroups.com
+feedback link: mailto:cist-softdsgn-qa@googlegroups.com
 
 # H2DBの設定
 
