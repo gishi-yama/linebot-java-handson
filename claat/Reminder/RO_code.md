@@ -69,6 +69,7 @@ public class Callback {
       case REMINDER:
         return new TextMessage("リマインダーです");
       case UNKNOWN:
+      default:  
         Parrot parrot = new Parrot(event);
         return parrot.reply();
     }
@@ -255,5 +256,22 @@ import com.example.linebot.repository.ReminderRepository;
     repository.insert(item);
 
     return new RemindOn(text);
+  }
+```
+
+```java
+  @EventMapping
+  public Message handleMessage(MessageEvent<TextMessageContent> event) {
+    TextMessageContent tmc = event.getMessage();
+    String text = tmc.getText();
+    switch (Intent.whichIntent(text)) {
+      case REMINDER:
+        RemindOn reminderOn = remainderService.doReplyOfNewItem(event);
+        return reminderOn.reply();
+      case UNKNOWN:
+      default:
+        Parrot parrot = new Parrot(event);
+        return parrot.reply();
+    }
   }
 ```
