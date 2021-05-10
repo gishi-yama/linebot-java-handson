@@ -67,14 +67,15 @@
 <h3 is-upgraded>クラス図</h3>
 <p class="image-container"><img alt="Intent Enumのクラス図" src="img/d9b7ca871ca94b81.png"></p>
 <h3 is-upgraded>ソースコード</h3>
-<p class="image-container"><img alt="正規表現をEnumに作成する" src="img/3747d5e671c0e497.png"></p>
+<p class="image-container"><img alt="正規表現をEnumに作成する" src="img/d4e979eb50db5e05.png"></p>
 <h3 is-upgraded>ポイント</h3>
-<p><strong>^(\d{1,2}):(\d{1,2})に(.{1,32})$</strong> は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>hh:mmに〇〇</strong> という文字列かどうか識別するための正規表現パターンである。</p>
+<pre><code language="language-java" class="language-java">&#34;^(\\d{1,2}):(\\d{1,2})に(.{1,32})$&#34;
+</code></pre>
+<p>は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>hh:mmに〇〇</strong> という文字列かどうか識別するための正規表現パターンである。</p>
 <ul>
 <li>hh, mm は最大2文字の数字。〇〇は最大32文字の文字列を想定</li>
 <li>文字列のパターンに当てはまれば、メッセージが「リマインダを登録したい」インテントだと判断する(<code>REMINDER</code>を使う)</li>
 <li>文字列のパターンに当てはまらない時は、別のインテントだと判断する（<code>UNKNOWN</code> を使う）</li>
-<li>Javaコードでは \ が一つ増える:エスケープすることに注意</li>
 </ul>
 <p><strong>whichIntent メソッドは static メソッド</strong> のため、<strong>インスタンス化しなくても呼び出せる</strong> （詳しくは次ページ）。</p>
 <aside class="warning"><p>Javaの正規表現をより詳しく勉強したい場合は、<a href="https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html" target="_blank">JavaDoc</a> や <a href="https://www.mlab.im.dendai.ac.jp/~yamada/java/regex/" target="_blank">正規表現によるマッチング</a> を参考にすると良い<br> 列挙型をより詳しく勉強したい場合は、<a href="https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html" target="_blank">Java列挙型</a> や <a href="https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html" target="_blank">Typesafe Enum</a> を参考にすると良い</p>

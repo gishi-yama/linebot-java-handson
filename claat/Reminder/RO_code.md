@@ -39,6 +39,11 @@ public enum Intent {
     }
     return UNKNOWN;
   }
+
+  public String getRegexp() {
+    return regexp;
+  }
+
 }
 ```
 
