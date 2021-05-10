@@ -310,7 +310,7 @@ git push
 
 `src` > `main` > `resources` フォルダにある、 `application.properties` ファイルを開き、次の設定を書き込む。
 
-ミスをすると原因が使いみづくなるので、コピー&ペーストを推奨する。
+ミスをすると原因が掴みづらくなるので、コピー&ペーストを推奨する。
 
 Negative
 : すでにある `line.bot.channel-token` `line.bot.channel-secret` `handler.path` などは変更せずに、その下に追加設定する。
