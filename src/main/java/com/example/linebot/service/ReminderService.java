@@ -3,6 +3,7 @@ package com.example.linebot.service;
 import com.example.linebot.replier.RemindOn;
 import com.example.linebot.repository.ReminderRepository;
 import com.example.linebot.value.ReminderItem;
+import com.example.linebot.value.ReminderItemTuple;
 import com.example.linebot.value.ReminderSlot;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -38,19 +39,19 @@ public class ReminderService {
   }
 
   public List<PushMessage> doPushReminderItems() {
-    List<ReminderItem> previousItems = repository.findPreviousItem();
+    List<ReminderItemTuple> previousItems = repository.findPreviousItems();
     List<PushMessage> pushMessages = new ArrayList<>();
     // 本来であればUserIdごとにPushMessageをまとめるべきだが、授業レベルなので簡略化している
-    for (ReminderItem item : previousItems) {
+    for (ReminderItemTuple item : previousItems) {
       PushMessage pushMessage = toPushMessage(item);
       pushMessages.add(pushMessage);
     }
     return pushMessages;
   }
 
-  private PushMessage toPushMessage(ReminderItem item) {
+  private PushMessage toPushMessage(ReminderItemTuple item) {
     String userId = item.getUserId();
-    String pushText = item.getSlot().getPushText();
+    String pushText = item.getPushText();
     String body = String.format("%s の時間です！", pushText);
     return new PushMessage(userId, new TextMessage(body));
   }

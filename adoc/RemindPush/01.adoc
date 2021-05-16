@@ -213,50 +213,43 @@ image::fig06.png[]
 
 === データベースのデータを取り出すModel部（Repositoryと関係クラス）を作る
 
-==== ReminderSlot, ReminderItem に必要なコンストラクタを作成する
+==== データベースのReminderItemの1件分を表すクラスを作る
 
-ReminderSlotクラスに引数なし・引数つきコンストラクタを追加する。
+`com.example.linebot.value` パッケージに、ReminderItemTupleクラスを作成する。
 
 ////
 [source, java]
 -----
-  public ReminderSlot() {
-    this.pushAt = null;
-    this.pushText = null;
-  }
+import java.time.LocalTime;
 
-  public ReminderSlot(LocalTime pushAt, String pushText) {
+public class ReminderItemTuple {
+
+  private final String userId;
+  private final LocalTime pushAt;
+  private final String pushText;
+
+  public ReminderItemTuple(String userId, LocalTime pushAt, String pushText) {
+    this.userId = userId;
     this.pushAt = pushAt;
     this.pushText = pushText;
   }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public LocalTime getPushAt() {
+    return pushAt;
+  }
+
+  public String getPushText() {
+    return pushText;
+  }
+}
 -----
 ////
 
 image::fig07.png[]
-
-ReminderItemクラスに引数なし・引数つきコンストラクタを追加する。
-
-////
-[source, java]
------
-  public ReminderItem() {
-    this.userId = null;
-    this.slot = null;
-  }
-
-  public ReminderItem(String userId, LocalTime push_at, String push_text) {
-    this.userId = userId;
-    this.slot = new ReminderSlot(push_at, push_text);
-  }
------
-////
-
-image::fig08.png[]
-
-[NOTE]
-===============================
-今回追加したコンストラクタは、Springフレームワークがデータベースの操作で利用する。
-===============================
 
 ==== ReminderRepositoryに、リマインダを検索するメソッドを作成する
 
@@ -264,25 +257,26 @@ ReminderRepository.java に import を追加する。
 
 [source, java]
 -----
+import com.example.linebot.value.ReminderItemTuple;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import java.time.LocalTime;
 import java.util.List;
 -----
 
-ReminderRepository.java に `findPreviousItem` メソッドを追加する。
+ReminderRepository.java に `findPreviousItems` メソッドを追加する。
 
 ////
 [source, java]
 -----
-public List<ReminderItem> findPreviousItem() {
+public List<ReminderItemTuple> findPreviousItems() {
   //language=sql
   String sql = "select user_id, push_at, push_text " +
     "from reminder_item " +
-    "where push_at <= ? ";    // <1>
+    "where push_at <= ? ";   // <1>
 
   LocalTime now = LocalTime.now();    // <2>
-  List<ReminderItem> list =
-    jdbc.query(sql, new DataClassRowMapper<>(ReminderItem.class), now);   // <3>
+  List<ReminderItemTuple> list =
+    jdbc.query(sql, new DataClassRowMapper<>(ReminderItemTuple.class), now);  // <3>
   return list;
 }
 -----
@@ -311,6 +305,9 @@ String sql = "select user_id, push_at, push_text " +
 このように、SQLの `?` の部分を置き換えて実行する方式を *プレースホルダ* とよぶ。これは悪意のあるユーザーからのSQLインジェクションといった攻撃を防ぐために良い方法となる。興味がある学生は原理や使い方を調べてみると良い。
 ===============================
 
+
+=== データベースのデータをメッセージに加工するModel部（Service）を作る
+
 ==== ReminderService に、リマインダを検索するメソッドを作成する
 
 ReminderService.java に import を追加する。
@@ -326,25 +323,25 @@ ReminderService に doPushReminderItems メソッド　、 toPushMessage メソ�
 ////
 [source, java]
 -----
-  public List<PushMessage> doPushReminderItems() {
-    List<ReminderItem> previousItems =
-        repository.findPreviousItem();　// <1>
-    List<PushMessage> pushMessages = new ArrayList<>();
-    // 本来であればUserIdごとにPushMessageをまとめるべきだが、
-    // 授業レベルなので簡略化している
-    for (ReminderItem item : previousItems) {  // <2>
-      PushMessage pushMessage = toPushMessage(item);
-      pushMessages.add(pushMessage);
-    }
-    return pushMessages;
+public List<PushMessage> doPushReminderItems() {
+  List<ReminderItemTuple> previousItems =
+    repository.findPreviousItems();  // <1>
+  List<PushMessage> pushMessages = new ArrayList<>();
+  // 本来であればUserIdごとにPushMessageをまとめるべきだが、
+  // 授業レベルなので簡略化している
+  for (ReminderItemTuple item : previousItems) {  // <2>
+    PushMessage pushMessage = toPushMessage(item);
+    pushMessages.add(pushMessage);
   }
+  return pushMessages;
+}
 
-  private PushMessage toPushMessage(ReminderItem item) { // <3>
-    String userId = item.getUserId();
-    String pushText = item.getSlot().getPushText();
-    String body = String.format("%s の時間です！", pushText);
-    return new PushMessage(userId, new TextMessage(body));
-  }
+private PushMessage toPushMessage(ReminderItemTuple item) {  // <3>
+  String userId = item.getUserId();
+  String pushText = item.getPushText();
+  String body = String.format("%s の時間です！", pushText);
+  return new PushMessage(userId, new TextMessage(body));
+}
 -----
 ////
 
@@ -353,7 +350,6 @@ image::fig10.png[]
 <1> ReminderRepository がデータを検索した結果（組）を用いる: Serviceが上位モジュール、Repositoryが下位モジュールとして、ServiceがRepositoryの労力を得る。
 <2> 検索結果（検索された組）の分だけ繰り返し、通知用のメッセージデータ（ `PushMessage` ）のリストを作る。
 <3> 検索結果から通知用メッセージデータを作り出す。
-
 
 ==== Pushクラス（Controller部）と、ReminderService（Model部）をつなげる
 
@@ -397,7 +393,29 @@ image::fig12.png[]
 
 新たに、Push.java に PushReminder メソッドを作成する。
 
+////
 [source, java]
 -----
-
+@Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
+public void pushReminder() {
+  try {
+    List<PushMessage> messages =
+      reminderService.doPushReminderItems();	// <1>
+    for (PushMessage message : messages) {
+      BotApiResponse resp =
+        messagingClient.pushMessage(message).get(); // <2>
+      log.info("Sent messages: {}", resp);
+    }
+  } catch (InterruptedException | ExecutionException e) {
+    throw new RuntimeException(e);
+  }
+}
 -----
+////
+
+image::fig13.png[]
+
+<1> ReminderService が作成したメッセージのリストを用いる: Pushが上位モジュール、Serviceが下位モジュールとして、PushがServiceの労力を得る。(つまり、Push -> Service -> Repository の多重のモジュール構造になっている)
+<2> メッセージのリスト（複数）の分だけ繰り返し、通知を行う。
+
+==== 動作確認

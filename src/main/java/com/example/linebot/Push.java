@@ -65,9 +65,9 @@ public class Push {
   @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
   public void pushReminder() {
     try {
-      List<PushMessage> pushMessages = reminderService.doPushReminderItems();
-      for (PushMessage pushMessage : pushMessages) {
-        BotApiResponse resp = messagingClient.pushMessage(pushMessage).get();
+      List<PushMessage> messages = reminderService.doPushReminderItems();
+      for (PushMessage message : messages) {
+        BotApiResponse resp = messagingClient.pushMessage(message).get();
         log.info("Sent messages: {}", resp);
       }
     } catch (InterruptedException | ExecutionException e) {

@@ -29,16 +29,6 @@ public class ReminderSlot {
     }
   }
 
-  public ReminderSlot() {
-    this.pushAt = null;
-    this.pushText = null;
-  }
-
-  public ReminderSlot(LocalTime pushAt, String pushText) {
-    this.pushAt = pushAt;
-    this.pushText = pushText;
-  }
-
   public LocalTime getPushAt() {
     return pushAt;
   }
