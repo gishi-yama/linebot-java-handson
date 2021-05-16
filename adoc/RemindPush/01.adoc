@@ -1,0 +1,123 @@
+= LINEBOTがPush通知をできるようにする
+:encoding: utf-8
+:backend: html5
+:toc: left
+:sectlinks!:
+:sectnums:
+:toclevels: 3
+:doctype: book
+:lang: ja
+:icons: font
+:source-highlighter: coderay
+
+++++
+<style>
+body {
+font-family: "UD Digi Kyokasho NK-R"
+}
+</style>
+++++
+
+toc::[]
+
+== はじめに
+
+これまでのLINEBotの作り方では、必ずユーザーからメッセージにLINEBotが返答する仕組みであった。
+
+リマインダーのような機能では、事前に登録した内容に基づいて、LINEBotが自動的に通知をしてくれるような方法の方が、ユーザーにとって利便性が高いサービスになるであろう。
+
+この課題では、フレームワークの機能を用いて、上記の様なPush通知を実現する。
+
+特に、*モジュール化を意識し、どのクラスがどの様な責務を果たしているかを考えながら* 作成すること。
+
+ハンズオンはDeveloper Trialプランを前提としているので、Push通知をするBotを作ってみる。
+
+<<<
+
+== メッセージ以外のきっかけでLINEBotが通知を行う
+
+通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。
+
+これは、ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っていると言い換えることができる。
+
+つまり、メッセージの他の何かをきっかけとできるControllerがあれば、LINEBotが返答することができる。
+
+まずはメッセージ以外のきっかけで、LINEBotが通知を行う仕組みを試す。
+
+=== ブラウザからのアクセスをきっかけとするControllerを作る
+
+動作がわかりやすいように、ブラウザからアクセスすると、LINEBotが動き出す仕組みを作る。
+
+
+
+
+
+
+
+#### Pushクラスを変更
+
+最初にテスト用に作っていたPushクラスを変更して、Push通知用のクラスにする。
+
+[NOTE]
+===============================
+userId = "\\******"  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。
+===============================
+
+[[app-listing]]
+[source,java]
+.Push.java
+----
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.response.BotApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ExecutionException;
+
+@RestController
+public class Push {
+
+  private static final Logger log = LoggerFactory.getLogger(Push.class);
+
+  // push先のユーザID
+  private String userId = "******";
+
+  private final LineMessagingClient client;
+
+  @Autowired
+  public Push(LineMessagingClient lineMessagingClient) {
+    this.client = lineMessagingClient;
+  }
+
+  // ------------ 中略・変更なし ------------
+
+  // 時報をpushする
+  @GetMapping("timetone")
+  public String pushTimeTone() {
+    String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
+    try {
+      PushMessage pMsg = new PushMessage(userId, new TextMessage(text));
+      BotApiResponse resp = client.pushMessage(pMsg).get();
+      log.info("Sent messages: {}", resp);
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+    return text;
+  }
+
+}
+----
+
+
+
+
+
+
