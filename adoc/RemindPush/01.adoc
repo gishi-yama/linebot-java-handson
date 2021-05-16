@@ -10,14 +10,6 @@
 :icons: font
 :source-highlighter: coderay
 
-++++
-<style>
-body {
-font-family: "UD Digi Kyokasho NK-R"
-}
-</style>
-++++
-
 toc::[]
 
 == はじめに
@@ -36,11 +28,10 @@ toc::[]
 
 == メッセージ以外のきっかけでLINEBotが通知を行う
 
-通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。
+通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。 +
+これは、 *ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っている* と言い換えることができる。
 
-これは、ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っていると言い換えることができる。
-
-つまり、メッセージの他の何かをきっかけとできるControllerがあれば、LINEBotが返答することができる。
+つまり、 *「メッセージ以外の何か」をきっかけとできるControllerがあれば、LINEBotが返答する* ことができる。
 
 まずはメッセージ以外のきっかけで、LINEBotが通知を行う仕組みを試す。
 
@@ -48,15 +39,27 @@ toc::[]
 
 動作がわかりやすいように、ブラウザからアクセスすると、LINEBotが動き出す仕組みを作る。
 
+==== Pushクラスを変更
 
+最初にテスト用に作っていたPushクラスを変更して、通知用のクラスにする。
 
+Pushクラスのimportを追加する。
 
+.Push.java
+[source, java]
+----
+import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.message.TextMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ExecutionException;
+----
 
-#### Pushクラスを変更
-
-最初にテスト用に作っていたPushクラスを変更して、Push通知用のクラスにする。
+pushTimeTone メソッドを作成する。
 
 [NOTE]
 ===============================
@@ -67,22 +70,7 @@ userId = "\\******"  の部分は、 LINE Developers Console の Message API の
 [source,java]
 .Push.java
 ----
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.model.response.BotApiResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ExecutionException;
-
-@RestController
+@RestController       // <1>
 public class Push {
 
   private static final Logger log = LoggerFactory.getLogger(Push.class);
@@ -100,24 +88,103 @@ public class Push {
   // ------------ 中略・変更なし ------------
 
   // 時報をpushする
-  @GetMapping("timetone")
+  @GetMapping("timetone")       // <2>
   public String pushTimeTone() {
-    String text = DateTimeFormatter.ofPattern("a K:mm").format(LocalDateTime.now());
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("a K:mm");       // <3>
+    String text = dtf.format(LocalDateTime.now());
     try {
-      PushMessage pMsg = new PushMessage(userId, new TextMessage(text));
+      PushMessage pMsg = new PushMessage(userId, new TextMessage(text));        // <4>
       BotApiResponse resp = client.pushMessage(pMsg).get();
       log.info("Sent messages: {}", resp);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
-    return text;
+    return text;        // <5>
   }
 
 }
 ----
+<1> `@RESTController` は、このクラスをWebブラウザからのアクセスを引き受けるControllerにするための、Springフレームワークのアノテーション。 +
+つまり、Pushクラスは、ブラウザからのアクセスを受け取るという責務をもった、Controller役のモジュールになる。
+<2> `@GetMapping("timetone")` は、このメソッドが動き始めるためのURLが指定されている。つまり、 `https://.../timetone` にアクセスがあると、Pushクラスが Controller として責務を果たし、 `timetone` に対応する `pushTimeTone()` メソッドが動き始める。
+<3> この部分で、「午前 x:yy」の様な日時のパターンを作成し、 *LocalDateTime.now()* （現在時刻） の文字列を作成する。
+<4> こ の部分で、 userId に送信するメッセージ（ `PushMessage` ）を作成し、client（ `LineMessagingClient` のインスタンス）を使って送信する。 +
+clientは、`@Autowired` がついたコンストラクタで、Springが自動的にインスタンス化している。（Autowiredの仕組みは、前回の課題の資料等を確認されたい）
+<5> 最後に `return text;` しているが、これはブラウザにも文字列を表示するためである。
+
+==== 動作確認
+
+LINEBotのプログラムを起動し、ngrokでアクセスできるようにした上で、 `https://xxxxxx.jp.ngrok.io/timetone` にアクセスする。（xxxxxxは、各自の環境にあわせる）。
+
+アクセスすると、ブラウザには +
+image:fig01.png[] +
+のように表示される。そして同時にLINEBotにも +
+image:fig02.png[] +
+のように表示される。
 
 
+<<<
 
+== Controllerのメソッドを自動的に動作させる
 
+直前の課題で、ブラウザからControllerにアクセスがあれば、時刻をLINEBotが応答するようになった。
 
+ブラウザのアクセスではなく、さらに *Controllerが自動的なきっかけで動作すれば、ユーザーが何もしなくても、LINEBotが自動的に動作する* ように見える。
 
+ここではSpringフレームワークの仕組みを使い、 *「1分経つ」という時間の経過をきっかけとしてControllerを動作* させる。
+
+=== スケジューリング機能で Controller のメソッドを実行する
+
+Springフレームワークでは、時間の経過でプログラムを動作させるスケジューリング機能を利用できる。
+
+==== スケジューリング機能をONにする
+
+LinebotApplicationクラスで、スケジューリング機能をOnにするアノテーションを追加する。
+
+LinebotApplicationクラスのimportを追加する。
+
+.LinebotApplication.java
+[sourse, java]
+-----
+import org.springframework.scheduling.annotation.EnableScheduling;
+-----
+
+クラスに `@EnableScheduling` アノテーションを追加する。
+
+.LinebotApplication.java
+[sourse, java]
+-----
+@EnableScheduling       // <1>
+@SpringBootApplication
+public class LinebotApplication {
+-----
+<1> この部分を追加する
+
+==== pushTimeToneメソッドをスケジューリングで動作させる
+
+PushクラスのpushTimeToneメソッドを、1分ごとに動作させる設定をアノテーションで追加する。
+
+Pushクラスのimportを追加する。
+
+.Push.java
+[source, java]
+----
+import org.springframework.scheduling.annotation.Scheduled;
+----
+
+pushTimeToneメソッドにアノテーションを追加する。
+
+.Push.java
+[source, java]
+-----
+@GetMapping("timetone")
+@Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")   // <1>
+public String pushTimeTone() {
+-----
+<1> この部分を追加する。 `0 */1` は0秒+1分ごとに実行の意味。`0 */5` に変えれば0秒+5分ごとの実行になる。Linux等のcron記法に似ている。
+
+==== 動作確認
+
+LINEBotのプログラムを起動し、ngrokでアクセスできるようにする。
+
+1分ごとに、LINEBotからLINEにメッセージが投稿される。

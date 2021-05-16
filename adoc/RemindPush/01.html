@@ -443,18 +443,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_はじめに">1. はじめに</a></li>
-<li><a href="#_メッセージ以外のきっかけでlinebotが通知を行う">2. メッセージ以外のきっかけでLINEBotが通知を行う</a></li>
+<li><a href="#_メッセージ以外のきっかけでlinebotが通知を行う">2. メッセージ以外のきっかけでLINEBotが通知を行う</a>
+<ul class="sectlevel2">
+<li><a href="#_ブラウザからのアクセスをきっかけとするcontrollerを作る">2.1. ブラウザからのアクセスをきっかけとするControllerを作る</a>
+<ul class="sectlevel3">
+<li><a href="#_pushクラスを変更">2.1.1. Pushクラスを変更</a></li>
+<li><a href="#_動作確認">2.1.2. 動作確認</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_controllerのメソッドを自動的に動作させる">3. Controllerのメソッドを自動的に動作させる</a>
+<ul class="sectlevel2">
+<li><a href="#_スケジューリング機能で_controller_のメソッドを実行する">3.1. スケジューリング機能で Controller のメソッドを実行する</a>
+<ul class="sectlevel3">
+<li><a href="#_スケジューリング機能をonにする">3.1.1. スケジューリング機能をONにする</a></li>
+<li><a href="#_pushtimetoneメソッドをスケジューリングで動作させる">3.1.2. pushTimeToneメソッドをスケジューリングで動作させる</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<style>
-body {
-font-family: "UD Digi Kyokasho NK-R"
-}
-</style>
 <!-- toc disabled -->
 </div>
 </div>
@@ -473,6 +487,9 @@ font-family: "UD Digi Kyokasho NK-R"
 <div class="paragraph">
 <p>特に、<strong>モジュール化を意識し、どのクラスがどの様な責務を果たしているかを考えながら</strong> 作成すること。</p>
 </div>
+<div class="paragraph">
+<p>ハンズオンはDeveloper Trialプランを前提としているので、Push通知をするBotを作ってみる。</p>
+</div>
 <div style="page-break-after: always;"></div>
 </div>
 </div>
@@ -480,26 +497,218 @@ font-family: "UD Digi Kyokasho NK-R"
 <h2 id="_メッセージ以外のきっかけでlinebotが通知を行う">2. メッセージ以外のきっかけでLINEBotが通知を行う</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。</p>
+<p>通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。<br>
+これは、 <strong>ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っている</strong> と言い換えることができる。</p>
 </div>
 <div class="paragraph">
-<p>これは、ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っていると言い換えることができる。</p>
-</div>
-<div class="paragraph">
-<p>つまり、メッセージの他の何かをきっかけとできるControllerがあれば、LINEBotが返答することができる。</p>
+<p>つまり、 <strong>「メッセージ以外の何か」をきっかけとできるControllerがあれば、LINEBotが返答する</strong> ことができる。</p>
 </div>
 <div class="paragraph">
 <p>まずはメッセージ以外のきっかけで、LINEBotが通知を行う仕組みを試す。</p>
 </div>
+<div class="sect2">
+<h3 id="_ブラウザからのアクセスをきっかけとするcontrollerを作る">2.1. ブラウザからのアクセスをきっかけとするControllerを作る</h3>
 <div class="paragraph">
-<p>===</p>
+<p>動作がわかりやすいように、ブラウザからアクセスすると、LINEBotが動き出す仕組みを作る。</p>
+</div>
+<div class="sect3">
+<h4 id="_pushクラスを変更">2.1.1. Pushクラスを変更</h4>
+<div class="paragraph">
+<p>最初にテスト用に作っていたPushクラスを変更して、通知用のクラスにする。</p>
+</div>
+<div class="paragraph">
+<p>Pushクラスのimportを追加する。</p>
+</div>
+<div class="listingblock">
+<div class="title">Push.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">com.linecorp.bot.client.LineMessagingClient</span>;
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">com.linecorp.bot.model.PushMessage</span>;
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">com.linecorp.bot.model.message.TextMessage</span>;
+
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">org.springframework.beans.factory.annotation.Autowired</span>;
+
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">java.time.LocalDateTime</span>;
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">java.time.format.DateTimeFormatter</span>;
+<span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">java.util.concurrent.ExecutionException</span>;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>pushTimeTone メソッドを作成する。</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>userId = "******"  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="app-listing" class="listingblock">
+<div class="title">Push.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#007">@RestController</span>       <i class="conum" data-value="1"></i><b>(1)</b>
+<span style="color:#088;font-weight:bold">public</span> <span style="color:#339;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">Push</span> {
+
+  <span style="color:#088;font-weight:bold">private</span> <span style="color:#088;font-weight:bold">static</span> <span style="color:#088;font-weight:bold">final</span> <span style="color:#0a8;font-weight:bold">Logger</span> log = LoggerFactory.getLogger(Push.class);
+
+  <span style="color:#777">// push先のユーザID</span>
+  <span style="color:#088;font-weight:bold">private</span> <span style="color:#0a8;font-weight:bold">String</span> userId = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">******</span><span style="color:#710">&quot;</span></span>;
+
+  <span style="color:#088;font-weight:bold">private</span> <span style="color:#088;font-weight:bold">final</span> LineMessagingClient client;
+
+  <span style="color:#007">@Autowired</span>
+  <span style="color:#088;font-weight:bold">public</span> Push(LineMessagingClient lineMessagingClient) {
+    <span style="color:#950">this</span>.client = lineMessagingClient;
+  }
+
+  <span style="color:#777">// ------------ 中略・変更なし ------------</span>
+
+  <span style="color:#777">// 時報をpushする</span>
+  <span style="color:#007">@GetMapping</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">timetone</span><span style="color:#710">&quot;</span></span>)       <i class="conum" data-value="2"></i><b>(2)</b>
+  <span style="color:#088;font-weight:bold">public</span> <span style="color:#0a8;font-weight:bold">String</span> pushTimeTone() {
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">a K:mm</span><span style="color:#710">&quot;</span></span>);       <i class="conum" data-value="3"></i><b>(3)</b>
+    <span style="color:#0a8;font-weight:bold">String</span> text = dtf.format(LocalDateTime.now());
+    <span style="color:#080;font-weight:bold">try</span> {
+      PushMessage pMsg = <span style="color:#080;font-weight:bold">new</span> PushMessage(userId, <span style="color:#080;font-weight:bold">new</span> TextMessage(text));        <i class="conum" data-value="4"></i><b>(4)</b>
+      BotApiResponse resp = client.pushMessage(pMsg).get();
+      log.info(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Sent messages: {}</span><span style="color:#710">&quot;</span></span>, resp);
+    } <span style="color:#080;font-weight:bold">catch</span> (<span style="color:#C00;font-weight:bold">InterruptedException</span> | <span style="color:#C00;font-weight:bold">ExecutionException</span> e) {
+      <span style="color:#080;font-weight:bold">throw</span> <span style="color:#080;font-weight:bold">new</span> <span style="color:#C00;font-weight:bold">RuntimeException</span>(e);
+    }
+    <span style="color:#080;font-weight:bold">return</span> text;        <i class="conum" data-value="5"></i><b>(5)</b>
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>@RESTController</code> は、このクラスをWebブラウザからのアクセスを引き受けるControllerにするための、Springフレームワークのアノテーション。<br>
+つまり、Pushクラスは、ブラウザからのアクセスを受け取るという責務をもった、Controller役のモジュールになる。</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>@GetMapping("timetone")</code> は、このメソッドが動き始めるためのURLが指定されている。つまり、 <code><a href="https://&#8230;&#8203;/timetone" class="bare">https://&#8230;&#8203;/timetone</a></code> にアクセスがあると、Pushクラスが Controller として責務を果たし、 <code>timetone</code> に対応する <code>pushTimeTone()</code> メソッドが動き始める。</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>この部分で、「午前 x:yy」の様な日時のパターンを作成し、 <strong>LocalDateTime.now()</strong> （現在時刻） の文字列を作成する。</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>こ の部分で、 userId に送信するメッセージ（ <code>PushMessage</code> ）を作成し、client（ <code>LineMessagingClient</code> のインスタンス）を使って送信する。<br>
+clientは、<code>@Autowired</code> がついたコンストラクタで、Springが自動的にインスタンス化している。（Autowiredの仕組みは、前回の課題の資料等を確認されたい）</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>最後に <code>return text;</code> しているが、これはブラウザにも文字列を表示するためである。</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_動作確認">2.1.2. 動作確認</h4>
+<div class="paragraph">
+<p>LINEBotのプログラムを起動し、ngrokでアクセスできるようにした上で、 <code><a href="https://xxxxxx.jp.ngrok.io/timetone" class="bare">https://xxxxxx.jp.ngrok.io/timetone</a></code> にアクセスする。（xxxxxxは、各自の環境にあわせる）。</p>
+</div>
+<div class="paragraph">
+<p>アクセスすると、ブラウザには<br>
+<span class="image"><img src="fig01.png" alt="fig01"></span><br>
+のように表示される。そして同時にLINEBotにも<br>
+<span class="image"><img src="fig02.png" alt="fig02"></span><br>
+のように表示される。</p>
+</div>
+<div style="page-break-after: always;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_controllerのメソッドを自動的に動作させる">3. Controllerのメソッドを自動的に動作させる</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>直前の課題で、ブラウザからControllerにアクセスがあれば、時刻をLINEBotが応答するようになった。</p>
+</div>
+<div class="paragraph">
+<p>ブラウザのアクセスではなく、さらに <strong>Controllerが自動的なきっかけで動作すれば、ユーザーが何もしなくても、LINEBotが自動的に動作する</strong> ように見える。</p>
+</div>
+<div class="paragraph">
+<p>ここではSpringフレームワークの仕組みを使い、 <strong>「1分経つ」という時間の経過をきっかけとしてControllerを動作</strong> させる。</p>
+</div>
+<div class="sect2">
+<h3 id="_スケジューリング機能で_controller_のメソッドを実行する">3.1. スケジューリング機能で Controller のメソッドを実行する</h3>
+<div class="paragraph">
+<p>Springフレームワークでは、時間の経過でプログラムを動作させるスケジューリング機能を利用できる。</p>
+</div>
+<div class="sect3">
+<h4 id="_スケジューリング機能をonにする">3.1.1. スケジューリング機能をONにする</h4>
+<div class="paragraph">
+<p>LinebotApplicationクラスで、スケジューリング機能をOnにするアノテーションを追加する。</p>
+</div>
+<div class="paragraph">
+<p>LinebotApplicationクラスのimportを追加する。</p>
+</div>
+<div class="listingblock">
+<div class="title">LinebotApplication.java</div>
+<div class="content">
+<pre>import org.springframework.scheduling.annotation.EnableScheduling;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>クラスに <code>@EnableScheduling</code> アノテーションを追加する。</p>
+</div>
+<div class="listingblock">
+<div class="title">LinebotApplication.java</div>
+<div class="content">
+<pre>@EnableScheduling
+@SpringBootApplication
+public class LinebotApplication {</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pushtimetoneメソッドをスケジューリングで動作させる">3.1.2. pushTimeToneメソッドをスケジューリングで動作させる</h4>
+<div class="paragraph">
+<p>PushクラスのpushTimeToneメソッドを、1分ごとに動作させる設定をアノテーションで追加する。</p>
+</div>
+<div class="paragraph">
+<p>Pushクラスのimportを追加する。</p>
+</div>
+<div class="listingblock">
+<div class="title">Push.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">org.springframework.scheduling.annotation.Scheduled</span>;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>pushTimeToneメソッドにアノテーションを追加する。</p>
+</div>
+<div class="listingblock">
+<div class="title">Push.java</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#777">// */1は1分ごとの意味。5に変えれば5分ごととかになる。</span>
+<span style="color:#007">@GetMapping</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">timetone</span><span style="color:#710">&quot;</span></span>)
+<span style="color:#007">@Scheduled</span>(cron = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">0 */1 * * * *</span><span style="color:#710">&quot;</span></span>, zone = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Asia/Tokyo</span><span style="color:#710">&quot;</span></span>)
+<span style="color:#088;font-weight:bold">public</span> <span style="color:#0a8;font-weight:bold">String</span> pushTimeTone() {</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-17 02:13:59 +0900
+Last updated 2021-05-17 04:19:32 +0900
 </div>
 </div>
 </body>
