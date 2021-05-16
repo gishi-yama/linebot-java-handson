@@ -1,7 +1,7 @@
 package com.example.linebot;
 
 import com.example.linebot.replier.*;
-import com.example.linebot.service.RemainderService;
+import com.example.linebot.service.ReminderService;
 import com.linecorp.bot.model.event.FollowEvent;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -18,10 +18,10 @@ public class Callback {
 
   private static final Logger log = LoggerFactory.getLogger(Callback.class);
 
-  private final RemainderService remainderService;
+  private final ReminderService remainderService;
 
   @Autowired
-  public Callback(RemainderService remainderService) {
+  public Callback(ReminderService remainderService) {
     this.remainderService = remainderService;
   }
 

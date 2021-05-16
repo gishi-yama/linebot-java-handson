@@ -26,7 +26,7 @@ toc::[]
 
 <<<
 
-== メッセージ以外のきっかけでLINEBotが通知を行う
+== メッセージ以外のきっかけでLINEBotが通知を行えるようにする
 
 通常、LINEBotは、ユーザーからのメッセージに対して返答を行う。 +
 これは、 *ユーザーのメッセージを受け取る部分（Controller）をきっかけに、対応するプログラム（Model）を実行し、LINEの画面に表示される結果（View）を作っている* と言い換えることができる。
@@ -35,7 +35,7 @@ toc::[]
 
 まずはメッセージ以外のきっかけで、LINEBotが通知を行う仕組みを試す。
 
-=== ブラウザからのアクセスをきっかけとするControllerを作る
+=== ブラウザからのアクセスをきっかけとするController部を作る
 
 動作がわかりやすいように、ブラウザからアクセスすると、LINEBotが動き出す仕組みを作る。
 
@@ -45,9 +45,8 @@ toc::[]
 
 Pushクラスのimportを追加する。
 
-.Push.java
 [source, java]
-----
+-----
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.TextMessage;
@@ -57,19 +56,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
-----
+-----
 
 pushTimeTone メソッドを作成する。
 
-[NOTE]
+[TIPS]
 ===============================
-userId = "\\******"  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。
+`userId = "\\******"`  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。
 ===============================
 
+////
 [[app-listing]]
 [source,java]
 .Push.java
-----
+-----
 @RestController       // <1>
 public class Push {
 
@@ -103,7 +103,11 @@ public class Push {
   }
 
 }
-----
+-----
+////
+
+image::fig01.png[]
+
 <1> `@RESTController` は、このクラスをWebブラウザからのアクセスを引き受けるControllerにするための、Springフレームワークのアノテーション。 +
 つまり、Pushクラスは、ブラウザからのアクセスを受け取るという責務をもった、Controller役のモジュールになる。
 <2> `@GetMapping("timetone")` は、このメソッドが動き始めるためのURLが指定されている。つまり、 `https://.../timetone` にアクセスがあると、Pushクラスが Controller として責務を果たし、 `timetone` に対応する `pushTimeTone()` メソッドが動き始める。
@@ -117,15 +121,12 @@ clientは、`@Autowired` がついたコンストラクタで、Springが自動�
 LINEBotのプログラムを起動し、ngrokでアクセスできるようにした上で、 `https://xxxxxx.jp.ngrok.io/timetone` にアクセスする。（xxxxxxは、各自の環境にあわせる）。
 
 アクセスすると、ブラウザには +
-image:fig01.png[] +
+image:fig03.png[] +
 のように表示される。そして同時にLINEBotにも +
-image:fig02.png[] +
+image:fig03.png[] +
 のように表示される。
 
-
-<<<
-
-== Controllerのメソッドを自動的に動作させる
+=== Controllerのメソッドを自動的に動作させる
 
 直前の課題で、ブラウザからControllerにアクセスがあれば、時刻をLINEBotが応答するようになった。
 
@@ -133,31 +134,34 @@ image:fig02.png[] +
 
 ここではSpringフレームワークの仕組みを使い、 *「1分経つ」という時間の経過をきっかけとしてControllerを動作* させる。
 
-=== スケジューリング機能で Controller のメソッドを実行する
+==== スケジューリング機能で Controller のメソッドを実行する
 
 Springフレームワークでは、時間の経過でプログラムを動作させるスケジューリング機能を利用できる。
 
-==== スケジューリング機能をONにする
+===== スケジューリング機能をONにする
 
 LinebotApplicationクラスで、スケジューリング機能をOnにするアノテーションを追加する。
 
 LinebotApplicationクラスのimportを追加する。
 
-.LinebotApplication.java
-[sourse, java]
+[source, java]
 -----
 import org.springframework.scheduling.annotation.EnableScheduling;
 -----
 
 クラスに `@EnableScheduling` アノテーションを追加する。
 
-.LinebotApplication.java
+////
 [sourse, java]
 -----
 @EnableScheduling       // <1>
 @SpringBootApplication
 public class LinebotApplication {
 -----
+////
+
+image::fig04.png[]
+
 <1> この部分を追加する
 
 ==== pushTimeToneメソッドをスケジューリングで動作させる
@@ -166,21 +170,24 @@ PushクラスのpushTimeToneメソッドを、1分ごとに動作させる設定
 
 Pushクラスのimportを追加する。
 
-.Push.java
 [source, java]
-----
+-----
 import org.springframework.scheduling.annotation.Scheduled;
-----
+-----
 
 pushTimeToneメソッドにアノテーションを追加する。
 
-.Push.java
+////
 [source, java]
 -----
 @GetMapping("timetone")
 @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")   // <1>
 public String pushTimeTone() {
 -----
+////
+
+image::fig05.png[]
+
 <1> この部分を追加する。 `0 */1` は0秒+1分ごとに実行の意味。`0 */5` に変えれば0秒+5分ごとの実行になる。Linux等のcron記法に似ている。
 
 ==== 動作確認
@@ -188,3 +195,209 @@ public String pushTimeTone() {
 LINEBotのプログラムを起動し、ngrokでアクセスできるようにする。
 
 1分ごとに、LINEBotからLINEにメッセージが投稿される。
+
+image::fig06.png[]
+
+[WARNING]
+===============================
+️開発用のプランでは、Botからのメッセージ配信数/月に制限があるので、送りすぎに注意！ （毎月1000通まで）
+
+> https://www.linebiz.com/jp/service/line-official-account/
+===============================
+
+<<<
+
+== データベースのデータを通知できるようにする
+
+*データベースに登録されている、リマインダの時刻と内容を使って、LINEBotが通知できる* ようにする。
+
+=== データベースのデータを取り出すModel部（Repositoryと関係クラス）を作る
+
+==== ReminderSlot, ReminderItem に必要なコンストラクタを作成する
+
+ReminderSlotクラスに引数なし・引数つきコンストラクタを追加する。
+
+////
+[source, java]
+-----
+  public ReminderSlot() {
+    this.pushAt = null;
+    this.pushText = null;
+  }
+
+  public ReminderSlot(LocalTime pushAt, String pushText) {
+    this.pushAt = pushAt;
+    this.pushText = pushText;
+  }
+-----
+////
+
+image::fig07.png[]
+
+ReminderItemクラスに引数なし・引数つきコンストラクタを追加する。
+
+////
+[source, java]
+-----
+  public ReminderItem() {
+    this.userId = null;
+    this.slot = null;
+  }
+
+  public ReminderItem(String userId, LocalTime push_at, String push_text) {
+    this.userId = userId;
+    this.slot = new ReminderSlot(push_at, push_text);
+  }
+-----
+////
+
+image::fig08.png[]
+
+[NOTE]
+===============================
+今回追加したコンストラクタは、Springフレームワークがデータベースの操作で利用する。
+===============================
+
+==== ReminderRepositoryに、リマインダを検索するメソッドを作成する
+
+ReminderRepository.java に import を追加する。
+
+[source, java]
+-----
+import org.springframework.jdbc.core.DataClassRowMapper;
+import java.time.LocalTime;
+import java.util.List;
+-----
+
+ReminderRepository.java に `findPreviousItem` メソッドを追加する。
+
+////
+[source, java]
+-----
+public List<ReminderItem> findPreviousItem() {
+  //language=sql
+  String sql = "select user_id, push_at, push_text " +
+    "from reminder_item " +
+    "where push_at <= ? ";    // <1>
+
+  LocalTime now = LocalTime.now();    // <2>
+  List<ReminderItem> list =
+    jdbc.query(sql, new DataClassRowMapper<>(ReminderItem.class), now);   // <3>
+  return list;
+}
+-----
+////
+
+image::fig09.png[]
+
+[TIPS]
+===============================
+SQLにスペース等のミスがあると困るので、下のをコピペして利用してもよいです。
+
+[source, java]
+-----
+String sql = "select user_id, push_at, push_text " +
+    "from reminder_item " +
+    "where push_at <= ? ";
+-----
+===============================
+
+<1> `?` を時間として、ある時間より前にリマインダを設定されているタプルを取り出すSQL。スペース等のミスがあると困るので、下のをコピペして利用してもよいです。
+<2> 現在時刻のインスタンスを作成する。
+<3> SQLの `?` に現在時刻をあてはめ、結果を `ReminderItem` インスタンスの `(Array)List` で取得する。
+
+[NOTE]
+===============================
+このように、SQLの `?` の部分を置き換えて実行する方式を *プレースホルダ* とよぶ。これは悪意のあるユーザーからのSQLインジェクションといった攻撃を防ぐために良い方法となる。興味がある学生は原理や使い方を調べてみると良い。
+===============================
+
+==== ReminderService に、リマインダを検索するメソッドを作成する
+
+ReminderService.java に import を追加する。
+
+[source, java]
+-----
+import com.linecorp.bot.model.PushMessage;
+import java.util.List;
+-----
+
+ReminderService に doPushReminderItems メソッド　、 toPushMessage メソッドをを作る
+
+////
+[source, java]
+-----
+  public List<PushMessage> doPushReminderItems() {
+    List<ReminderItem> previousItems =
+        repository.findPreviousItem();　// <1>
+    List<PushMessage> pushMessages = new ArrayList<>();
+    // 本来であればUserIdごとにPushMessageをまとめるべきだが、
+    // 授業レベルなので簡略化している
+    for (ReminderItem item : previousItems) {  // <2>
+      PushMessage pushMessage = toPushMessage(item);
+      pushMessages.add(pushMessage);
+    }
+    return pushMessages;
+  }
+
+  private PushMessage toPushMessage(ReminderItem item) { // <3>
+    String userId = item.getUserId();
+    String pushText = item.getSlot().getPushText();
+    String body = String.format("%s の時間です！", pushText);
+    return new PushMessage(userId, new TextMessage(body));
+  }
+-----
+////
+
+image::fig10.png[]
+
+<1> ReminderRepository がデータを検索した結果（組）を用いる: Serviceが上位モジュール、Repositoryが下位モジュールとして、ServiceがRepositoryの労力を得る。
+<2> 検索結果（検索された組）の分だけ繰り返し、通知用のメッセージデータ（ `PushMessage` ）のリストを作る。
+<3> 検索結果から通知用メッセージデータを作り出す。
+
+
+==== Pushクラス（Controller部）と、ReminderService（Model部）をつなげる
+
+わかりやすいように、Push.java の pushTimeTone メソッドとは別のメソッドを作る。
+
+Push.java の pushTimeToneメソッドの `@Scheduled` アノテーションを外す。
+
+////
+[source, java]
+-----
+@GetMapping("timetone")
+// @Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")   // <1>
+public String pushTimeTone() {
+-----
+////
+
+image::fig11.png[]
+
+<1> ここをコメントアウトする。
+
+Push.java が ReminderService を使えるように、フィールド変数とコンストラクタを設定する。
+
+////
+[source, java]
+-----
+  private final ReminderService reminderService;  // <1>
+
+  @Autowired   // <2>
+  public Push(LineMessagingClient lineMessagingClient,
+              ReminderService reminderService) {
+    this.messagingClient = lineMessagingClient;
+    this.reminderService = reminderService;
+  }
+-----
+////
+
+image::fig12.png[]
+
+<1> フィールド変数を追加する。
+<2> コンストラクタに引数を追加し、`reminderService` を初期化する
+
+新たに、Push.java に PushReminder メソッドを作成する。
+
+[source, java]
+-----
+
+-----

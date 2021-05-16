@@ -459,6 +459,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_スケジューリング機能をonにする">3.1.1. スケジューリング機能をONにする</a></li>
 <li><a href="#_pushtimetoneメソッドをスケジューリングで動作させる">3.1.2. pushTimeToneメソッドをスケジューリングで動作させる</a></li>
+<li><a href="#_動作確認_2">3.1.3. 動作確認</a></li>
 </ul>
 </li>
 </ul>
@@ -520,7 +521,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Pushクラスのimportを追加する。</p>
 </div>
 <div class="listingblock">
-<div class="title">Push.java</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">com.linecorp.bot.client.LineMessagingClient</span>;
 <span style="color:#080;font-weight:bold">import</span> <span style="color:#B44;font-weight:bold">com.linecorp.bot.model.PushMessage</span>;
@@ -544,48 +544,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </td>
 <td class="content">
 <div class="paragraph">
-<p>userId = "******"  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。</p>
+<p><code>userId = "******"</code>  の部分は、 LINE Developers Console の Message API の画面から Your user ID をコピーして、書き換える。</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
-<div id="app-listing" class="listingblock">
-<div class="title">Push.java</div>
+<div class="imageblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#007">@RestController</span>       <i class="conum" data-value="1"></i><b>(1)</b>
-<span style="color:#088;font-weight:bold">public</span> <span style="color:#339;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">Push</span> {
-
-  <span style="color:#088;font-weight:bold">private</span> <span style="color:#088;font-weight:bold">static</span> <span style="color:#088;font-weight:bold">final</span> <span style="color:#0a8;font-weight:bold">Logger</span> log = LoggerFactory.getLogger(Push.class);
-
-  <span style="color:#777">// push先のユーザID</span>
-  <span style="color:#088;font-weight:bold">private</span> <span style="color:#0a8;font-weight:bold">String</span> userId = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">******</span><span style="color:#710">&quot;</span></span>;
-
-  <span style="color:#088;font-weight:bold">private</span> <span style="color:#088;font-weight:bold">final</span> LineMessagingClient client;
-
-  <span style="color:#007">@Autowired</span>
-  <span style="color:#088;font-weight:bold">public</span> Push(LineMessagingClient lineMessagingClient) {
-    <span style="color:#950">this</span>.client = lineMessagingClient;
-  }
-
-  <span style="color:#777">// ------------ 中略・変更なし ------------</span>
-
-  <span style="color:#777">// 時報をpushする</span>
-  <span style="color:#007">@GetMapping</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">timetone</span><span style="color:#710">&quot;</span></span>)       <i class="conum" data-value="2"></i><b>(2)</b>
-  <span style="color:#088;font-weight:bold">public</span> <span style="color:#0a8;font-weight:bold">String</span> pushTimeTone() {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">a K:mm</span><span style="color:#710">&quot;</span></span>);       <i class="conum" data-value="3"></i><b>(3)</b>
-    <span style="color:#0a8;font-weight:bold">String</span> text = dtf.format(LocalDateTime.now());
-    <span style="color:#080;font-weight:bold">try</span> {
-      PushMessage pMsg = <span style="color:#080;font-weight:bold">new</span> PushMessage(userId, <span style="color:#080;font-weight:bold">new</span> TextMessage(text));        <i class="conum" data-value="4"></i><b>(4)</b>
-      BotApiResponse resp = client.pushMessage(pMsg).get();
-      log.info(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Sent messages: {}</span><span style="color:#710">&quot;</span></span>, resp);
-    } <span style="color:#080;font-weight:bold">catch</span> (<span style="color:#C00;font-weight:bold">InterruptedException</span> | <span style="color:#C00;font-weight:bold">ExecutionException</span> e) {
-      <span style="color:#080;font-weight:bold">throw</span> <span style="color:#080;font-weight:bold">new</span> <span style="color:#C00;font-weight:bold">RuntimeException</span>(e);
-    }
-    <span style="color:#080;font-weight:bold">return</span> text;        <i class="conum" data-value="5"></i><b>(5)</b>
-  }
-
-}</code></pre>
+<img src="fig01.png" alt="fig01">
 </div>
 </div>
 <div class="colist arabic">
@@ -622,9 +589,9 @@ clientは、<code>@Autowired</code> がついたコンストラクタで、Sprin
 </div>
 <div class="paragraph">
 <p>アクセスすると、ブラウザには<br>
-<span class="image"><img src="fig01.png" alt="fig01"></span><br>
+<span class="image"><img src="fig03.png" alt="fig03"></span><br>
 のように表示される。そして同時にLINEBotにも<br>
-<span class="image"><img src="fig02.png" alt="fig02"></span><br>
+<span class="image"><img src="fig03.png" alt="fig03"></span><br>
 のように表示される。</p>
 </div>
 <div style="page-break-after: always;"></div>
@@ -658,7 +625,6 @@ clientは、<code>@Autowired</code> がついたコンストラクタで、Sprin
 <p>LinebotApplicationクラスのimportを追加する。</p>
 </div>
 <div class="listingblock">
-<div class="title">LinebotApplication.java</div>
 <div class="content">
 <pre>import org.springframework.scheduling.annotation.EnableScheduling;</pre>
 </div>
@@ -666,13 +632,18 @@ clientは、<code>@Autowired</code> がついたコンストラクタで、Sprin
 <div class="paragraph">
 <p>クラスに <code>@EnableScheduling</code> アノテーションを追加する。</p>
 </div>
-<div class="listingblock">
-<div class="title">LinebotApplication.java</div>
+<div class="imageblock">
 <div class="content">
-<pre>@EnableScheduling
-@SpringBootApplication
-public class LinebotApplication {</pre>
+<img src="fig04.png" alt="fig04">
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>この部分を追加する</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -695,11 +666,48 @@ public class LinebotApplication {</pre>
 <div class="listingblock">
 <div class="title">Push.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#777">// */1は1分ごとの意味。5に変えれば5分ごととかになる。</span>
-<span style="color:#007">@GetMapping</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">timetone</span><span style="color:#710">&quot;</span></span>)
-<span style="color:#007">@Scheduled</span>(cron = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">0 */1 * * * *</span><span style="color:#710">&quot;</span></span>, zone = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Asia/Tokyo</span><span style="color:#710">&quot;</span></span>)
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#007">@GetMapping</span>(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">timetone</span><span style="color:#710">&quot;</span></span>)
+<span style="color:#007">@Scheduled</span>(cron = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">0 */1 * * * *</span><span style="color:#710">&quot;</span></span>, zone = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Asia/Tokyo</span><span style="color:#710">&quot;</span></span>)   <i class="conum" data-value="1"></i><b>(1)</b>
 <span style="color:#088;font-weight:bold">public</span> <span style="color:#0a8;font-weight:bold">String</span> pushTimeTone() {</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>この部分を追加する。 <code>0 */1</code> は0秒+1分ごとに実行の意味。<code>0 */5</code> に変えれば0秒+5分ごとの実行になる。Linux等のcron記法に似ている。</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_動作確認_2">3.1.3. 動作確認</h4>
+<div class="paragraph">
+<p>LINEBotのプログラムを起動し、ngrokでアクセスできるようにする。</p>
+</div>
+<div class="paragraph">
+<p>1分ごとに、LINEBotからLINEにメッセージが投稿される。</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>️開発用のプランでは、Botからのメッセージ配信数/月に制限があるので、送りすぎに注意！ （毎月1000通まで）</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p><a href="https://www.linebiz.com/jp/service/line-official-account/" class="bare">https://www.linebiz.com/jp/service/line-official-account/</a></p>
+</div>
+</blockquote>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -708,7 +716,7 @@ public class LinebotApplication {</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-17 04:19:32 +0900
+Last updated 2021-05-17 04:43:29 +0900
 </div>
 </div>
 </body>
