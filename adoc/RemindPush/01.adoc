@@ -426,6 +426,16 @@ public void pushReminder() {
 
 image::fig13.png[]
 
+[TIPS]
+===============================
+スペース等のミスがあると困るので、下のをコピペして利用してもよいです。
+
+[source, java]
+-----
+@Scheduled(cron = "0 */1 * * * *", zone = "Asia/Tokyo")
+-----
+===============================
+
 <1> ReminderService が作成したメッセージのリストを用いる: Pushが上位モジュール、Serviceが下位モジュールとして、PushがServiceの労力を得る。(つまり、Push -> Service -> Repository の多重のモジュール構造になっている)
 <2> メッセージのリスト（複数）の分だけ繰り返し、通知を行う。
 
