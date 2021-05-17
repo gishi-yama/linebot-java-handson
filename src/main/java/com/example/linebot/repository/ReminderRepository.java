@@ -43,5 +43,14 @@ public class ReminderRepository {
     return list;
   }
 
+  public void deletePreviousItems() {
+    //language=sql
+    String sql = "delete from reminder_item " +
+      "where push_at <= ? ";
+
+    LocalTime now = LocalTime.now();
+    jdbc.update(sql, now);
+  }
+
 
 }

@@ -46,6 +46,9 @@ public class ReminderService {
       PushMessage pushMessage = toPushMessage(item);
       pushMessages.add(pushMessage);
     }
+    // 本来、Transactionalにすべきだが、教えてないので、次回実習で触る。
+    // findPreviousItemsの後であればどこで実行されていてもとりあえず問題はない。
+    repository.deletePreviousItems();
     return pushMessages;
   }
 

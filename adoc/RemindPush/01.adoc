@@ -4,7 +4,7 @@
 :toc: left
 :sectlinks!:
 :sectnums:
-:toclevels: 3
+:toclevels: 2
 :doctype: book
 :lang: ja
 :icons: font
@@ -419,3 +419,94 @@ image::fig13.png[]
 <2> メッセージのリスト（複数）の分だけ繰り返し、通知を行う。
 
 ==== 動作確認
+
+データベースに格納されているリマインダのうち、時間（push_at）が現在時刻よりも早く設定されているものが、時間になると自動的に表示される。
+
+2分後のリマインダーなどを登録すると、動作確認をしやすい。
+
+image::fig14.png[]
+
+== 通知したリマインダーを削除する
+
+ここまで作成した方法では、図の様に、同じリマインダーが表示され続けてしまう。
+
+image::fig15.png[]
+
+これは、リマインダーが現在時刻よりも前のものをすべて検索しているからである。
+
+これを防止する方法はいくつかあるが、今回は通知メッセージを作成したあとに、現在時刻よりも前のリマインダーを削除してしまうことで、同じリマインダーが表示されることを防止する。
+
+=== データベースのデータを削除するModel部（Repository）を作る
+
+検索と同様に、まずはデータベースを操作するModel部から作成する。
+
+==== ReminderRepositoryに、リマインダを検索するメソッドを作成する
+
+ReminderRepository.java に deletePreviousItems メソッドを追加する。
+
+////
+[source, java]
+-----
+  public void deletePreviousItems() {
+    //language=sql
+    String sql = "delete from reminder_item " +
+      "where push_at <= ? ";
+
+    LocalTime now = LocalTime.now();
+    jdbc.update(sql, now);
+  }
+-----
+////
+
+image::fig16.png[]
+
+[TIPS]
+===============================
+SQLにスペース等のミスがあると困るので、下のをコピペして利用してもよいです。
+
+[source, java]
+-----
+String sql = "delete from reminder_item " +
+  "where push_at <= ? ";
+-----
+
+このSQLは、reminder_item テーブルの中で、pish_at が `?` 以下のものを削除する。
+
+プレースホルダで `?` に現在時刻が渡されるので、現在時刻より前に発信されるリマインダーのための情報が全て削除さることになる。
+===============================
+
+=== 理解度確認をかねて、この後を実装してみましょう。
+
+ReminderRepository の deletePreviousItems をどこで実行すれば良いか考え、プログラム上で実装しなさい。
+
+また、その理由を、上位モジュール・下位モジュール という単語を使って、TAに説明しなさい。
+
+例えば、うまくいくと次の様な動作になるはずです。
+
+*リマインダーの発信前*
+
+現在時刻が 13:14 だとすると...
+
+.reminder_item テーブルの状況
+[format="csv", options="header"]
+|===
+user_id, push_at, push_text
+ABCDEF.... ,13:15:00,授業開始
+ABCDEF.... ,16:30:00,授業終了
+ABCDEF.... ,12:15:00,昼食
+|===
+
+*リマインダーの発信後*
+
+現在時刻が 13:15 になったとすると...
+
+image::fig17.png[]
+
+.reminder_item テーブルの状況
+[format="csv", options="header"]
+|===
+user_id, push_at, push_text
+ABCDEF.... ,16:30:00,授業終了
+|===
+
+発信したもの（つまり、現在時刻よりも前のリマインダー）が削除される
