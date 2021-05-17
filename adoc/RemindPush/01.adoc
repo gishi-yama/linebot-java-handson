@@ -80,11 +80,11 @@ public class Push {
   // push先のユーザID
   private String userId = "******";
 
-  private final LineMessagingClient client;
+  private final LineMessagingClient messagingClient;
 
   @Autowired
   public Push(LineMessagingClient lineMessagingClient) {
-    this.client = lineMessagingClient;
+    this.messagingClient = lineMessagingClient;
   }
 
   // ------------ 中略・変更なし ------------
@@ -96,7 +96,7 @@ public class Push {
     String text = dtf.format(LocalDateTime.now());
     try {
       PushMessage pMsg = new PushMessage(userId, new TextMessage(text));        // <4>
-      BotApiResponse resp = client.pushMessage(pMsg).get();
+      BotApiResponse resp = messagingClient.pushMessage(pMsg).get();
       log.info("Sent messages: {}", resp);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
@@ -114,8 +114,8 @@ image::fig01.png[]
 つまり、Pushクラスは、ブラウザからのアクセスを受け取るという責務をもった、Controller役のモジュールになる。
 <2> `@GetMapping("timetone")` は、このメソッドが動き始めるためのURLが指定されている。つまり、 `https://.../timetone` にアクセスがあると、Pushクラスが Controller として責務を果たし、 `timetone` に対応する `pushTimeTone()` メソッドが動き始める。
 <3> この部分で、「午前 x:yy」の様な日時のパターンを作成し、 *LocalDateTime.now()* （現在時刻） の文字列を作成する。
-<4> こ の部分で、 userId に送信するメッセージ（ `PushMessage` ）を作成し、client（ `LineMessagingClient` のインスタンス）を使って送信する。 +
-clientは、`@Autowired` がついたコンストラクタで、Springが自動的にインスタンス化している。（Autowiredの仕組みは、前回の課題の資料等を確認されたい）
+<4> こ の部分で、 userId に送信するメッセージ（ `PushMessage` ）を作成し、messagingClient（ `LineMessagingClient` のインスタンス）を使って送信する。 +
+messagingClientは、`@Autowired` がついたコンストラクタで、Springが自動的にインスタンス化している。（Autowiredの仕組みは、前回の課題の資料等を確認されたい）
 <5> 最後に `return text;` しているが、これはブラウザにも文字列を表示するためである。
 
 ==== 動作確認
