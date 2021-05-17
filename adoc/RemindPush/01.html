@@ -458,6 +458,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_通知したリマインダーを削除する">4. 通知したリマインダーを削除する</a>
 <ul class="sectlevel2">
 <li><a href="#_データベースのデータを削除するmodel部repositoryを作る">4.1. データベースのデータを削除するModel部（Repository）を作る</a></li>
+<li><a href="#_理解度確認をかねてこの後を実装してみましょう">4.2. 理解度確認をかねて、この後を実装してみましょう。</a></li>
 </ul>
 </li>
 </ul>
@@ -908,15 +909,139 @@ clientは、<code>@Autowired</code> がついたコンストラクタで、Sprin
 <h2 id="_通知したリマインダーを削除する">4. 通知したリマインダーを削除する</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>ここまで作成した方法では、図の様に、同じリマインダーが表示され続けてしまう。これは、リマインダーが現在時刻よりも前のものを検索しているからである。</p>
+<p>ここまで作成した方法では、図の様に、同じリマインダーが表示され続けてしまう。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="fig15.png" alt="fig15">
+</div>
 </div>
 <div class="paragraph">
-<p>そこで、通知メッセージを作成したあとに、現在時刻よりも前のリマインダーを削除することで、同じリマインダーが表示されることを防止する。</p>
+<p>これは、リマインダーが現在時刻よりも前のものをすべて検索しているからである。</p>
+</div>
+<div class="paragraph">
+<p>これを防止する方法はいくつかあるが、今回は通知メッセージを作成したあとに、現在時刻よりも前のリマインダーを削除してしまうことで、同じリマインダーが表示されることを防止する。</p>
 </div>
 <div class="sect2">
 <h3 id="_データベースのデータを削除するmodel部repositoryを作る">4.1. データベースのデータを削除するModel部（Repository）を作る</h3>
 <div class="paragraph">
 <p>検索と同様に、まずはデータベースを操作するModel部から作成する。</p>
+</div>
+<div class="sect3">
+<h4 id="_reminderrepositoryにリマインダを検索するメソッドを作成する_2">4.1.1. ReminderRepositoryに、リマインダを検索するメソッドを作成する</h4>
+<div class="paragraph">
+<p>ReminderRepository.java に deletePreviousItems メソッドを追加する。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="fig16.png" alt="fig16">
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>SQLにスペース等のミスがあると困るので、下のをコピペして利用してもよいです。</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span style="color:#0a8;font-weight:bold">String</span> sql = <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">delete from reminder_item </span><span style="color:#710">&quot;</span></span> +
+  <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">where push_at &lt;= ? </span><span style="color:#710">&quot;</span></span>;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>このSQLは、reminder_item テーブルの中で、pish_at が <code>?</code> 以下のものを削除する。</p>
+</div>
+<div class="paragraph">
+<p>プレースホルダで <code>?</code> に現在時刻が渡されるので、現在時刻より前に発信されるリマインダーのための情報が全て削除さることになる。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_理解度確認をかねてこの後を実装してみましょう">4.2. 理解度確認をかねて、この後を実装してみましょう。</h3>
+<div class="paragraph">
+<p>ReminderRepository の deletePreviousItems をどこで実行すれば良いか考え、プログラム上で実装しなさい。</p>
+</div>
+<div class="paragraph">
+<p>また、その理由を、上位モジュール・下位モジュール という単語を使って、TAに説明しなさい。</p>
+</div>
+<div class="paragraph">
+<p>例えば、うまくいくと次の様な動作になるはずです。</p>
+</div>
+<div class="paragraph">
+<p><strong>リマインダーの発信前</strong></p>
+</div>
+<div class="paragraph">
+<p>現在時刻が 13:14 だとすると&#8230;&#8203;</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. reminder_item テーブルの状況</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">user_id</th>
+<th class="tableblock halign-left valign-top">push_at</th>
+<th class="tableblock halign-left valign-top">push_text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ABCDEF&#8230;&#8203;.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13:15:00</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">授業開始</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ABCDEF&#8230;&#8203;.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16:30:00</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">授業終了</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ABCDEF&#8230;&#8203;.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12:15:00</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">昼食</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>リマインダーの発信後</strong></p>
+</div>
+<div class="paragraph">
+<p>現在時刻が 13:15 になったとすると&#8230;&#8203;</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="fig17.png" alt="fig17">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. reminder_item テーブルの状況</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">user_id</th>
+<th class="tableblock halign-left valign-top">push_at</th>
+<th class="tableblock halign-left valign-top">push_text</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ABCDEF&#8230;&#8203;.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16:30:00</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">授業終了</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>発信したもの（つまり、現在時刻よりも前のリマインダー）が削除される</p>
 </div>
 </div>
 </div>
@@ -924,7 +1049,7 @@ clientは、<code>@Autowired</code> がついたコンストラクタで、Sprin
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-17 08:53:22 +0900
+Last updated 2021-05-17 09:36:43 +0900
 </div>
 </div>
 </body>
