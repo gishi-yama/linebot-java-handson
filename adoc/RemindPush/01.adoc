@@ -207,6 +207,15 @@ image::fig06.png[]
 > https://www.linebiz.com/jp/service/line-official-account/
 ===============================
 
+===== ここまで完了した学生は、課題をコミット/pushしてください。
+
+[source, bash]
+-----
+git commit -m "課題5-2を終了"
+git push
+-----
+
+
 <<<
 
 == データベースのデータを通知できるようにする
@@ -428,6 +437,16 @@ image::fig13.png[]
 
 image::fig14.png[]
 
+===== ここまで完了した学生は、課題をコミット/pushしてください。
+
+[source, bash]
+-----
+git commit -m "課題5-3を終了した"
+git push
+-----
+
+<<<
+
 == 通知したリマインダーを削除する
 
 ここまで作成した方法では、図の様に、同じリマインダーが表示され続けてしまう。
@@ -479,7 +498,7 @@ String sql = "delete from reminder_item " +
 
 === 理解度確認をかねて、この後を実装してみましょう。
 
-ReminderRepository の deletePreviousItems をどこで実行すれば良いか考え、プログラム上で実装しなさい。
+ReminderRepository の deletePreviousItems メソッドをどこで実行すれば良いか考え、プログラム上で実装しなさい。
 
 また、その理由を、上位モジュール・下位モジュール という単語を使って、TAに説明しなさい。
 
@@ -511,4 +530,13 @@ user_id, push_at, push_text
 ABCDEF.... ,16:30:00,授業終了
 |===
 
-発信したもの（つまり、現在時刻よりも前のリマインダー）が削除される
+発信したもの（つまり、現在時刻よりも前のリマインダー）が削除される。
+
+===== ここまで完了した学生は、課題をコミット/pushしてください。
+
+[source, bash]
+-----
+git commit -m "課題5を完了"
+git push
+-----
+
