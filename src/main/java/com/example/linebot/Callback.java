@@ -48,6 +48,9 @@ public class Callback {
       case PYTHON_GREET:
         PythonGreet pythonGreet = externalService.doReplyWithPython();
         return pythonGreet.reply();
+      case COVID_REPORT:
+        CovidReport covidReport = externalService.doReplyWithCovid(text);
+        return covidReport.reply();
       case UNKNOWN:
       default:
         Parrot parrot = new Parrot(event);
