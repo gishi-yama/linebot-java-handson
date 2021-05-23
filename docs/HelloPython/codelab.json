@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2021-05-23T19:23:38+09:00",
+  "updated": "2021-05-24T01:36:16+09:00",
   "id": "HelloPython",
   "duration": 0,
   "title": "LINEBotと外部のプログラムの連係（情報システム化）",
@@ -11,7 +11,7 @@
   "source": "HelloPython.md",
   "theme": "",
   "status": [
-    "draft"
+    "publish"
   ],
   "category": [
     "java"
