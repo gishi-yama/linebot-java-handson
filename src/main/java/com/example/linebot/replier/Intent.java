@@ -7,6 +7,7 @@ public enum Intent {
 
   // メッセージの意図に対応する正規表現パターン
   REMINDER("^(\\d{1,2}):(\\d{1,2})に(.{1,32})$"),
+  PYTHON_GREET("^[P|p]ython.*"),
   UNKNOWN(".+");
 
   private String regexp;
