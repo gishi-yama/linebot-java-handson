@@ -151,7 +151,7 @@ Negative
 : 自分の Classroom 用のフォルダに移動して実行すること。
 
 ```shell
-git commit -m "課題6-2まで完了"
+git commit -m "課題6-3まで完了"
 git push 
 ```
 
@@ -184,7 +184,7 @@ Negative
 : 自分の Classroom 用のフォルダに移動して実行すること。
 
 ```shell
-git commit -m "課題6-3まで完了"
+git commit -m "課題6-4まで完了"
 git push 
 ```
 
