@@ -101,6 +101,10 @@ class 〇□ {
 </aside>
 <aside class="special"><p>特に、Javaなどのインスタンスを、マッピング可能なJSONのデータなどに変換することを <strong>シリアライズ</strong> と呼ぶ。逆に、JSONのデータなどを、マッピング可能な Javaなどのインスタンスに変換することを <strong>デシリアライズ</strong> と呼ぶ。（Java/JSON固有の言葉ではなく、例えばメモリ上のデータを外部に書き込み可能にすることを総称して呼ぶ）</p>
 </aside>
+<h2 is-upgraded>補足</h2>
+<p>例えば、みなさんがすでに作っているLINEBotも、LINEアプリ側と皆さんのバックエンドプログラムを繋ぐ部分にWEB-APIとJSONデータが使われている。</p>
+<p>WEB-APIはSpringとLINEBotのフレームワークが自動的に作成しているので、皆さんとしては用意した実感がないだろうが、実際には callback クラスがWEB-APIとしてLINEアプリ側とのデータのやりとりをJSON形式で行い、LINEアプリからの情報を MessageEvent にデシリアライズしている。</p>
+<p class="image-container"><img alt="動作確認例" src="img/4967bef07490fa21.png"></p>
 
 
       </google-codelab-step>
