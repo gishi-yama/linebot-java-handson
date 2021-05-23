@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class HelloPython {
 
-  String message;
+  private final String message;
 
   @JsonCreator
   public HelloPython(String message) {
