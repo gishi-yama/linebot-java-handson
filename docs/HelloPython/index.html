@@ -104,7 +104,8 @@ class 〇□ {
 <h2 is-upgraded>補足</h2>
 <p>例えば、みなさんがすでに作っているLINEBotも、LINEアプリ側と皆さんのバックエンドプログラムを繋ぐ部分にWEB-APIとJSONデータが使われている。</p>
 <p>WEB-APIはSpringとLINEBotのフレームワークが自動的に作成しているので、皆さんとしては用意した実感がないだろうが、実際には callback クラスがWEB-APIとしてLINEアプリ側とのデータのやりとりをJSON形式で行い、LINEアプリからの情報を MessageEvent にデシリアライズしている。</p>
-<p class="image-container"><img alt="動作確認例" src="img/4967bef07490fa21.png"></p>
+<p>今回の課題では、すでにPythonプログラム側で、WEB-APIが用意されている。LINEBotがこのWEB-APIを通じて、Pythonプログラムに処理を要求し、処理結果をJSONデータで取得することで、外部にあるPythonプログラムとのシステム連携ができるようにする。</p>
+<p class="image-container"><img alt="動作確認例" src="img/a00762a63330678c.png"></p>
 
 
       </google-codelab-step>

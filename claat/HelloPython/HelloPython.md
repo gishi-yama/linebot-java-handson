@@ -116,6 +116,8 @@ Positive
 
 WEB-APIはSpringとLINEBotのフレームワークが自動的に作成しているので、皆さんとしては用意した実感がないだろうが、実際には callback クラスがWEB-APIとしてLINEアプリ側とのデータのやりとりをJSON形式で行い、LINEアプリからの情報を MessageEvent にデシリアライズしている。
 
+今回の課題では、すでにPythonプログラム側で、WEB-APIが用意されている。LINEBotがこのWEB-APIを通じて、Pythonプログラムに処理を要求し、処理結果をJSONデータで取得することで、外部にあるPythonプログラムとのシステム連携ができるようにする。
+
 ![動作確認例](HP0102.png)
 
 ## Pythonプログラムから実行結果を取得するModel部
