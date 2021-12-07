@@ -1,0 +1,24 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2021-05-24T02:26:47+09:00",
+  "id": "HelloPython",
+  "duration": 0,
+  "title": "LINEBotと外部のプログラムの連係（情報システム化）",
+  "summary": "",
+  "source": "HelloPython.md",
+  "theme": "",
+  "status": [
+    "publish"
+  ],
+  "category": [
+    "java"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "mailto:cist-softdsgn-qa@googlegroups.com",
+  "url": "HelloPython"
+}

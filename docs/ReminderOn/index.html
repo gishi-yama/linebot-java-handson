@@ -1,0 +1,333 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>リマインダを登録する</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="ReminderOn"
+                  title="リマインダを登録する"
+                  environment="web"
+                  feedback-link="mailto:cist-softdsgn-qa@googlegroups.com">
+    
+      <google-codelab-step label="はじめに" duration="0">
+        <p>ここでは、 <strong>13:15に授業</strong> などのように時間と用件をLINEBotに話しかけると、それをリマインダの登録要求として識別し、データベースに記録する部分を作成する。</p>
+<p>まず、<strong>ユーザのメッセージから、ユーザが何を要求しているのかの意図（インテント）を識別する</strong> 必要がある。インテントを識別したら、メッセージから <strong>要求を実行する条件（スロット）</strong> を分離し、これをもとに <strong>データベースに記録するデータ</strong> を作成する。さらに、 <strong>データベースのテーブルに記録</strong> する。</p>
+<p>例えば、 <strong>13:15に授業</strong> というメッセージが送られてきたら、</p>
+<ul>
+<li><strong>hh:mmに〇〇</strong> というパターンのメッセージは、リマインダ登録のインテントだと判断する</li>
+<li><strong>時間 hh:mm</strong> と <strong>用件 〇〇</strong> をスロットとし、データベースに記録する</li>
+</ul>
+<p class="image-container"><img alt="動作確認例" src="img/fbec10c92b2c8d55.png"></p>
+<p class="image-container"><img alt="Databaseの状態例" src="img/6eb00778f0955a3c.png"></p>
+<h2 is-upgraded>ポイント</h2>
+<ol type="1">
+<li><strong>インテントをJavaの Enum(列挙型) で定義</strong> する</li>
+<li>インテントの識別は、初歩的な方法として <strong>正規表現で識別する仕組み</strong> にする</li>
+<li><strong>送信されたメッセージ正規表現パターンを比較し、インテントを識別</strong> する<br></li>
+<li>インテントを識別したメッセージから <strong>スロット（時間と用件）を抽出し、データベースのテーブルに記録するためのデータを作る</strong> （ReminderService）</li>
+<li>LINEBotの制御にも使っている Spring フレームワークの機能で、<strong>テーブルにデータを記録する</strong> （ReminderRepository）</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="インテントを Enum で作成する" duration="0">
+        <p>このChatBotで識別できるインテントを定義する。</p>
+<p>Javaでは、システム内で変わらない定義や定数に <code>Enum</code> （列挙型）と呼ばれる特別なクラスを使う。</p>
+<h2 is-upgraded>Enum を作成する</h2>
+<p><code>com.example.linebot.replier</code> パッケージの中に、 <code>Intent</code> Enum を作る。</p>
+<p>IntelliJ IDEA では、クラス作成時に <strong>列挙型（Enum）</strong> を選べば良い。</p>
+<p class="image-container"><img alt="Enum を作成する" src="img/a2bbbbdcac7b2287.png"></p>
+<p>作成されるIntent Enumは以下のようになる。通常、 <code>public class XXXX</code> と書くところが、<code>public enum XXXX</code> になっていることに注目。</p>
+<p class="image-container"><img alt="Enum の例" src="img/8e25e07cb62b5642.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="正規表現でインテントを識別する仕組みを作成する" duration="0">
+        <p>Intent Enum の内容を次のように書き換える。</p>
+<h3 is-upgraded>クラス図</h3>
+<p class="image-container"><img alt="Intent Enumのクラス図" src="img/d9b7ca871ca94b81.png"></p>
+<h3 is-upgraded>ソースコード</h3>
+<p class="image-container"><img alt="正規表現をEnumに作成する" src="img/d4e979eb50db5e05.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<pre><code language="language-java" class="language-java">&#34;^(\\d{1,2}):(\\d{1,2})に(.{1,32})$&#34;
+</code></pre>
+<p>は、<strong>13:15に授業</strong>、 <strong>16:55にバス</strong> などのように、<strong>hh:mmに〇〇</strong> という文字列かどうか識別するための正規表現パターンである。</p>
+<ul>
+<li>hh, mm は最大2文字の数字。〇〇は最大32文字の文字列を想定</li>
+<li>文字列のパターンに当てはまれば、メッセージが「リマインダを登録したい」インテントだと判断する(<code>REMINDER</code>を使う)</li>
+<li>文字列のパターンに当てはまらない時は、別のインテントだと判断する（<code>UNKNOWN</code> を使う）</li>
+</ul>
+<p><strong>whichIntent メソッドは static メソッド</strong> のため、<strong>インスタンス化しなくても呼び出せる</strong> （詳しくは次ページ）。</p>
+<aside class="warning"><p>Javaの正規表現をより詳しく勉強したい場合は、<a href="https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html" target="_blank">JavaDoc</a> や <a href="https://www.mlab.im.dendai.ac.jp/~yamada/java/regex/" target="_blank">正規表現によるマッチング</a> を参考にすると良い<br> 列挙型をより詳しく勉強したい場合は、<a href="https://www.ne.jp/asahi/hishidama/home/tech/java/enum.html" target="_blank">Java列挙型</a> や <a href="https://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/TypesafeEnum/TypesafeEnum.html" target="_blank">Typesafe Enum</a> を参考にすると良い</p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<p>ここまで作成できたら、git（Windowsの方はgit bash, macOSの方はターミナルなど）を使い、Classroom に push しましょう。</p>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください<br></p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-3まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Callback クラスでIntentを判断する" duration="0">
+        <p>Callbackクラスの handleMessage メソッドで、メッセージとIntentを使った識別を行う。</p>
+<h2 is-upgraded>Callback クラス に Intent Enum の import に加える</h2>
+<p class="image-container"><img alt="Intent Enum を import に加える" src="img/93118ad723c6d72c.png"></p>
+<h2 is-upgraded>Callback クラスの handleMessage メソッドの中身を書き換える</h2>
+<p>Callback クラスの handleMessage メソッドの中身を書き換える。<br> これまでの処理はコメントアウトして残しておいても良いし、削除して画像と同じように置き換えても良い。</p>
+<p class="image-container"><img alt="handleMessage メソッドの中身を書き換える" src="img/c0cc19292f2c0b35.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<ul>
+<li>変更前は、送信された text を使ったswitch文で、返答内容に使うクラスを切り替えていた</li>
+<li>変更後は、Intentクラスの static メソッドである <code>Intent.whichIntent(text)</code> を実行して、textのパターンから Intent (つまり、 <code>REMINDER</code> or <code>UNKNOWN</code> ) を得る  <ul>
+<li>static メソッドは、インスタンス化(new)せずに、クラス名.メソッド名 で利用する。</li>
+</ul>
+</li>
+<li>さらに、switch 文の引数を <code>String text</code> から <code>Intent intent</code> に切り替えたことで、 intent = <code>REMINDER</code> の時と、 <code>UNKNOWN</code> の時で、処理が切り替わるようになった（つまり、<strong>Intentの識別 になった</strong>）</li>
+</ul>
+<h2 is-upgraded>動作確認</h2>
+<p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>　や、 <strong>こんにちは</strong> などを送信してみる。</p>
+<p class="image-container"><img alt="動作確認1" src="img/9fbd9a030ac10b7.png"></p>
+<aside class="special"><p>13:15に授業 を送った時は「リマインダーです」と返信され、それ以外の時にはおうむ返しになれば良い。これにより chatbot が、 <strong>hh:mmに〇〇</strong> というメッセージを、リマインダの登録の意図（インテント）だと判断していることになる。</p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-4まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="スロット（時間と用件）を抽出する" duration="0">
+        <p>ここまでの課題で、インテントは識別できるようになったが、そのインテントをどの様な条件（スロット）で実行すれば良いのかはメッセージから抽出できていない。このパートではこの部分を解決する。</p>
+<h2 is-upgraded>Slotを抽出するクラスを作成する</h2>
+<p><code>com.example.linebot.value</code> パッケージを作成し、その中に ReminderSlot クラスを作成する。</p>
+<aside class="special"><p>コードが長いので、 InteliJ IDEA の <a href="https://pleiades.io/help/idea/auto-completing-code.html" target="_blank">コード補完機能</a> を活用して作ると少し楽になります。</p>
+</aside>
+<h3 is-upgraded>ReminderSlot のクラス図</h3>
+<p class="image-container"><img alt="クラス図" src="img/aaf2642bc5c2c669.png"></p>
+<h3 is-upgraded>ReminderSlot のソースコード</h3>
+<p class="image-container"><img alt="ReminderSlotクラス" src="img/6c6cf10f5e7dfc00.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<p>作成した ReminderSlot クラスの中身と見比べてみましょう。</p>
+<ul>
+<li><strong>13:15に昼食</strong> という文字列を例にすると、時間（13:15）と用件（昼食）をスロットと捉える。</li>
+<li>時間: <code>pushAt</code>, 用件: <code>puthText</code> をフィールド変数で管理する</li>
+<li>引数つきコンストラクタに text で文字列を渡すと、正規表現を使って、以下の部分を文字列から抜き出す  <ol type="1">
+<li>13 の部分の文字列を抜き出し、整数型の hour とおく</li>
+<li>15 の部分の文字列を抜き出し、整数方の minutes とおく</li>
+<li>13, 15 を使って、時間を表す <code>LocalTime</code> 型のインスタンスを作る（ <code>pushAt</code> フィールド変数で参照する）<br></li>
+<li>昼食 の部分の文字列を抜き出し、<code>pushText</code> フィールド変数で参照する</li>
+</ol>
+</li>
+<li>もし、正規表現にマッチしない（スロットに抽出できない）text が引数に渡された場合は、例外を throw する</li>
+<li><code>getPushAt()</code> , <code>getPushText()</code> メソッドで、外部からメソッドの参照を取得できる</li>
+</ul>
+<aside class="warning"><p>正規表現を使って文字列を抜き出す部分は一見難解だが、学んでおくといろいろな処理に応用できて便利。 （例えば、データの加工とか）<br> この辺りもわかりやすいスモールケースは <a href="https://www.mlab.im.dendai.ac.jp/~yamada/java/regex/" target="_blank">正規表現によるマッチング</a> などに掲載されている</p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-5まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テーブルに記録するためのデータを作る (1)" duration="0">
+        <p>抽出したスロットの情報も含めて、データベースのテーブルに記録するデータを作る。</p>
+<p><code>com.example.linebot.value</code> パッケージの中に ReminderItem クラスを作成する。</p>
+<h3 is-upgraded>ReminderItem のクラス図</h3>
+<p class="image-container"><img alt="ReminderItemのクラス図" src="img/ee4305789a0e581f.png"></p>
+<h3 is-upgraded>ReminderItem のソースコード</h3>
+<p class="image-container"><img alt="ReminderItemのクラス" src="img/f2581b7aa9217a03.png"></p>
+<p>このクラスは、単なる値の格納用のクラスである。</p>
+<p>フィールドに、先ほどを作成した ReminderSlot をコンポジションしていることに注意。</p>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-6まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テーブルに記録するためのデータを作る (2)" duration="0">
+        <p>これはリマインダーの主要な処理になるので、Spring フレームワークで <code>@Service</code> のクラスを作り、この中でスロットの抽出の処理と、データベース登録用データの作成を実行する。</p>
+<h2 is-upgraded>処理結果となる RemindOn クラスを作る</h2>
+<p>処理結果をLINEBotが返答するための RemindOn クラスを、 Replier インターフェースの実装クラスとして作成する。</p>
+<h3 is-upgraded>RemindOn のクラス図</h3>
+<p class="image-container"><img alt="RemindOnのクラス図" src="img/ef2d5d2e1eeb015a.png"></p>
+<h3 is-upgraded>RemindOn のソースコード</h3>
+<p class="image-container"><img alt="RemindOnのソースコード" src="img/5b4e5595ae1a79ce.png"></p>
+<h2 is-upgraded>主要な処理を行う ReminderService クラスを作る</h2>
+<p><code>com.example.linebot.service</code> パッケージを作成し、その中に ReminderService クラスを作成する。</p>
+<p>このクラスは、Springが管理する <code>@Service</code> クラスに設定する。</p>
+<h3 is-upgraded>ReminderService のクラス図</h3>
+<p class="image-container"><img alt="ReminderServiceのクラス図" src="img/ac0a0abad8bd21ce.png"></p>
+<h3 is-upgraded>ReminderService のソースコード</h3>
+<p class="image-container"><img alt="ReminderServiceのソースコード" src="img/82332c500513e431.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<ul>
+<li>ここまで作成した <code>ReminderSlot</code> <code>ReminderItem</code> <code>RemindOn</code> を全て用いている</li>
+<li>text から <code>ReminderSlot</code> を作成する（スロットの抽出）</li>
+<li><code>ReminderSlot</code> と userId から <code>ReminderItem</code> を作成する（データベース登録用）</li>
+<li>ただし、まだデータベースに関わる処理はしていないので、登録用のデータを作成するだけである。</li>
+<li><code>@Service</code> アノテーションをつけているので、Springがインスタンス化を管理する</li>
+</ul>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-7まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="ReminderService クラスを Callback クラスから呼び出す" duration="0">
+        <p>Callbackクラスの handleMessage メソッドで、ReminderService クラスを呼び出す。</p>
+<p>ReminderService はSpringがインスタンス化を管理するので、 <code>@Autowired</code> でインスタンス化するコンストラクタと、参照先のフィールド変数を用意する。</p>
+<h2 is-upgraded>Callback クラス に ReminderService クラスの import を加える</h2>
+<p class="image-container"><img alt="ReminderService を import に加える" src="img/5ffad4c826729be6.png"></p>
+<h2 is-upgraded>Callback クラス に、フイールド変数と、引数つきコンストラクタを用意する</h2>
+<p class="image-container"><img alt="ReminderService の Autowired" src="img/2df66db531eb79e5.png"></p>
+<h2 is-upgraded>Callback クラス の handleMessage メソッドから、 ReminderService を利用する</h2>
+<p>破線部分を書き換えている。</p>
+<p class="image-container"><img alt="handleMessageメソッド" src="img/740d067373b26b7d.png"></p>
+<h2 is-upgraded>動作確認</h2>
+<p>LINEBot としてプログラムを起動し、 <strong>13:15に授業</strong>　や、 <strong>こんにちは</strong> などを送信してみる。</p>
+<p class="image-container"><img alt="動作確認2" src="img/383d5ad4e332404c.png"></p>
+<aside class="special"><p>13:15に授業 を送った時は「13:15に授業 を登録しました」と返信され、それ以外の時にはおうむ返しになれば良い。<br> もちろん、現時点ではまだデータベースに記録していないので、メッセージ上だけのものである。</p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-8まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テーブルにデータを記録する部分の作成(1)" duration="0">
+        <p>これはデータベースを用いる処理になるので、Spring フレームワークで <code>@Repository</code> のクラスを作り、この中でデータベースへの記録を実行する。</p>
+<h2 is-upgraded>データベースの設定を Spring フレームワークに行う</h2>
+<p><code>src</code> &gt; <code>main</code> &gt; <code>resources</code> フォルダにある、 <code>application.properties</code> ファイルを開き、次の設定を書き込む。</p>
+<p>ミスをすると原因が掴みづらくなるので、コピー&amp;ペーストを推奨する。</p>
+<aside class="warning"><p>すでにある <code>line.bot.channel-token</code> <code>line.bot.channel-secret</code> <code>handler.path</code> などは変更せずに、その下に追加設定する。 <strong>b199xxxx の部分は、あなたの学籍番号に書き換える</strong> こと。</p>
+</aside>
+<pre><code language="language-properties" class="language-properties">spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:~/h2db/softeng;AUTO_SERVER=TRUE;MODE=PostgreSQL
+spring.datasource.username=b199xxxx
+spring.datasource.password=b199xxxx
+</code></pre>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-9まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テーブルにデータを記録する部分の作成(2)" duration="0">
+        <h2 is-upgraded>データベースの設定が行われた ReminderRepository クラスを作成する</h2>
+<p><code>com.example.linebot.repository</code> パッケージを作成し、その中に ReminderRepository クラスを作成する。</p>
+<p>このクラスは、Springが管理する <code>@Repository</code> クラスに設定する。</p>
+<h2 is-upgraded>ReminderRepository のクラス図</h2>
+<p class="image-container"><img alt="ReminderRepository のクラス図" src="img/6461d08689512490.png"></p>
+<h2 is-upgraded>ReminderRepository のソースコード</h2>
+<p class="image-container"><img alt="ReminderRepository のソースコード" src="img/e7e948d42882703f.png"></p>
+<p><code>String sql = ...</code> の部分は途中で + で文字列を結合しているが、<strong>結合の前に必ずスペースを入れておく</strong> 。</p>
+<p class="image-container"><img alt="ReminderRepository の注意点" src="img/7aaa334b3a4e1148.png"></p>
+<h3 is-upgraded>ポイント</h3>
+<ul>
+<li>ここまで作成した <code>ReminderSlot</code> <code>ReminderItem</code> を用いている</li>
+<li><code>sql</code> が、テーブルにデータを追加するクエリ</li>
+<li><code>jdbc.update(...</code> の部分で、SQLの <code>?</code> のところを順番に設定し、SQLを実行している</li>
+<li><code>@Repository</code> アノテーションをつけているので、Springがインスタンス化を管理する</li>
+<li>Springがこのクラスをインスタンス化するときに、<code>JdbcTemplate</code> にデータベースの設定を行っている</li>
+</ul>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4-10まで完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="ReminderRepository クラスを ReminderService クラスから呼び出す" duration="0">
+        <p>データベースを登録できる様にした ReminderRepository クラスを、ReminderService クラスから呼び出して、テーブルに記録するためのデータを実際に記録できる様にする。</p>
+<h2 is-upgraded>ReminderService クラス に ReminderRepository クラスの import を加える</h2>
+<p class="image-container"><img alt="ReminderRepository を import に加える" src="img/7c002c65262db85f.png"></p>
+<h2 is-upgraded>ReminderService クラス に、フイールド変数と、引数つきコンストラクタを用意する</h2>
+<p class="image-container"><img alt="ReminderRepository の Autowired" src="img/4121c8798e23341.png"></p>
+<h2 is-upgraded>ReminderService クラス の doReplyOfNewItem メソッドから、ReminderRepository を利用する</h2>
+<p>破線部分を書き換えている。</p>
+<p class="image-container"><img alt="ReminderRepository の 利用" src="img/aa59ce007ce0b658.png"></p>
+<p>なお、ここまでの内容が反映された、ReminderService のクラス図は次の様になる。</p>
+<p class="image-container"><img alt="ReminderService の 最終的なクラス図" src="img/3295af43bec9b6a9.png"></p>
+<p>また、Callback, ReminderService, ReminderRepositoryの呼び出しの関係は、次の様になる。</p>
+<p class="image-container"><img alt="各クラス間の呼び出し関係" src="img/e54a1a6239250ce7.png"></p>
+<h2 is-upgraded>動作確認</h2>
+<p>LINEBot としてプログラムを起動し、 <strong>12:15に昼食</strong>　や、 <strong>こんにちは</strong> などを送信してみる。</p>
+<p class="image-container"><img alt="動作確認3" src="img/fbec10c92b2c8d55.png"></p>
+<p>動作は、データベースに接続する前と変わらない。</p>
+<p>ただし今回は、データベースのテーブルに組が追加されているはずである。</p>
+<p>IntelliJ IDEAのクエリコンソールから、検索クエリを実行し、テーブルの内容を確認する。</p>
+<pre><code language="language-sql" class="language-sql">select * from reminder_item;
+</code></pre>
+<p class="image-container"><img alt="動作確認4" src="img/6eb00778f0955a3c.png"></p>
+<p>Chatbotに送信した内容が、テーブルの組に追加されている。</p>
+<aside class="special"><p><strong>時間と用件をいくつか自由に送信し、テーブルに組が追加されていくのを確認しましょう。</strong></p>
+</aside>
+<h2 is-upgraded>Classroom に commit / push</h2>
+<aside class="warning"><p>自分の Classroom 用のフォルダに移動して実行してください</p>
+</aside>
+<pre><code language="language-shell" class="language-shell">git commit -m &#34;課題4をすべて完了&#34;
+git push 
+</code></pre>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
