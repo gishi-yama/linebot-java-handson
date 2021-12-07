@@ -1,6 +1,6 @@
 package com.example.linebot.replier;
 
-import com.example.linebot.CO2;
+import com.example.linebot.data.CO2;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import org.springframework.boot.web.client.RestTemplateBuilder;

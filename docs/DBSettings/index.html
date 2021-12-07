@@ -1,0 +1,189 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>H2DBの設定</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="DBSettings"
+                  title="H2DBの設定"
+                  environment="web"
+                  feedback-link="mailto:cist-softdsgn-qa@googlegroups.com">
+    
+      <google-codelab-step label="はじめに" duration="0">
+        <p>ここでは、LINEBot用のデータベースとして、H2DBをセットアップする。</p>
+<p>通常、データベースは別のサーバー等を用意するが、 <strong>演習用として内臓型のデータベースを準備</strong> する。</p>
+<h2 is-upgraded>ポイント</h2>
+<ol type="1">
+<li>IntelliJ IDEA で H2DB を利用するための設定を行う（まだ行ってない人向け）</li>
+<li>IntelliJ IDEA で H2DB に接続する</li>
+<li>IntelliJ IDEA で データベースのテーブルを作成する</li>
+<li>IntelliJ IDEA で テーブルにデータを追加・検索する</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="IntelliJ IDEA で H2DB を利用するための設定を行う" duration="0">
+        <p>画面右側の <strong>データベース（Database）</strong> の帯を押し、データベース ウィンドウを表示する。</p>
+<aside class="warning"><p>画面右側に「データベース」の帯が表示されていない場合は、このページの一番下を先に確認してください。</p>
+</aside>
+<p class="image-container"><img alt="データベースを押す" src="img/cc51a1eaee795288.png"></p>
+<p>データベース ウィンドウで、 <strong>+ &gt; データソース（Data Sources）&gt; H2</strong> を選ぶ</p>
+<p class="image-container"><img alt="データソースのH2を選ぶ" src="img/27a4945bf19c9c93.png"></p>
+<p>データソースおよびドライバー（Data Sources and Drivers）ウィンドウで、 <strong>ドライバー &gt; H2</strong> を選ぶ。</p>
+<p class="image-container"><img alt="ドライバーのH2を選ぶ" src="img/896cb2eafb14fd61.png"></p>
+<aside class="warning"><p>画面の様に、<strong>バージョン 1.4.200 をダウンロード（Download ver. 1.4.200）</strong> と表示されている学生は、 <strong>ダウンロード の文字の部分をクリック</strong> する。<br></p>
+</aside>
+<p class="image-container"><img alt="ダウンロードが必要な場合" src="img/f1f40388f7dffcfa.png"></p>
+<aside class="special"><p>バージョン 1.4.200 [stable]（ver. 1.4.200 [stable]）だけが表示されている場合は次の手順へ。</p>
+</aside>
+<p class="image-container"><img alt="ダウンロードが不要な場合" src="img/8caaedf5ccd87fac.png"></p>
+<p>━━━━━━━━━ 当てはまる場合のみ ━━━━━━━━━</p>
+<h2 is-upgraded>画面右側に データベース が出てこない場合</h2>
+<p>次の手順を試してください。</p>
+<ul>
+<li>SHIFTキーを2回押す</li>
+<li>検索窓に database と入力する</li>
+<li><strong>プラグイン: Database Tools and SQL</strong> が OFF になっていれば、 <strong>マウスで ON に切り替える</strong><img alt="Database Tools and SQLをONにする" src="img/7f89103bad4bfa4f.png"></li>
+<li>IntelliJ IDEA を再起動して、もう一度最初の手順からを試す</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="IntelliJ IDEA で H2DB に接続する" duration="0">
+        <p>データソースおよびドライバー（Data Sources and Drivers）ウィンドウで、左側の一覧から、 <code>default@localhost</code> を選ぶ。</p>
+<p class="image-container"><img alt="データソースdefault@localhostを選ぶ" src="img/a04341fc69215c8b.png"></p>
+<p>右側の入力欄を次の様に設定する。（指定した部分以外は自動的に設定される）</p>
+<aside class="warning"><p>特に、 <strong>URLの欄はミスをしやすいので、コピー＆ペーストを推奨</strong> する。</p>
+</aside>
+<ul>
+<li>ユーザー: <strong>あなたの学籍番号</strong></li>
+<li>パスワード: <strong>あなたの学籍番号</strong></li>
+<li>保存: <strong>再起動するまで(Until restart)</strong></li>
+<li>URL: <code>jdbc:h2:~/h2db/softeng;AUTO_SERVER=TRUE;MODE=PostgreSQL</code></li>
+</ul>
+<p>全て入力すると、次の様な画面になる。</p>
+<p class="image-container"><img alt="入力後の画面" src="img/c31e580f3e21a924.png"></p>
+<p>入力を完了したら、 <strong>適用</strong> もしくは <strong>OK</strong> ボタンを押す。</p>
+<p>データベースウィンドウに、 <strong>H2 - softeng</strong> が表示されるので、そのすぐ横の <strong>1個中0個を表示</strong> の欄をクリックする（灰色で見づらいので注意！）</p>
+<p class="image-container"><img alt="入力後の画面" src="img/967bc04c973342ba.png"></p>
+<p><strong>SOFTENG</strong> の中の <strong>PUBLIC（デフォルト スキーマ）</strong> を選択する。</p>
+<aside class="special"><p>下の図のような表示になれば、準備完了。<br> また、データベースのファイルは、ホームディレクトリ の h2db ディレクトリに <code>softeng.mv.db</code> ファイルとして記録されている。</p>
+</aside>
+<p class="image-container"><img alt="入力後の画面" src="img/20e5fdd7de33f170.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="データベースのテーブルを作成する" duration="0">
+        <h2 is-upgraded>クエリコンソールの起動</h2>
+<p>データベースウィンドウの <strong>クエリコンソール のアイコンをクリック</strong> し、 <strong>コンソール（デフォルト）</strong> を選ぶ。</p>
+<p class="image-container"><img alt="入力後の画面" src="img/edb49ce06d3e006c.png"></p>
+<p>クエリコンソールが表示される。ここにSQLを記載すると、データベースへのクエリとして実行できる。</p>
+<p class="image-container"><img alt="入力後の画面" src="img/cabd5db247227d5.png"></p>
+<h2 is-upgraded>テーブル作成クエリの実行</h2>
+<p>テーブル作成クエリとして、 <code>create table</code> のSQLを実行する。</p>
+<p>クエリコンソールに、以下のようにSQLを入力する。</p>
+<p>Negative :ここもミスがあるとこの先の作業に影響するので、コピー&amp;ペーストを推奨する。</p>
+<pre><code language="language-sql" class="language-sql">-- もし、すでにデータベースがあれば削除する（間違った時用）
+drop table if exists reminder_item;
+
+-- テーブルを作成する
+create table reminder_item (
+    user_id varchar(64),
+    push_at time,
+    push_text varchar(32)
+);
+</code></pre>
+<p>このSQLは、以下の仕様で <code>reminder_item</code> テーブルを作るためのSQLである。</p>
+<ul>
+<li>文字列型を64文字まで格納する <code>user_id</code> 列がある</li>
+<li>time型を格納する<code>push_at</code> 列がある  <ul>
+<li><code>time</code> 型は時間(例えば <strong>‘13:30:00&#39;</strong> のような形式) を格納するための型である</li>
+</ul>
+</li>
+<li>文字列型を32文字まで格納する <code>push_text</code> 列がある</li>
+</ul>
+<p>入力したら、クエリコンソールの再生ボタン ▶︎ をおす。</p>
+<p class="image-container"><img alt="入力後の画面" src="img/e20fe5b0c63c2dda.png"></p>
+<aside class="special"><p>データベースウィンドウの テーブルs の中に、以下のようにテーブルと列が作成されていれば成功。</p>
+</aside>
+<p class="image-container"><img alt="作成されたテーブルと列" src="img/25a18d68cc14b4c8.png"></p>
+<p>━━━━━━━━━ 当てはまる場合のみ ━━━━━━━━━</p>
+<aside class="warning"><p>うまくいかない場合は、必ずエラーログが表示される。 <strong>英語/日本語を問わず、こうしたエラーログを読んで解決できるようになることが上達に非常に重要</strong> である。<br> 例えば下の図は、SQLにミスがある時のエラーである。</p>
+</aside>
+<p class="image-container"><img alt="エラーログの例" src="img/fced82dfef0c3470.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="IntelliJ IDEA で テーブルにデータを追加・検索する" duration="0">
+        <p><code>reminder_item</code> テーブルに、データを入力する。</p>
+<h2 is-upgraded>LINE Developers コンソールから、ユーザーIDをコピーする</h2>
+<p><a href="https://developers.line.biz/console/" target="_blank">LINE Developers コンソール</a> で、LINEBotのチャンネルをクリックする。</p>
+<p>チャンネル基本設定の下の方に表示されている <strong>あなたのユーザーID</strong> をコピーする。</p>
+<p class="image-container"><img alt="あなたのユーザーID" src="img/9520a83eeca02a73.png"></p>
+<p>ここでは、<code>ABCDEFG...</code> だと仮定する。</p>
+<h2 is-upgraded>クエリコンソールから、SQLでデータを追加する</h2>
+<p>IntelliJ IDEAのクエリコンソールに、以下のようにSQLを入力する。</p>
+<aside class="warning"><p>（学生むけ）ここからはSQLに慣れるために、自分で入力してみましょう。</p>
+</aside>
+<p><code>ABCDEFG...</code> は、LINE Developers コンソール からコピーした、自分のユーザーIDに変更すること。</p>
+<p class="image-container"><img alt="Insert SQL" src="img/4bb44866df370ca6.png"></p>
+<p>入力したら、クエリコンソールの再生ボタン ▶︎ をおす。</p>
+<h2 is-upgraded>クエリコンソールから、SQLでデータを検索する</h2>
+<p>データの追加が成功していれば、以下のような組が reminder_item テーブルに追加されているはずである。</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>user_id</p>
+</td><td colspan="1" rowspan="1"><p>push_At</p>
+</td><td colspan="1" rowspan="1"><p>push_text</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ABCDEFG...</p>
+</td><td colspan="1" rowspan="1"><p>13:15:00</p>
+</td><td colspan="1" rowspan="1"><p>授業開始</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>ABCDEFG...</p>
+</td><td colspan="1" rowspan="1"><p>16:30:00</p>
+</td><td colspan="1" rowspan="1"><p>授業終了</p>
+</td></tr>
+</table>
+<p>これを、検索用のSQLを実行して確かめる。</p>
+<p>IntelliJ IDEAのクエリコンソールに、以下のようにSQLを入力する。</p>
+<p class="image-container"><img alt="Select SQL" src="img/c303411c378c1634.png"></p>
+<p>入力したら、クエリコンソールの再生ボタン ▶︎ をおす。</p>
+<aside class="special"><p>IntelliJ の実行ウィンドウに、以下の様に検索結果が表示されれば成功。</p>
+</aside>
+<p class="image-container"><img alt="Select SQLの実行結果" src="img/405ecd3a8c021cd9.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

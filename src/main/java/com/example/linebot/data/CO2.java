@@ -1,4 +1,4 @@
-package com.example.linebot;
+package com.example.linebot.data;
 
 public class CO2 {
 
