@@ -1,13 +1,13 @@
 package com.example.linebot.value;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.time.LocalDate;
 
 //スネークケース abc_de のキーと、キャメルケース abcDe のフィールド名をマッピングする
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CovidItem {
 
   private final LocalDate date;

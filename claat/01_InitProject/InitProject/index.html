@@ -1,0 +1,332 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>LINEBotの開発環境とプロジェクトを初期設定する</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="InitProject"
+                  title="LINEBotの開発環境とプロジェクトを初期設定する"
+                  environment="web"
+                  feedback-link="mailto:cist-softeng-qa@googlegroups.com">
+    
+      <google-codelab-step label="はじめに" duration="0">
+        <p>Javaプログラミングの授業の最終課題では、LINEBotを作成した。</p>
+<p>ソフトウェア工学概論（山川担当分）では、LINEBotをフロントエンド（ユーザー側のアプリ）と位置付けて、バックエンドやその他システムが連係した情報システム全体の開発体験を行う。</p>
+<p>この資料では、LINEBotを改めて準備する。一部はJavaプログラミングの最終課題の繰り返し（続き）復習ととらえ、キーワードやプログラミングの方法など、忘れてしまった部分や不安な部分は <a href="https://www.dropbox.com/sh/xlgqb8rx5k3fo82/AABmODCRDpfKK3_EF4HKCWkTa?dl=0" target="_blank">Javaプログラミングの授業資料</a> も再度確認しながら取り組むこと。</p>
+<p>今回は、LINEBotの開発環境とプロジェクトを初期設定する。<strong>特に、「ngrokの準備と起動」・「`LINE Bot（Message API）の準備」の項目は、各自のPCやアカウント内での現状（Javaプログラミングの最終課題の際の設定状況） ので、を確認し、足りない部分のみ行う</strong> こと。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="ngrokの準備と起動" duration="0">
+        <h2 is-upgraded>ngrokをインストールする</h2>
+<p><a href="https://ngrok.com/download" target="_blank">https://ngrok.com/download</a> からダウンロードして、zipを展開する。</p>
+<h2 is-upgraded>ngrokを起動する</h2>
+<p>ダウンロードしたディレクトリまで、ターミナル（Windowsの場合はコマンドプロンプト）で移動して、以下を実行する</p>
+<aside class="warning"><p> ターミナルやコマンドプロンプトの使い方はこの授業では解説しないので、各自でWebや書籍等で調べること。<br> コロナ下で、大学PCなどを使ったCUI（Character-based User Interface）の使い方に十分に慣れていない学生もいるとおもうが、情報系としては基本技術なので、積極的に利用して慣れた方が良い。 </p>
+</aside>
+<p>Windows の場合</p>
+<pre>ngrok http --region jp 8080
+</pre>
+<p>mac の場合</p>
+<pre>./ngrok http --region jp 8080
+</pre>
+<p>以下の様に表示されれば成功。<code>https://xxxxxxxx.jp.ngrok.io</code> の <code>xxxxxxxx</code> の部分は人によってそれぞれ異なる。</p>
+<pre>ngrok by @inconshreveable                    (Ctrl+C to quit)
+
+Session Status                online        
+Session Expires               1 hour, 59 minutes
+Version                       2.3.40         
+Region                        Japan (jp)     
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    http://xxxxxxxx.jp.ngrok.io -&gt; http://localhost:8080
+Forwarding                    https://xxxxxxxx.jp.ngrok.io -&gt; http://localhost:8080
+Connections                   ttl     opn     rt1     rt5     p50     p90
+                              0       0       0.00    0.00    0.00    0.00
+</pre>
+<p>ngrokは起動したままにしておく。特に、</p>
+<pre>https://xxxxxxxx.jp.ngrok.io
+</pre>
+<p>のURLは後の手順でもよく使うため、PCのテキストエディタやメモ帳などにコピー＆ペーストしておくとよい。</p>
+<h2 is-upgraded>授業用のプロジェクトと組み合わせた動作確認</h2>
+<p>IntelliJ IDEAを開き、 LinebotApplication を右クリックで起動する。</p>
+<p>ブラウザから、ngrokに表示されていた <code>https://xxxxxxxx.jp.ngrok.io</code> を使って、 <code>https://xxx.ngrok.io/test</code> にもアクセスする（xxxは各自のもの）。以下の様に表示されればOK。</p>
+<pre>Get from https://xxxxxxxx.jp.ngrok.io/test
+</pre>
+<h2 is-upgraded>ngrokを使うときの注意点</h2>
+<aside class="warning"><p> ngrokから発行されるURL（ https://xxxxxxxx.jp.ngrok.io ）はあくまで開発用の一時的なもの。アカウントを登録しないフリープランでは、1回あたり2時間有効になる。 </p>
+<p>ngrokから発行されるURLは、ngrokを再起動した場合にも再発行される（違うものに変わる）。再発行された場合は、後の手順でこのURLを使っている部分も毎回変更する必要がある。</p>
+<p>2時間でURLが変わることが面倒な場合は、ngrokのサイトでユーザー登録をし、Authtokenを設定すれば時間制限はなくなる（詳しくは ngrok のDocumentを参照）</p>
+</aside>
+<h2 is-upgraded>参考</h2>
+<ul>
+<li><a href="https://ngrok.com/docs" target="_blank">ngrokのDocument</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LINE Bot（Message API）の準備" duration="0">
+        <h2 is-upgraded>Messaging APIの登録</h2>
+<p><a href="https://developers.line.me/ja/docs/messaging-api/getting-started/" target="_blank">LINE Developersコンソールでチャネルを作成する</a> の、<code>1. LINE Developersコンソールにログインする</code> 〜 <code>5. チャネルを確認する</code> までの手順を行う。</p>
+<p>原則、画像の通りに進めてもらってかまわないが、補足を以下に記載する。</p>
+<ul>
+<li>もし、画面が英語で表示されてしまう場合は、画面右下の言語設定を <code>English</code> から <code>日本語</code> に切り替える。<br><strong>⚠️ ブラウザの翻訳は使わないこと</strong>: ブラウザの翻訳機能を使うと、設定に使う文字列など、本来翻訳すべきではない部分も変わってしまう。</li>
+<li><code>1. LINE Developersコンソールにログインする</code> では、それぞれのLINEのアカウントでログインする。</li>
+<li><code>2. 開発者として登録する（初回ログイン時のみ）</code>  では、それぞれのニックネームやメールアドレス（学生の場合は、自身の大学メールアドレス）を入力する。</li>
+<li><code>3. 新規プロバイダーを作成する</code> では、プロパイダー名は任意の（好きな）名前を入力する。</li>
+<li><code>4. チャネルを作成する</code> では...<ul>
+<li>Channel Type（チャンネルの種類）が <code>Messaging API</code> になっていることを確認する。</li>
+<li><code>任意</code> と書かれている項目は空欄でよい。</li>
+<li>チャンネル名や説明は、個人情報ではない、何か好きなものを入力する。</li>
+<li>大業種は <code>個人</code> 、小業種は  <code>個人（IT・コンピュータ）</code> や <code>個人（学生）</code> などを自分の立場にあわせて選ぶ。</li>
+<li>アイコン画像も自分の好きなものを利用してよいが、<a href="http://www.irasutoya.com/" target="_blank">いらすとや</a>の素材を使わせてもらうのもよい。</li>
+</ul>
+</li>
+</ul>
+<h2 is-upgraded>Messaging APIの設定</h2>
+<p><a href="https://developers.line.biz/console/" target="_blank">LINE Developersコンソール</a> のプロパイダーの欄から、あなたが作成したプロパイダー名 → あなたが作成したチャンネル名 の順に選択する。</p>
+<p>チャンネルを開き、<code>Messaging API設定</code> のタブを開く。</p>
+<ul>
+<li><strong>WebHookURL</strong> を、 ngrokで取得した <code>https://xxxxxxxx.ngrok.io/callback</code> に変更する（xxxxxxxxは各自のものを使う）</li>
+<li><strong>Webhookの利用</strong> を、選択状態（緑色）にスイッチする。</li>
+<li><strong>応答メッセージ</strong> の <code>編集</code> を選ぶと、 <strong>応答設定</strong> のウィンドウが開く。 <ul>
+<li><code>応答メッセージ</code> を <code>オフ</code> にする</li>
+<li><code>あいさつメッセージ</code> を <code>オフ</code> にする</li>
+<li><code>Webhook</code> は、 <strong><code>オン</code></strong><strong> のまま</strong> にする（間違えないように！）</li>
+<li>ここまで設定したら、<strong>応答設定</strong> のウィンドウを閉じる。</li>
+</ul>
+</li>
+<li><strong>チャネルアクセストークン（長期）</strong> の <code>発行</code> ボタンを押す。</li>
+</ul>
+<p>に変更する。（各設定項目の <strong>更新ボタン押し忘れ</strong>に注意)</p>
+<h2 is-upgraded>その他</h2>
+<p>このMessage APIの設定画面は今後もよく使うので、ブラウザのタブなどで開いたままにしておくと便利。</p>
+<p class="image-container"><img alt="設定画面例" src="img/a5d3481c2313d224.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LineBotの設定と起動" duration="0">
+        <h2 is-upgraded>propertiesファイルの設定</h2>
+<p>IntelliJ IDEAに戻って、その他のソース（src/main/resources）の application.properties ファイルを、<strong>前の手順で設定したMessaging APIの設定画面の情報で上書き</strong>する。</p>
+<p><strong>チャンネルシークレットやチャネルアクセストークンの値は個々人によって異なる</strong> 。</p>
+<ul>
+<li><code>line.bot.channel-token</code> には <strong>チャネルアクセストークン（長期）の値</strong> を貼り付ける。<br><strong>チャネルアクセストークン（長期）の値は、Messaging APIの設定画面の「Messaging API設定」タブ</strong>にある。</li>
+<li><code>line.bot.channel-secret</code> には <strong>チャンネルシークレットの値</strong> を貼り付ける。<br><strong>チャネルアクセストークン（長期）の値は、Messaging APIの設定画面の「Messaging API設定」タブ</strong>にある。</li>
+<li>どちらも<strong>絶対に改行せずに1行で</strong>貼り付ける。</li>
+</ul>
+<pre><code language="language-properties" class="language-properties">line.bot.channel-token=C7gxAFSL8Bs09vz5...
+line.bot.channel-secret=i1MZxVT6c...
+handler.path=/callback
+</code></pre>
+<aside class="warning"><p> botの調子が悪くなったときに、チャンネルシークレットやチャネルアクセストークンの値を再発行することがある。そのときに、このファイルをよく書き換え忘れることに注意。 </p>
+</aside>
+<h2 is-upgraded>動作確認</h2>
+<p>ここまで完了すれば、botが動作するようになっている。</p>
+<p><strong>LinebotApplication を再起動</strong> して、<strong>Message API の画面の Webhook設定 の項目で検証ボタン</strong>を押す。</p>
+<p class="image-container"><img alt="接続確認ボタン" src="img/b0b05c6258c7e508.png"></p>
+<p>のように表示されればOK。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="LINE Botの中身を作成" duration="0">
+        <h2 is-upgraded>Botをフォローしたときのプログラムを作成する</h2>
+<p>Botをフォローしたときに、この後の手順で使う<code>UserId</code>を返答してくれるようにする。</p>
+<aside class="warning"><p> あくまで体験のための手順なので、**実際の開発時はUserIdを表に出さず、Bot側にデータベースなどを用意して、フォローしたユーザのIDを漏洩しないように記録しておく** ことがよい。 </p>
+</aside>
+<h3 is-upgraded>フォローされた時の返答用クラスの作成</h3>
+<p>先ほど作ったPushクラスとは別に、ソース・パッケージ（src/main/java）にクラスを作る。</p>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Replire</code> インターフェースを作る。<br> これにより、このインターフェースの実装クラスは、必ず <code>Message reply() {...};</code> メソッドを作る、という制限をする</p>
+<p>IntelliJ IDEAでは、クラス作成時に インターフェース (interface) を選べば良い。<br><img alt="インターフェースの作成" src="img/7d4914bd9b4f7eb8.png"></p>
+<pre><code language="language-java" class="language-java">package com.example.linebot.replier;
+
+import com.linecorp.bot.model.message.Message;
+
+// 返信用クラスのためのインターフェース
+public interface Replier {
+ 
+// 返信用クラスが必ず実装するメソッド
+ Message reply();
+
+}
+</code></pre>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> を実装する <code>Follow</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
+<pre><code language="language-java" class="language-java">package com.example.linebot.replier;
+
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TextMessage;
+
+// フォローされた時用の返信クラス
+public class Follow implements Replier {
+
+  private FollowEvent event;
+
+  public Follow(FollowEvent event) {
+    this.event = event;
+  }
+
+  @Override
+  public Message reply() {
+    String userId = this.event.getSource().getUserId();
+    String text = String.format(&#34;あなたのユーザーID:%s&#34;, userId);
+    return new TextMessage(text);
+  }
+
+}
+</code></pre>
+<p><code>com.example.linebot</code> パッケージの中に、<code>Callback</code> クラスを新たに作る。</p>
+<pre><code language="language-java" class="language-java">package com.example.linebot;
+
+import com.example.linebot.replier.Follow;
+import com.linecorp.bot.model.event.FollowEvent;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.spring.boot.annotation.EventMapping;
+import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@LineMessageHandler
+public class Callback {
+    
+  private static final Logger log = LoggerFactory.getLogger(Callback.class);
+
+  // フォローイベントに対応する
+  @EventMapping
+  public Message handleFollow(FollowEvent event) {
+    // 実際はこのタイミングでフォロワーのユーザIDをデータベースにに格納しておくなど
+    Follow follow = new Follow(event);
+    return follow.reply();
+  }
+
+}
+</code></pre>
+<p><code>@LineMessageHandler</code> は、LineBot のコントローラー部として動くクラスであることを設定する。</p>
+<p><code>@EventMapping</code> は、メソッドの引数の種類に合わせて、LineBot を通じて送信されてきたメッセージを処理するメソッドであることを設定する。</p>
+<h3 is-upgraded>動作確認</h3>
+<p>先に <strong>LineBotApplication を停止して、再起動</strong>する。</p>
+<p><strong>Messaging APIの設定画面 に表示されているQRコードを使って、スマートフォンから自分のBotを友達に登録</strong> する。すると、下のようにユーザIdを返答してくれればOK。（このUserIdはフォローした本人のもの）</p>
+<p class="image-container"><img alt="フォロー時の動作" src="img/ec51a3eca12b92c.png"></p>
+<h2 is-upgraded>話しかけに応答するプログラムを作成する</h2>
+<p>こちらから話しかけたことに応答するようにBotを改良する。</p>
+<h3 is-upgraded>Parrot クラスを作成</h3>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> を実装する <code>Parrot</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
+<pre><code language="language-java" class="language-java">package com.example.linebot.replier;
+
+import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TextMessage;
+
+// おうむ返し用の返信クラス
+public class Parrot implements Replier {
+
+  private MessageEvent&lt;TextMessageContent&gt; event;
+
+  public Parrot(MessageEvent&lt;TextMessageContent&gt; event) {
+    this.event = event;
+  }
+
+  @Override
+  public Message reply() {
+    TextMessageContent tmc = this.event.getMessage();
+    String text = tmc.getText();
+    return new TextMessage(text);
+  }
+
+}
+</code></pre>
+<h3 is-upgraded>Callback クラスを変更</h3>
+<p>追加で以下を import に追加する（同名のクラスが多いので注意）。</p>
+<pre><code language="language-java" class="language-java">import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.MessageEvent;
+import com.example.linebot.replier.Parrot;
+</code></pre>
+<pre><code language="language-java" class="language-java">@LineMessageHandler
+public class Callback {
+
+  // ------------ 中略・変更なし ------------ 
+
+  // 文章で話しかけられたとき（テキストメッセージのイベント）に対応する
+  @EventMapping
+  public Message handleMessage(MessageEvent&lt;TextMessageContent&gt; event) {
+    Parrot parrot = new Parrot(event);
+    return parrot.reply();
+  }
+
+}
+</code></pre>
+<p><code>MessageEvent<TextMessageContent></code> は、LineBotに送られたテキスト文章を表すクラス。</p>
+<h3 is-upgraded>動作確認</h3>
+<p>LinebotApplication を一度停止して、再起動する。</p>
+<p>LINEでBotに向かって何かメッセージを送ると、Botがそれをオウム返しすることを確認する。</p>
+<p class="image-container"><img alt="おうむがえし" src="img/7af95d086194648e.png"></p>
+<h2 is-upgraded>解説と補足</h2>
+<p>Javaだけではなく、Webシステムの知識も使った解説です。</p>
+<p>この解説を難しく感じる学生も多くいると思います。そういった難しい仕組みを <strong>ライブラリ</strong> として取り組み、public などで公開されたメソッドを使って自らのプログラムに組み込んでいけるところも、Javaプログラムで大切な部分です。</p>
+<p>今回であれば、「Line社のサーバーと通信し、特定のBotとメッセージを送受信する部分」を、前のページで導入した「LineBot用の開発ライブラリ」の中のクラスやインスタンスが、みなさんのプログラムと連動して行ってくれています。</p>
+<h3 is-upgraded>以下、ここまで作成した部分の解説。</h3>
+<ul>
+<li><code>@LineMessageHandler</code> をつけたclassが、Message APIの設定画面で設定したWebhookURL <code>https://xxxxxxxx.ngrok.io/callback</code> の処理用クラスにあたる。このクラスに、Linebotが受診したイベント（メッセージやデータなど）が配送される。</li>
+<li><code>@EventMapping</code>をつけたメソッドが、各イベント（フォロー、話しかけなど）に対応する処理にあたる。どのイベントに対応するかは、引数で与えられたイベントクラスによって変わる（例：フォローイベントは<code>FollowEvent</code>クラス）</li>
+<li>イベントの情報は、<code>event</code>引数に格納されているので、getメソッドなどで取得できる。どんな情報が入っているかは <a href="https://developers.line.biz/ja/reference/messaging-api/#webhook-event-objects" target="_blank">公式のドキュメント：Webhookイベントオブジェクト</a> と <a href="https://www.javadoc.io/doc/com.linecorp.bot/line-bot-model/latest/com/linecorp/bot/model/event/package-summary.html" target="_blank">これに対応するクラス</a> で確認できる。例えばフォローイベントには<pre><code language="language-json" class="language-json">{
+  &#34;replyToken&#34;: &#34;nHuyWiB7yP5Zw52FIkcQobQuGDXCTA&#34;,
+  &#34;type&#34;: &#34;follow&#34;,
+  &#34;timestamp&#34;: 1462629479859,
+  &#34;source&#34;: {
+    &#34;type&#34;: &#34;user&#34;,
+    &#34;userId&#34;: &#34;U4af4980629...&#34;
+  }
+}
+</code></pre>
+といった情報が入っていて、今回の「Botをフォローしたときのプログラムを作成する」では、<code>event.getSource().getUserId();</code> で <code>sourse.userId</code>の情報を取得している。</li>
+<li>話しかけてきた相手にテキストメッセージを返すためには、返信メッセージを<code>Message</code> のインスタンスを戻り値として返す。今回のプログラム例では <code>reply</code> メソッドで返信メッセージを作っている。</li>
+<li>何も返したくない場合は、戻り値の型を<code>void</code>にすればよい。<pre><code language="language-java" class="language-java">@EventMapping
+public void handleHoge(HogeEvent event) {
+    // BotがHogeEventを受けたときの処理
+}
+</code></pre>
+</li>
+<li>複数のメッセージを返したい場合は、戻り値の型をListにすればよい。<pre><code language="language-java" class="language-java">@EventMapping
+public List&lt;Message&gt; handleHoge(HogeEvent event) {
+    // BotがHogeEventを受けたときの処理
+    return Arrays.asList(new TextMessage(&#34;一行目&#34;), new TextMessage(&#34;二行目&#34;));
+}
+</code></pre>
+</li>
+<li>画像（<code>ImageMessage）</code>や位置（<code>LocationMessage</code>）等でも返答できる。スタンプ（<code>StickerMessage</code>）で返信もできるが、標準スタンプしか返せない...。どんなメッセージが返せるかは<a href="https://developers.line.biz/ja/reference/messaging-api/#message-objects" target="_blank">公式のドキュメント：メッセージオブジェクト</a> とこれに <a href="https://www.javadoc.io/static/com.linecorp.bot/line-bot-model/4.8.0/com/linecorp/bot/model/message/package-summary.html" target="_blank">対応するクラス</a> で確認できる。</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

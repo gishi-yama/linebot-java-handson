@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-04-17T21:25:48+09:00",
+  "id": "InitProject",
+  "duration": 0,
+  "title": "LINEBotの開発環境とプロジェクトを初期設定する",
+  "summary": "",
+  "source": "InitProject.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "java",
+    "spring",
+    "linebot"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "mailto:cist-softeng-qa@googlegroups.com",
+  "url": "InitProject"
+}
