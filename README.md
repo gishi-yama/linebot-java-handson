@@ -4,13 +4,13 @@
 
 **次の環境で動作確認しています**
 
-- macOS 12.4
-- openjdk version "17.0.3" 2022-04-19
-- Maven 3.8.5
-- IntelliJ 2021.3.3
-- ngrok 3.0.3
-- Spring Boot 2.6.6
-- line-bot-sdk-java 4.8.0
+- macOS 12.6
+- openjdk version "17.0.5" 2022-10-18
+- Maven 3.8.6
+- IntelliJ 2022.3
+- ngrok 3.1.0
+- Spring Boot 2.7.6
+- line-bot-sdk-java 5.0.3
 
 ## 前準備
 
