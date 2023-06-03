@@ -83,7 +83,7 @@ Negative
 ここまで作成できたら、git（Windowsの方はgit bash, macOSの方はターミナルなど）を使い、Classroom に push しましょう。
 
 Negative
-: 自分の Classroom 用のフォルダに移動して実行してください  
+: 自生分の Classroom 用のフォルダに移動して実行してください  
 
 ```shell
 git commit -m "課題4-3まで完了"
