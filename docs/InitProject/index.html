@@ -131,6 +131,18 @@ public class Push {
 <p>ブラウザから、ngrokに表示されていた <code>https://b22xxxxx.loca.lt</code> を使って、 <code>https://b22xxxxx.loca.lt/test</code> にもアクセスする（学籍番号は各自のもの）。以下の様に表示されればOK。</p>
 <pre><code>Get from https://b22xxxxx.loca.lt/test
 </code></pre>
+<aside class="warning"><h3 is-upgraded>localtuunel を使う上での注意</h3>
+<p><code>https://b22xxxxx.loca.lt/test</code> などにアクセスした時、以下のような画面が表示される場合がある。</p>
+<p class="image-container"><img alt="画面例" src="img/8c86da1f66ff2664.png"></p>
+<p>これは、悪意のあるユーザーが、フィッシングサイトなどを localtunnel で公開しないようにするための予防措置である。</p>
+<p>当然みなさんは学業目的で利用するので、 <code>If you're the developer...</code> の項目にしたがって、フィッシングサイトではないことを宣言する。</p>
+<ol type="1">
+<li><a href="https://ipv4.icanhazip.com" target="_blank">https://ipv4.icanhazip.com</a> にアクセスし、自分のローカルネットワークを外側からみた場合のIPアドレスを表示する。（ブラウザ上に xxx.xxx.xxx.xxx のようなIPアドレスで表示される）</li>
+<li>表示されたIPアドレスをコピーし、上記の画面に戻り、 <code>Endpoint IP</code> 欄に貼り付け、送信する。（フィッシングサイトではないことを宣言する）</li>
+<li>宣言は7日間有効なので、7日後にアクセスする場合は、また同様の手段を行う。</li>
+</ol>
+<p>なお、上記の操作はブラウザからアクセスする時のみ必要なもので、今後のLINE Botの課題では今後生じないはずであるが、ブラウザで何かを表示させるなどの工夫を行った場合は、上記の操作が改めて必要になることがある。</p>
+</aside>
 
 
       </google-codelab-step>
@@ -223,8 +235,8 @@ line.bot.handler.path=/callback
 <p>⚠️ あくまで体験のための手順なので、<strong>実際の開発時はUserIdを表に出さず、Bot側にデータベースなどを用意して、フォローしたユーザのIDを漏洩しないように記録しておく</strong> ことがよいと思います。</p>
 <h2 is-upgraded>フォローされた時の返答用クラスの作成</h2>
 <p>先ほど作ったPushクラスとは別に、ソース・パッケージ（src/main/java）にクラスを作る。</p>
-<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> インターフェースを作る。<br> これにより、このインターフェースの実装クラスは、必ず <code>Message reply() {...};</code> メソッドを作る、という制限をする</p>
-<p>IntelliJ IDEAでは、クラス作成時に インターフェース (interface) を選べば良い。<br><img alt="インターフェースの作成" src="img/7d4914bd9b4f7eb8.png"></p>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Replire</code> インターフェースを作る。<br> これにより、このインターフェースの実装クラスは、必ず <code>Message reply() {...};</code> メソッドを作る、という制限をする</p>
+<p>IntelliJ IDEAでは、クラス作成時に インターフェース (interface) を選べば良い。<br><img alt="インターフェースの作成" src="img/58cd4acaf0ae9e6f.png"></p>
 <pre><code language="language-java" class="language-java">package com.example.linebot.replier;
 
 import com.linecorp.bot.model.message.Message;
@@ -237,7 +249,7 @@ public interface Replier {
 
 }
 </code></pre>
-<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> を実装する <code>Follow</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Replire</code> を実装する <code>Follow</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
 <pre><code language="language-java" class="language-java">package com.example.linebot.replier;
 
 import com.linecorp.bot.model.event.FollowEvent;
@@ -301,7 +313,7 @@ public class Callback {
       <google-codelab-step label="話しかけに応答するプログラムを作成する" duration="0">
         <p>こちらから話しかけたことに応答するようにBotを改良する。</p>
 <h2 is-upgraded>Parrot クラスを作成</h2>
-<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> を実装する <code>Parrot</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Replier</code> を実装する <code>Parrot</code> クラスを作る。<br><code>imprements</code> キーワードを用いることに注意！</p>
 <pre><code language="language-java" class="language-java">package com.example.linebot.replier;
 
 import com.linecorp.bot.model.event.MessageEvent;
