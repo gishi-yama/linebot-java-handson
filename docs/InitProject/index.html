@@ -223,7 +223,7 @@ line.bot.handler.path=/callback
 <p>⚠️ あくまで体験のための手順なので、<strong>実際の開発時はUserIdを表に出さず、Bot側にデータベースなどを用意して、フォローしたユーザのIDを漏洩しないように記録しておく</strong> ことがよいと思います。</p>
 <h2 is-upgraded>フォローされた時の返答用クラスの作成</h2>
 <p>先ほど作ったPushクラスとは別に、ソース・パッケージ（src/main/java）にクラスを作る。</p>
-<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Replire</code> インターフェースを作る。<br> これにより、このインターフェースの実装クラスは、必ず <code>Message reply() {...};</code> メソッドを作る、という制限をする</p>
+<p><code>com.example.linebot.replier</code> パッケージの中に、<code>Reply</code> インターフェースを作る。<br> これにより、このインターフェースの実装クラスは、必ず <code>Message reply() {...};</code> メソッドを作る、という制限をする</p>
 <p>IntelliJ IDEAでは、クラス作成時に インターフェース (interface) を選べば良い。<br><img alt="インターフェースの作成" src="img/7d4914bd9b4f7eb8.png"></p>
 <pre><code language="language-java" class="language-java">package com.example.linebot.replier;
 

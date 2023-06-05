@@ -307,7 +307,7 @@ public interface Replier {
 }
 ```
 
-`com.example.linebot.replier` パッケージの中に、`Reply` を実装する `Follow` クラスを作る。  
+`com.example.linebot.replier` パッケージの中に、`Replire` を実装する `Follow` クラスを作る。  
 `imprements` キーワードを用いることに注意！
 
 ```java
@@ -384,7 +384,7 @@ public class Callback {
 
 ### Parrot クラスを作成
 
-`com.example.linebot.replier` パッケージの中に、`Reply` を実装する `Parrot` クラスを作る。  
+`com.example.linebot.replier` パッケージの中に、`Replier` を実装する `Parrot` クラスを作る。  
 `imprements` キーワードを用いることに注意！
 
 ```java
