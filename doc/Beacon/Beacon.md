@@ -37,22 +37,20 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 
 ここでは手元に micro:bit の実機があり、開発しているPCとUSBケーブルで接続されていることを前提に進める。
 
-1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/v0) にアクセスする。<br />![beacon05](beacon05.png)
-2. `高度なブロック` 欄をクリックする。<br />![beacon06](beacon06.png)
-3. `+ パッケージを追加する` 欄をクリックする。<br />![beacon06](beacon07.png) 
-4. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
-5. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08](beacon08.png)
-6. `元のパッケージを削除して「linebeacon」を追加する` ボタンを押す。<br />![beacon09](beacon09.png)
-7. メニューから `無線` 欄が消え、代わりに `Line Beacon` 欄と `Bluetooth` 欄が表示されていることを確認する。<br />![beacon10](beacon10.png)<br />※なお、元のエディタのメニューに戻したいときは `プロジェクト` → `新しいプロジェクト` すれば良い。
-8. 以下の図のようにプログラミングする。<br />![beacon11](beacon11.png)
-    - `Bluetooth 送信強度`　ブロックは、 `Bluetooth` 欄にある。<br />デフォルト値（最大値）は `7` だが、電波強度が高すぎる（+4dBm, 最大70m）なので、卓上で試すなら `0` もしくは `1` （-30dBm〜-20dBm）で十分。
+1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/v0) にアクセスする。<br />![beacon05_差替](beacon05_差替.png)
+2. `+ 拡張機能` 欄をクリックする。<br />![beacon06_差替](beacon07_差替.png) 
+3. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
+4. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08_差替](beacon08_差替.png)
+5.  `LINE Beacon` 欄が表示されていることを確認する。<br />![beacon10_差替](https://github.com/noha-sira/linebot-java-handson/assets/109058900/c88d292c-47b5-46c5-8974-ebc275ffb622)
+<br />※なお、元のエディタのメニューに戻したいときは `micro:bit` → `新しいプロジェクト` すれば良い。
+6. 以下の図のようにプログラミングする。<br />![beacon11_差替](beacon11_差替.png)
     - `アイコンを表示` ブロックは、 `基本` 欄にある。 
     - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、0〜Fのによる16進数値（最大13バイト:26桁）にする。
     - `LINE Beacon stop` ブロックも、 `LINE Beacon` 欄にある。
-9. エディタの `名称未設定` 欄に `linebeacon` と入力し、保存ボタンを押す。
-10. ローカルフォルダに、 microbit-linebeacon.hex ファイルが保存されていることを確認する。
-11. microbit-linebeacon.hex ファイルをUSBメモリとして認識されている micro:bit にコピーする。
-12. micro:bit へのファイル書き込み後、実機のLEDに小さなハートマークが表示される。
+7. エディタの `名称未設定` 欄に `linebeacon` と入力し、保存ボタンを押す。
+8. ローカルフォルダに、 microbit-linebeacon.hex ファイルが保存されていることを確認する。
+9. microbit-linebeacon.hex ファイルをUSBメモリとして認識されている micro:bit にコピーする。
+10. micro:bit へのファイル書き込み後、実機のLEDに小さなハートマークが表示される。
     - 実機のAボタンを押すと、チェックマークが表示される。
     - 実機のBボタンを押すと、バツマークが表示される。
 
@@ -62,19 +60,47 @@ LINEアプリを起動した端末をLINE Beaconに近づけると、ビーコ�
 
 Messsage APIでは、このイベントに対するコールバック処理を作成する。
 
+#### Beacon クラスを作成
+
+ビーコンのエリアに入ったときにメッセージを返すクラスを作る。
+
+```java
+package com.example.linebeacon.replier;
+
+import com.linecorp.bot.model.event.BeaconEvent;
+import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TextMessage;
+
+public class Beacon implements Replier{
+
+    private BeaconEvent event;
+
+    public Beacon(BeaconEvent event){
+        this.event = event;
+    }
+
+    @Override
+    public Message reply() {
+
+        //Beaconイベントの内容を文字列に変換する
+        String eventStr = this.event.getBeacon().toString();
+        //eventStrをBotで返信する
+        return new TextMessage(eventStr);
+    }
+}
+```
+
 #### Callbackクラスを変更
 
 ビーコンイベントに対応するメソッドを追加する。<br/>（必要であれば `com.linecorp.bot.model.event.BeaconEvent` を import の行につけくわえる）
 
 ```java
-  // BeaconEventに対応する
-  @EventMapping
-  public Message handleBeacon(BeaconEvent event) {
-    // Beaconイベントの内容を文字列に変換する
-    String eventStr = event.getBeacon().toString();
-    // eventStr をBotで返信する
-    return reply(eventStr);
-  }
+  //BeaconEventに対応する
+    @EventMapping
+    public Message handleBeacon(BeaconEvent event){
+        Beacon beacon = new Beacon(event);
+        return beacon.reply();
+    }
 ```
 
 ### 動作確認
@@ -103,11 +129,14 @@ LINE BeaconはBluetooth（BLE）の電波で ハードウェアID と deviceMess
 
 この電波をLINEアプリがキャッチすると、 `enter` タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。
 
-電波がキャッチできなくなって一定時間がたつと、 `leave` タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。
+~~電波がキャッチできなくなって一定時間がたつと、 `leave` タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。~~
 
-これによって、LINE Beaconに近づいた時（電波が届く範囲に入る： `enter` タイプのイベント）、LINE Beaconから離れた時（電波が届く範囲から出る： `leave` タイプのイベント）をBotが検知して処理を行うしくみを作れる。例えば「店に入るとBotがクーポンを表示する」といった仕組みに利用されている。
+現在、[`leave`タイプのイベントは廃止](https://developers.line.me/ja/reference/messaging-api/#beacon-event-types)されている。
 
-なお、[`leave` タイプのイベントは将来的に廃止予定](https://developers.line.me/ja/reference/messaging-api/#beacon-event-types)であり、今後挙動が変わる可能性もある。
+<br/>
+
+これによって、LINE Beaconに近づいた時（電波が届く範囲に入る： `enter` タイプのイベント）をBotが検知して処理を行うしくみを作れる。例えば「店に入るとBotがクーポンを表示する」といった仕組みに利用されている。
+
 
 -----
 
