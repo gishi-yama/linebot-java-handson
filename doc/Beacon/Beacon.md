@@ -37,7 +37,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 
 ここでは手元に micro:bit の実機があり、開発しているPCとUSBケーブルで接続されていることを前提に進める。
 
-1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/v0) にアクセスする。<br />![beacon05_差替](beacon05_差替.png)
+1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/#editor) にアクセスする。<br />![beacon05_差替](beacon05_差替.png)
 2. `+ 拡張機能` 欄をクリックする。<br />![beacon07_差替](beacon07_差替.png) 
 3. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
 4. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08_差替](beacon08_差替.png)
