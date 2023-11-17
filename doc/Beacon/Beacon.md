@@ -47,7 +47,7 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
     - `アイコンを表示` ブロックは、 `基本` 欄にある。 
     - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、0〜Fのによる16進数値（最大13バイト:26桁）にする。
     - `LINE Beacon stop` ブロックも、 `LINE Beacon` 欄にある。
-7. エディタの `名称未設定` 欄に `linebeacon` と入力し、保存ボタンを押す。
+7. エディタの `題名未設定` 欄に `linebeacon` と入力し、保存ボタンを押す。
 8. ローカルフォルダに、 microbit-linebeacon.hex ファイルが保存されていることを確認する。
 9. microbit-linebeacon.hex ファイルをUSBメモリとして認識されている micro:bit にコピーする。
 10. micro:bit へのファイル書き込み後、実機のLEDに小さなハートマークが表示される。
