@@ -1,7 +1,8 @@
 package com.example.linebot.replier;
 
-import com.linecorp.bot.model.message.ImageMessage;
-import com.linecorp.bot.model.message.Message;
+
+import com.linecorp.bot.messaging.model.ImageMessage;
+import com.linecorp.bot.messaging.model.Message;
 
 import java.net.URI;
 import java.util.Random;

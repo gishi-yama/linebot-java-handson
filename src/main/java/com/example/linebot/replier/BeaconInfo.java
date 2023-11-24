@@ -1,8 +1,9 @@
 package com.example.linebot.replier;
 
-import com.linecorp.bot.model.event.BeaconEvent;
-import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.model.message.TextMessage;
+
+import com.linecorp.bot.messaging.model.Message;
+import com.linecorp.bot.messaging.model.TextMessage;
+import com.linecorp.bot.webhook.model.BeaconEvent;
 
 public class BeaconInfo implements Replier {
 
@@ -15,7 +16,7 @@ public class BeaconInfo implements Replier {
   @Override
   public Message reply() {
     // Beaconイベントの内容を文字列に変換する
-    var eventStr = event.getBeacon().toString();
+    var eventStr = event.beacon().toString();
     // eventStr をBotで返信する
     return new TextMessage(eventStr);
   }

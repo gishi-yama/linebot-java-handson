@@ -2,8 +2,8 @@ package com.example.linebot.replier;
 
 import com.example.linebot.value.CovidItem;
 import com.example.linebot.value.CovidItems;
-import com.linecorp.bot.model.message.Message;
-import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.messaging.model.Message;
+import com.linecorp.bot.messaging.model.TextMessage;
 
 import java.time.Month;
 import java.util.List;

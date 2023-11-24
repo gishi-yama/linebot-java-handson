@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.18</version>
+    <version>3.2.0</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.example</groupId>
@@ -17,8 +17,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>17</java.version>
-    <linebot-version>5.0.3</linebot-version>
+    <java.version>21</java.version>
+    <linebot-version>8.0.0</linebot-version>
   </properties>
 
   <dependencies>
@@ -48,7 +48,7 @@
 
     <dependency>
       <groupId>com.linecorp.bot</groupId>
-      <artifactId>line-bot-spring-boot</artifactId>
+      <artifactId>line-bot-spring-boot-handler</artifactId>
       <version>${linebot-version}</version>
     </dependency>
   </dependencies>

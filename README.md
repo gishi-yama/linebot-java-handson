@@ -5,12 +5,12 @@
 **次の環境で動作確認しています**
 
 - macOS 12.7.1
-- openjdk version 17.0.9
+- openjdk 21.0.1
 - Maven 3.5.2
 - IntelliJ 2023.2
 - ngrok 3.4.0 or LocalTunnel 2.0.2
-- Spring Boot 2.7.18
-- line-bot-sdk-java 5.0.3
+- Spring Boot 3.2.0
+- line-bot-sdk-java 8.0.0
 
 ## 前準備
 

@@ -1,6 +1,7 @@
 package com.example.linebot.replier;
 
-import com.linecorp.bot.model.message.Message;
+
+import com.linecorp.bot.messaging.model.Message;
 
 // 返信用クラスのためのインターフェース
 public interface Replier {
