@@ -6,11 +6,10 @@ LINE Beacon と Bot を連携させることで、ビーコンを配置した特
 
 ビーコンは、[Webで購入できる](https://beacon.theshop.jp/items/6617930)。
 
-もしくは、node.jsやBBC micro:bitでビーコンを自作することもできる。
+もしくは、BBC micro:bitやnode.jsでビーコンを自作することもできる。
 
-- node.js用　[line/line-simple-beacon](https://github.com/line/line-simple-beacon)
 - micro:bit用 [pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon)
-  - (2018年11月現在、旧バージョンのMicrosoft MakeCode for micro:biのみ対応されている)
+- node.js用　[line/line-simple-beacon](https://github.com/line/line-simple-beacon)
 
 ここでは、
 
@@ -37,13 +36,13 @@ LINE Beaconを作成するためには ハードウェアID をLINEから払い�
 
 ここでは手元に micro:bit の実機があり、開発しているPCとUSBケーブルで接続されていることを前提に進める。
 
-1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/#editor) にアクセスする。<br />![beacon05_差替](beacon05_差替.png)
-2. `+ 拡張機能` 欄をクリックする。<br />![beacon07_差替](beacon07_差替.png) 
+1. [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/#editor) にアクセスする。<br />![beacon05_差替](beacon05.png)
+2. `+ 拡張機能` 欄をクリックする。<br />![beacon07_差替](beacon07.png) 
 3. `検索またはプロジェクトのURLを入力...` 欄に、[pizayanz/pxt-linebeacon](https://github.com/pizayanz/pxt-linebeacon) のURL `https://github.com/pizayanz/pxt-linebeacon` を入力し、虫眼鏡ボタンを押す。
-4. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08_差替](beacon08_差替.png)
-5.  `LINE Beacon` 欄が表示されていることを確認する。<br />![beacon10_差替](beacon10_差替.png)
+4. `linebeacon`パッケージが表示されるので、選択する<br />![beacon08_差替](beacon08.png)
+5.  `LINE Beacon` 欄が表示されていることを確認する。<br />![beacon10_差替](beacon10.png)
 <br />※なお、元のエディタのメニューに戻したいときは `micro:bit` → `新しいプロジェクト` すれば良い。
-6. 以下の図のようにプログラミングする。<br />![beacon11_差替](beacon11_差替.png)
+6. 以下の図のようにプログラミングする。<br />![beacon11_差替](beacon11.png)
     - `アイコンを表示` ブロックは、 `基本` 欄にある。 
     - `LINE Beacon start HWID is...` ブロックは、`LINE Beacon` 欄にある。<br />HWID の `xxxxxxxxxx` は、上の手順で払い出したLINE BeaconのハードウェアIDにする。<br />`with Device Message` は、0〜Fのによる16進数値（最大13バイト:26桁）にする。
     - `LINE Beacon stop` ブロックも、 `LINE Beacon` 欄にある。
@@ -136,7 +135,6 @@ LINE BeaconはBluetooth（BLE）の電波で ハードウェアID と deviceMess
 <br/>
 
 これによって、LINE Beaconに近づいた時（電波が届く範囲に入る： `enter` タイプのイベント）をBotが検知して処理を行うしくみを作れる。例えば「店に入るとBotがクーポンを表示する」といった仕組みに利用されている。
-
 
 -----
 
