@@ -120,7 +120,10 @@ public class Beacon implements Replier{
 4. micro:bit のAボタンを押す（ビーコン信号送信開始）
 5. Botが、アプリが受信したビーコン信号の内容を投稿する<br />![beacon12](beacon12.png)
 6. micro:bit のBボタンを押す（ビーコン送信停止）
+
+<!--
 7. しばらく待つとBotが、アプリが受信したビーコン信号の内容を投稿する<br />![beacon13](beacon13.png)
+-->
 
 ### 解説と補足
 
@@ -128,7 +131,9 @@ LINE BeaconはBluetooth（BLE）の電波で ハードウェアID と deviceMess
 
 この電波をLINEアプリがキャッチすると、 `enter` タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。
 
+<!--
 ~~電波がキャッチできなくなって一定時間がたつと、 `leave` タイプとして認識されたBeaconイベントを、ハードウェアIDが登録されているBotに通知する。~~
+-->
 
 現在、[`leave`タイプのイベントは廃止](https://developers.line.me/ja/reference/messaging-api/#beacon-event-types)されている。
 
