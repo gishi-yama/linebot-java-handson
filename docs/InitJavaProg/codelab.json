@@ -1,0 +1,24 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2024-01-08T23:49:30+09:00",
+  "id": "InitJavaProg",
+  "duration": 0,
+  "title": "LINE Bot の準備",
+  "summary": "",
+  "source": "index.md",
+  "theme": "",
+  "status": [
+    "publish"
+  ],
+  "category": [
+    "java"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "mailto:java-prog-qa@techitose.org",
+  "url": "InitJavaProg"
+}
